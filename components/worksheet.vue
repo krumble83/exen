@@ -260,25 +260,3 @@
 		},
 	};
 </script>
-
-<style>
-	.exWorksheet{
-		width:100%;
-		height:100%;
-		-webkit-user-select: none;
-		-moz-user-select: none;
-		-ms-user-select: none;
-		user-select: none;
-		border: 3px solid #000;
-		opacity: 0.9;
-	}
-
-	.exWorksheet .background{
-		fill: #262626;
-	}
-
-	.exWorksheet.focus {
-		border: 3px solid #00f;
-		opacity: 1;
-	}
-</style>

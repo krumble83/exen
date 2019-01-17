@@ -1,7 +1,7 @@
 <script>
 	import App from './App.vue';
-	import undo from '../img/undo.png';
-	import redo from '../img/redo.png';
+	import undoImg from '../img/undo.png';
+	import redoImg from '../img/redo.png';
 	
 	const EMPTY_STATE = 'emptyState';
 	
@@ -43,17 +43,35 @@
 		mounted: function(){
 			var me = this;
 			if(this.toolbuttons && this.toolbuttons.push){
-				this.toolbuttons.push({
-					img: undo, 
+				var undo = {
+					img: undoImg, 
 					title:'undo last action', 
-					action: me.undo,
+					action: this.undo,
 					classObject: {
 						undoredo: true,
 						undo: true,
-						enable: me.canUndo,
+						enable: this.canUndo,
 					}
+				};
+				this.toolbuttons.push(undo);
+				this.$watch('canUndo', function(val){
+					undo.classObject.enable = val;
 				});
-				//this.toolbuttons.push({img: redo, title:'redo last action'});
+				
+				var redo = {
+					img: redoImg, 
+					title:'redo last action', 
+					action: this.redo,
+					classObject: {
+						undoredo: true,
+						redo: true,
+						enable: this.canRedo,
+					}
+				}
+				this.toolbuttons.push(redo);
+				this.$watch('canRedo', function(val){
+					redo.classObject.enable = val;
+				});
 			}
 		},
 		
@@ -74,6 +92,7 @@
 			},
 			
 			undo: function() {
+				console.log('undo');
 				if(!this.canUndo)
 					return;
 				this.undone.push(this.done.pop());
@@ -103,17 +122,3 @@
 		},			
 	});
 </script>
-
-<style>
-	.exTitlebar .button.undoredo{
-		opacity: 0.5
-	}
-	
-	.exTitlebar .button.undoredo{
-		opacity: 0.3
-	}
-
-	.exTitlebar .button:hover {
-		opacity: 1
-	}	
-</style>

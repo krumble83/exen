@@ -1,7 +1,10 @@
 <script>
 
-/*
-	const NodeGrid = {
+	import {genUid} from '../utils';
+	import ExWorksheet from './worksheet.vue';
+	import ExNode from './node.vue';
+
+	ExNode.mixins.push({
 		inject: ['snapToGrid'],
 		
 		mounted: function(){
@@ -17,10 +20,8 @@
 				this.mY = this.snapToGrid(val);
 			}
 		}
-	}
-*/
-	import {genUid} from '../utils';
-	import ExWorksheet from './worksheet.vue';
+	});
+
 	
 	ExWorksheet.mixins.push({		
 		props: {
@@ -82,15 +83,3 @@
 
 </script>
 
-<style lang="css">
-  .exWorksheet .medGrid{
-    stroke: #161616;
-    stroke-width: 1;
-  }
-
-  .exWorksheet .smallGrid{
-    stroke: #343434;
-    stroke-width: 1;
-    fill: #262626;
-  }
-</style>

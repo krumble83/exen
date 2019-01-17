@@ -3,26 +3,61 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="viewport" content="width=device-width">
-		<title>Browser Vue Loader - Script Tag</title>
+		<link rel="stylesheet" type="text/css" href="css.css" media="all">
+		
+		<title>ExeN</title>
 		<script src="elibs/vue.js"></script>
 		<script src="elibs/vuex.js"></script>
 		<script src="elibs/browser-vue-loader.js"></script>
 		<script src="elibs/svg-pan-zoom.js"></script>
+		<script src="utils/directives.js"></script>
 		<style>
 			body, html{
 				height: 100%;
 			}
-		</style>	</head>
+		</style>	
+	</head>
 	<body>
 		<div id="app"></div>
 		<script type="boom!">
 			Vue.use(Vuex);
 			
-			import store from './store'
+			//import store from './store'
 			import App from './components/App.vue'
+
 			import './components/worksheet.grid.vue';
 			import './components/undo.vue'
+				
+			var test = new Vue(App);
+			test.title = 'New BluePrint';
 			
+			var n = {
+				title: 'Make Array',
+				subtitle: 'target is me',
+				color: '#78c8fe',
+				img: 'function.png',
+				x: 100,
+				y: 100,
+				inputs: [
+					{
+						name: 'entry', 
+						label: '', 
+						color:'#fff',
+						datatype: 'exec',
+						ctor: 'ex-pinexec',
+					},
+					{name: 'input2', label: 'inu', color:'#0f0', datatype: 'green', optional: true},
+				],
+				outputs: [
+					{name: 'toto', label: 'tet', color:'#fff', datatype: 'white'},
+					{name: 'titi', label: 'cohfhrtfhrthrthrhyrl', color:'#fff', datatype: 'white', isarray: true}
+				],
+				flags: 'ok',
+			}
+			
+			//test.addNode(n);
+			
+			/*
 			var test = new Vue({
 				store,
 				el: '#app',
@@ -32,7 +67,8 @@
 					}
 				},
 				render: h => h(App)
-			})
+			});
+			*/
 			//test.$store.commit('addTodo', 'test')
 			//console.log(test.$children[0].done.length);
 		</script>
