@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport" content="width=device-width">
+		<title>Browser Vue Loader - Script Tag</title>
+		<script src="elibs/vue.js"></script>
+		<script src="elibs/vuex.js"></script>
+		<script src="elibs/browser-vue-loader.js"></script>
+		<script src="elibs/svg-pan-zoom.js"></script>
+		<style>
+			body, html{
+				height: 100%;
+			}
+		</style>	</head>
+	<body>
+		<div id="app"></div>
+		<script type="boom!">
+			Vue.use(Vuex);
+			
+			import store from './store'
+			import App from './components/App.vue'
+			import './components/worksheet.grid.vue';
+			import './components/undo.vue'
+			
+			var test = new Vue({
+				store,
+				el: '#app',
+				data: function(){
+					return {
+						title: 'test sur le titre'
+					}
+				},
+				render: h => h(App)
+			})
+			//test.$store.commit('addTodo', 'test')
+			//console.log(test.$children[0].done.length);
+		</script>
+	</body>
+</html>
