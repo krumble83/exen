@@ -28,7 +28,36 @@
 				<div id="leftDivider" class="flexChild"></div>
 				<div id="rowChild87681" class="flexChild columnParent">
 					<div id="toolbar" class="flexChild"></div>
-					<div id="center" class="flexChild"></div>
+					<div id="center" class="flexChild">
+						
+						
+						
+						<div class="tabs">
+						
+							<div class="tab">
+								<input type="radio" id="id" name="tab-group" checked>
+								<label for="id">{{title}}</label>
+								<div class="content">
+									<h2>This is the First Tabbed Area</h2>
+									<p>
+										Look at all this space. You could put so much stuff here!<br /><br />And here!
+									</p>
+								</div>
+							</div>						
+
+							<div class="tab">
+								<input type="radio" id="ide" name="tab-group" checked>
+								<label for="ide">{{title}}</label>
+								<div class="content">
+									tttttt
+								</div>
+							</div>						
+							
+						</div>
+					
+					
+					
+					</div>
 					<div id="bottomDivider" class="flexChild"></div>
 					<div id="footer" class="flexChild selected"></div>
 				</div>
@@ -39,7 +68,7 @@
 		
 		<script>
 			var screenWidth = window.innerWidth;
-			var screenHeight = window.innerHeight
+			var screenHeight = window.innerHeight;
 
 
 			/*****************************************************************************/
@@ -64,12 +93,11 @@
 			var lhFrame = document.getElementById('leftBottom');
 
 			var lefthF = function(evt){
-				console.log((screenHeight - evt.clientY));
 				lhFrame.style.height = (screenHeight - evt.clientY) + 'px';
 			}
 			
 			lhDivider.addEventListener('mousedown', function(){
-				screenHeight = window.innerHeight
+				screenHeight = window.innerHeight;
 				document.addEventListener('mousemove', lefthF);
 				document.addEventListener('mouseup', function(){
 					document.removeEventListener('mousemove', lefthF);
@@ -103,7 +131,7 @@
 			}
 			
 			fDivider.addEventListener('mousedown', function(){
-				screenHeight = window.innerHeight
+				screenHeight = window.innerHeight;
 				document.addEventListener('mousemove', footerF);
 				document.addEventListener('mouseup', function(){
 					document.removeEventListener('mousemove', footerF);
