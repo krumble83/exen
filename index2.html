@@ -3,7 +3,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="viewport" content="width=device-width">
-		<link rel="stylesheet" type="text/css" href="css.css" media="all">
+		<link rel="stylesheet" type="text/css" href="css/ui.css" media="all">
 		
 		<title>ExeN</title>
 		<script src="elibs/vue.js"></script>
@@ -12,130 +12,108 @@
 		<script src="elibs/svg-pan-zoom.js"></script>
 		<script src="utils/directives.js"></script>
 		<style>
-			body, html{
-				margin:0;     /* This is used to reset any browser-default margins */
-				padding: 0;
-				height:100%; /* This is needed to overcome a Chrome bug. */
-				width:100%;
-				background-color: #222222;
-			}
-			
-			#layout {
-				width:100%;
-				height:100%;
-			}
-			
-			table, th, td {
-			  padding: 0;
-			  margin: 0;
-			}
-			
-			table{
-				border-spacing: 5px;
-			}
-			
-			#ftop {
-				height: 20px;
-			}
-			
-			#fbottom {
-				height: 50px;
-			}
-			
-			#fright{
-				width: 120px;
-			}
-			
-			#fcenter {
-				border: 1.5px solid #606060;
-			}
 
-			#fleft {
-				width: 200px;
-			}
-			#ftoolbar {
-				height: 64px;
-				background-color: #606060;
-				border-radius: 5px;
-				-moz-border-radius: 5px;				
-			}
-			
-			.dragbarh {
-				/*background-color: #fff;*/
-				cursor: col-resize;
-				height: 100%;
-				width: 5px;
-				top: 0;
-			}
-			
-			.dragbarh.right {
-				float: right;
-				margin-right: -7px;			
-			}
-
-			.dragbarh.left {
-				float: left;
-				margin-left: -7px;			
-			}
-			
-			
-			.dragbarv {
-				background-color: #fff;
-				cursor: row-resize;
-				height: 5px;
-				width: 100%;
-				position: relative;
-				top: -4px;
-			}			
-			
-			
-			.innerPanel {
-				border: 1.5px solid #606060;
-				width:100%;
-				height:100%;
-				background-color:#550
-			}
-			
 		</style>	
 	</head>
 	<body>
 	
-		<table id="layout">
-			<tbody>
-				<tr>
-					<td colspan="3" id="ftop">1</td>
-				</tr>
-				<tr>
-					<td rowspan="2"id="fleft"><div class="dragbarh right"></div><div class="innerPanel" style="clear:left">2</div></td>
-					<td id="ftoolbar">3</td>
-					<td rowspan="4" id="fright"><div class="dragbarh left"></div><div class="innerPanel" style="clear:right">4</div></td>
-				</tr>
-				<tr>
-					<td rowspan="2" id="fcenter">5</td>
-				</tr>
-				<tr>
-					<td rowspan="2"><div class="dragbarv"></div><div class="dragbarh right"></div><div class="innerPanel" style="clear:left;position:relative;top:-3px">6</div></td>
-				</tr>
-				<tr>
-					<td id="fbottom"><div class="dragbarv"></div><div class="innerPanel" style="position:relative;top:-3px">7</div></td>
-				</tr>
-			</tbody>
-		</table>	
-		<!--
-		<table id="layout" style="">
-			<tr>
-				<td colspan="3" style="height:20px" id="ftop">ddd</td>
-			</tr>
-			<tr>
-				<td id="fleft" rowspan="3"><div class="dragbar right"></div><div style="width:100%;height: 100%;clear:left;background-color:#550">z</div></td>
-				<td id="ftoolbar">2</td>
-				<td id="fright" rowspan="3">3<div class="dragbar left"></td>
-			</tr>
-			<tr><td id="fcenter">center</td></tr>
-			<tr>
-				<td id="fbottom">bottom</td>
-			</tr>
-		<table>
-		-->
+		<div id="container" class="flexChild columnParent">
+			<div id="header" class="flexChild"></div>
+			<div id="columnChild23344" class="flexChild rowParent">
+				<div id="left" class="flexChild columnParent">
+					<div id="leftTop" class="flexChild"></div>
+					<div id="leftHdivider" class="flexChild"></div>
+					<div id="leftBottom" class="flexChild"></div>
+				</div>
+				<div id="leftDivider" class="flexChild"></div>
+				<div id="rowChild87681" class="flexChild columnParent">
+					<div id="toolbar" class="flexChild"></div>
+					<div id="center" class="flexChild"></div>
+					<div id="bottomDivider" class="flexChild"></div>
+					<div id="footer" class="flexChild selected"></div>
+				</div>
+				<div id="rightDivider" class="flexChild"></div>
+				<div id="right" class="flexChild"></div>
+			</div>
+		</div>
+		
+		<script>
+			var screenWidth = window.innerWidth;
+			var screenHeight = window.innerHeight
+
+
+			/*****************************************************************************/
+			var lDivider = document.getElementById('leftDivider');
+			var lFrame = document.getElementById('left');
+			
+			var leftF = function(evt){
+				lFrame.style.width = evt.clientX + 'px';			
+			}
+			
+			lDivider.addEventListener('mousedown', function(){
+				screenWidth = window.innerWidth;
+				document.addEventListener('mousemove', leftF);
+				document.addEventListener('mouseup', function(){
+					document.removeEventListener('mousemove', leftF);
+				}, {once: true});
+			});
+
+			
+			/*****************************************************************************/
+			var lhDivider = document.getElementById('leftHdivider');
+			var lhFrame = document.getElementById('leftBottom');
+
+			var lefthF = function(evt){
+				console.log((screenHeight - evt.clientY));
+				lhFrame.style.height = (screenHeight - evt.clientY) + 'px';
+			}
+			
+			lhDivider.addEventListener('mousedown', function(){
+				screenHeight = window.innerHeight
+				document.addEventListener('mousemove', lefthF);
+				document.addEventListener('mouseup', function(){
+					document.removeEventListener('mousemove', lefthF);
+				}, {once: true});
+			});
+
+			
+			/*****************************************************************************/
+			var rDivider = document.getElementById('rightDivider');
+			var rFrame = document.getElementById('right');
+			
+			var rightF = function(evt){
+				rFrame.style.width = (screenWidth - evt.clientX) + 'px';			
+			}
+			
+			rDivider.addEventListener('mousedown', function(){
+				screenWidth = window.innerWidth;
+				document.addEventListener('mousemove', rightF);
+				document.addEventListener('mouseup', function(){
+					document.removeEventListener('mousemove', rightF);
+				}, {once: true});
+			});			
+
+
+			/*****************************************************************************/
+			var fDivider = document.getElementById('bottomDivider');
+			var fFrame = document.getElementById('footer');
+			
+			var footerF = function(evt){
+				fFrame.style.height = (screenHeight - evt.clientY) + 'px';			
+			}
+			
+			fDivider.addEventListener('mousedown', function(){
+				screenHeight = window.innerHeight
+				document.addEventListener('mousemove', footerF);
+				document.addEventListener('mouseup', function(){
+					document.removeEventListener('mousemove', footerF);
+				}, {once: true});
+			});			
+			
+
+			console.log(window.innerHeight);
+		
+		
+		</script>
 	</body>
 </html>
