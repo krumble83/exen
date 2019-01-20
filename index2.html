@@ -4,69 +4,67 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="viewport" content="width=device-width">
 		<link rel="stylesheet" type="text/css" href="css/ui.css" media="all">
+		<link rel="stylesheet" type="text/css" href="css/uitree.css" media="all">
 		
 		<title>ExeN</title>
 		<script src="elibs/vue.js"></script>
 		<script src="elibs/vuex.js"></script>
 		<script src="elibs/browser-vue-loader.js"></script>
 		<script src="elibs/svg-pan-zoom.js"></script>
+		<script src="elibs/loadhash.js"></script>
 		<script src="utils/directives.js"></script>
 		<style>
 
 		</style>	
 	</head>
 	<body>
-	
-		<div id="container" class="flexChild columnParent">
+		<div id="app" class="flexChild columnParent">
 			<div id="header" class="flexChild"></div>
 			<div id="columnChild23344" class="flexChild rowParent">
 				<div id="left" class="flexChild columnParent">
 					<div id="leftTop" class="flexChild"></div>
 					<div id="leftHdivider" class="flexChild"></div>
-					<div id="leftBottom" class="flexChild"></div>
+					<div id="leftBottom" class="flexChild">
+						<uitree v-if="hasGraph('graphs')" :draggable="false" label="Graphs" type="graph" :items="graphs" :button="{text: 'Add Graph', action:'addGraph'}" ref="graphsTree"></uitree>
+						<uitree v-if="hasGraph('functions')" label="Functions" type="function" :items="functions" :button="{text: 'Function', action:'addFunction'}" ref="functionsTree"></uitree>
+						<uitree v-if="hasGraph('macros')" label="Macros" type="macro" :items="macros" :button="{text: 'Macro', action:'addMacro'}" ref="functionsTree"></uitree>
+						<uitree v-if="hasGraph('variables')" label="Variables" type="variable" :items="variables" :button="{text: 'Variable', action:'addVariable'}" ref="variablesTree"></uitree>
+					
+					</div>
 				</div>
 				<div id="leftDivider" class="flexChild"></div>
 				<div id="rowChild87681" class="flexChild columnParent">
-					<div id="toolbar" class="flexChild"></div>
+					<div id="toolbar" class="flexChild">
+						<uitbbutton label="Check" img="ui-img/check.png" action="check" title="Check current Project" ></uitbbutton>
+						<uitbbutton label="Save" img="ui-img/save.png" action="save" title="Save current Project" ></uitbbutton>
+						<uitbbutton label="F.screen" img="ui-img/fullscreen.png" action="fullscreen" :toggle="1" title="Toggle fullscreen" ></uitbbutton>
+					</div>
 					<div id="center" class="flexChild">
-						
-						
-						
-						<div class="tabs">
-						
-							<div class="tab">
-								<input type="radio" id="id" name="tab-group" checked>
-								<label for="id">{{title}}</label>
-								<div class="content">
-									<h2>This is the First Tabbed Area</h2>
-									<p>
-										Look at all this space. You could put so much stuff here!<br /><br />And here!
-									</p>
-								</div>
-							</div>						
-
-							<div class="tab">
-								<input type="radio" id="ide" name="tab-group" checked>
-								<label for="ide">{{title}}</label>
-								<div class="content">
-									tttttt
-								</div>
-							</div>						
-							
-						</div>
-					
-					
+												
+						<uigraphtabs ref="tabsContainer" :closable="true"></uigraphtabs>
 					
 					</div>
 					<div id="bottomDivider" class="flexChild"></div>
 					<div id="footer" class="flexChild selected"></div>
 				</div>
 				<div id="rightDivider" class="flexChild"></div>
-				<div id="right" class="flexChild"></div>
+				<div id="right" class="flexChild">
+					<uiproperties ref="properties"></uiproperties>
+				</div>
 			</div>
 		</div>
 		
-		<script>
+		<script type="boom!">
+		
+			import App from './ui-vues/app.vue'
+			import './ui-vues/tree.vue'
+			
+			var test = new Vue(App);
+			console.log(test);
+			test.addFunction({name: 'setup'}, false);
+			test.addFunction({name: 'loop'}, false);
+			//test.addFunction({name: 'loop'});		
+		
 			var screenWidth = window.innerWidth;
 			var screenHeight = window.innerHeight;
 

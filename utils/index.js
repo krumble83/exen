@@ -2,9 +2,10 @@
 var id = 100;
 
 export function genUid(prefix){
-	while(document.querySelector('#svg' + ((prefix) ? prefix : '') + id))
+	prefix = prefix || 'uid';
+	while(document.querySelector('#' + prefix + id))
 		id++;
-	return 'svg' + ((prefix) ? prefix : '') + id++;
+	return prefix + id++;
 }
 
 export function nl2br (str, is_xhtml) {
