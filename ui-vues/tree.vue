@@ -16,7 +16,7 @@
 					@mouseenter.stop=""
 					@mousemove.stop=""
 				>
-					<img :src="item.img">&nbsp;{{item.name}}
+					<span><img :src="item.img">&nbsp;{{item.name}}</span>
 				</li>
 			</ul>
 		</li>

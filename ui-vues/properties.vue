@@ -29,6 +29,7 @@
 		created: function(){
 			var me = this;
 			this.$parent.$watch('treeSelected', function(newValue, oldValue) {
+				me.items = [];
 				//console.log(newValue.getAttribute('name'));
 				if(!newValue || !newValue.type){
 					me.test = 'no properties';
@@ -42,7 +43,6 @@
 					case 'function':
 						this.pData = this.$store.getters.getGraph(newValue.getAttribute('name'));
 						me.test = '';
-						me.items = [];
 						me.items.push({
 							ctor: 'uitree', 
 							label: 'General', 

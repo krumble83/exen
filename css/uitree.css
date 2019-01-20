@@ -18,8 +18,13 @@ ul.uiTree,
 }
 
 ul.uiTree li {
-	padding: 2px 0 2px 15px;
+	padding: 2px 0 2px 0;
 	font-weight: normal;
+}
+
+ul.uiTree > li span {
+	display: inline-block;
+	padding-left: 15px;
 }
 
 ul.uiTree ul {
