@@ -17,7 +17,11 @@
 						a++;
 					name += '_' + a;
 				}
-				this.$store.commit('addFunction', {name: name, img:functionImg, tabOrder: 0});
+				data = data || {};
+				data.name = name;
+				data.img = functionImg;
+				data.tabOrder = 0;
+				this.$store.commit('addFunction', data);
 				if(doReaname === false)
 					return;
 				this.$nextTick(function(){

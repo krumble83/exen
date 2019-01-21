@@ -38,12 +38,12 @@
 				switch(newValue.type){
 					case 'variable':
 						me.test = 'show variable properties';
-						this.pData = this.$store.getters.getVariable(newValue.getAttribute('name'));
+						me.pData = me.$store.getters.getVariable(newValue.getAttribute('name'));
 						me.showVariableProperties();
 						break;
 					
 					case 'function':
-						this.pData = this.$store.getters.getGraph(newValue.getAttribute('name'));
+						me.pData = me.$store.getters.getGraph(newValue.getAttribute('name'));
 						me.test = '';
 						me.showFunctionProperties();
 						break;
@@ -66,6 +66,7 @@
 			},
 			
 			showFunctionProperties: function(){
+				console.log((this.pData.flags & F_LOCK_OUTPUTS) == F_LOCK_OUTPUTS);
 				this.items.push({
 					ctor: 'uitree', 
 					label: 'General', 
@@ -76,7 +77,7 @@
 				{
 					ctor: 'uitree', 
 					label: 'Inputs', 
-					button: {text: 'Add Input', action: 'addInput'},
+					button: {text: 'Add Input', action: 'addInput', disabled: ((this.pData.flags & F_LOCK_INPUTS) == F_LOCK_INPUTS)},
 					items: [
 						{name: 'input1'}
 					]						
@@ -84,7 +85,7 @@
 				{
 					ctor: 'uitree', 
 					label: 'Outputs', 
-					button: {text: 'Add Output', action: 'addOutput'},
+					button: {text: 'Add Output', action: 'addOutput', disabled: ((this.pData.flags & F_LOCK_OUTPUTS) == F_LOCK_OUTPUTS)},
 					items: [
 						{name: 'output1'}
 					]						

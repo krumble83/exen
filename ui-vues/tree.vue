@@ -2,7 +2,8 @@
 	<ul class="uiTree">
 		<li style="width:100%" class="main">
 			<input type="checkbox" :id="'folder_' + label" checked="true">
-			<label :for="'folder_' + label">{{label}}</label><div v-if="button" class="add" @click.stop.prevent="doAdd"><img src="ui-img/add.png" /><span>{{button.text}}</span></div>
+			<div v-if="button" :class="{add: true, disabled: button.disabled}" @click.stop.prevent="doAdd"><img src="ui-img/add.png" /><span>{{button.text}}</span></div>
+			<label :for="'folder_' + label">{{label}}</label>
 			<ul>
 				<li v-for="(item,id) in items" :key="id"
 					:is="item.ctor ? item.ctor : 'li'"
@@ -12,7 +13,8 @@
 					:name="item.name" 
 					:index="id"
 					:type="type"
-					@click="onClick($event,id)" 
+					@click="onClick($event,id)"
+					@contextmenu.stop.prevent="onContext($event,id)"
 					@dblclick="onDblClick($event,id)"
 					@mouseenter.stop=""
 					@mousemove.stop=""
@@ -51,13 +53,19 @@
 			},
 			
 			onDblClick: function(evt, id){
+				this.$emit('dblclick', evt, this.items[id]);
 				if(typeof this.$parent.treeDblClick === 'function')
 					this.$parent.treeDblClick(this.items[id], evt);
 			},
 			
 			onClick: function(evt, id){
+				this.$emit('click', evt, this.items[id]);
 				if(typeof this.$parent.treeClick === 'function')
 					this.$parent.treeClick(this.items[id], evt);
+			},
+			
+			onContext: function(evt, id){
+				this.$emit('contextmenu', evt, this.items[id]);
 			},
 			
 			findNode: function(name){
@@ -115,6 +123,8 @@
 		white-space: nowrap;
 		overflow: hidden;
 		width: auto;
+		min-height: 24px;
+		min-width: 165px;
 	}
 	ul.uiTree li.main span {
 		display: inline-block;
@@ -124,27 +134,25 @@
 
 	ul.uiTree li.main label {
 		padding-top :2px;
+		z-index: 10;
 	}
 
 	/*********************/
 	ul.uiTree li.main .add{
-		display: inline;
-		line-height: 20px;
-		float:right;
+		float:right;		
+		position: static;
 		margin-right: 5px;
 		margin-top: 1px;
 		pointer-events: all;
-		border-radius: 3px;	
-		white-space: nowrap;
-		overflow: hidden;
+		border-radius: 3px;
+		z-index: 10000;
 	}
 
 	ul.uiTree li.main .add span{
-		padding: 0 5px 0 3px;
+		padding: 0 5px 0 0;
 		display: none;
 		font-size: 11px;
-		white-space: nowrap;
-		overflow: hidden;
+		line-height: 20px;
 	}
 
 	ul.uiTree li.main .add:hover{
@@ -160,6 +168,14 @@
 		background-color: #444444;
 	}
 
+	ul.uiTree li.main .add.disabled{
+		pointer-events: none;
+	}	
+	ul.uiTree li.main .add.disabled img{
+		filter: invert(100%);
+		background-color: #aaa;
+	}	
+	
 	ul.uiTree li.main .add:hover img{
 		background-color: #dea309;
 	}
@@ -170,10 +186,7 @@
 		white-space: nowrap;
 	}
 
-	ul.uiTree li.child.selected{
-		background-color: #dea309;
-	}
-
+	ul.uiTree li.child.selected,
 	ul.uiTree li.child.selected:hover{
 		background-color: #dea309;
 	}
@@ -187,6 +200,7 @@
 
 	ul.uiTree li.sep {
 		height: 4px;
+		background: none;
 	}
 
 
@@ -242,14 +256,20 @@
 		height: 14px;
 		font-size: 12px;
 		outline: none;
+		width: 120px;
 		-webkit-user-select: auto;
 		-moz-user-select: auto;
 		-ms-user-select: auto;
 		user-select: auto;
 	}
 
-	.uiTree input.editor.error {
-		background-color: #900;
+	.uiTree input.editor:invalid {
+		background-color: #ffc8c8;
+		border-color: #f00;
+	}
+	
+	.uiTree input.editor:valid {
+		background-color: #e7e7e7;
 	}
 
 	.uiTree .body::-webkit-scrollbar-track

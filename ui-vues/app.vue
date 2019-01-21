@@ -51,7 +51,9 @@
 						if(this[data.type + 'Rename'])
 							this[data.type + 'Rename'](data, evt.target);
 						else
-							this.rename(data, evt.target);					
+							this.rename(data, evt.target).success(function(){
+								console.log('coucou :)');
+							});;					
 					}
 					return;
 				}
@@ -69,10 +71,19 @@
 			
 			rename: function(data, el){
 				var me = this
-				, input = document.querySelector('input.editor');
+				, input = document.querySelector('input.editor')
+				, ret = {
+					success: function(cb){this.succesCb = cb},
+					validate: function(cb){this.validateCb = cb}
+				}
 				
-				if(input)
-					input.onchange();
+				if(input && input.checkValidity())
+					input.blur();
+				else if(input && !input.checkValidity())
+					return ret;
+				
+				if(data.flags && ((data.flags & F_NO_RENAME) == F_NO_RENAME))
+					return ret;
 				
 				if(this.treeSelected)
 					this.treeSelected.classList.remove('selected');
@@ -80,47 +91,56 @@
 				input = document.createElement('input');				
 				input.setAttribute('type', 'text');
 				input.setAttribute('class', 'editor');
+				input.setAttribute('required', '');
 				el.prepend(input);
 				input.value = data.name;
-				input.setAttribute('draggable', true);
+				//input.setAttribute('draggable', true);
 							
-				var prevent = function(e){
+				const prevent = function(e){
 					e.preventDefault();
 					e.stopPropagation();
 				}
 				
-				var stop = function(e){
+				const stop = function(e){
 					e.stopPropagation();
 				}
 				
-				var change = function(evt){
+				const change = function(evt){
 					//console.log('onchange');
-					if(evt && evt.type == 'mousedown' && evt.target == input)
+					
+					if(!input.checkValidity())
 						return;
-					input.checkValidity();
-					if(input.value != data.name)
+					
+					if(input.value != data.name && input.checkValidity())
 						me.$store.commit('changeGraph', {name: data.name, props:{name: input.value}});
-					var parent = input.parentNode;
+					const parent = input.parentNode;
 					parent.removeChild(input);
 					me.treeClick(data, {target: parent});
+					if(ret.succesCb)
+						ret.succesCb();
 				}
 				
-				var keyup = function(evt){
-					//console.log('change', evt.keyCode);
-					input.checkValidity();
+				const keyup = function(evt){
+					//console.log('keyup', evt);
+					if(ret.validateCb && ret.validateCb(evt, input) == false){
+						input.setCustomValidity("name allready in use");
+						return;
+					}
+					if(!input.checkValidity())
+						return;
 					if(evt.keyCode == 13)
-						input.onchange(evt);
-					//if(input.validate)
-					//	input.validate(evt);
+						input.blur();
 				}
 				
 				input.ondragstart = prevent;
 				input.ondblclick = stop;
 				input.onclick = stop;
-				input.oninput = keyup;
-				input.onchange = change;
-				input.pattern="[a-zA-Z_$][a-zA-Z_$0-9]*"
+				input.onkeyup = keyup;
+				input.onchange = function(){input.checkValidity();}
+				//input.onchange = change;
+				input.pattern="[a-zA-Z_$][0-9a-zA-Z_$]*";
 				input.onblur = change;
+				//input.validationMessage = 'test';
 				
 				this.$nextTick(function(){
 					input.focus();
@@ -128,7 +148,12 @@
 					el.classList.remove('selected');
 					me.treeSelected = false;
 				});
-				return input;
+				
+				//input.oninvalid = function(){input.setCustomValidity('Please enter price with decimal format, eg x.xx .')};
+				
+				
+				console.dir(input);
+				return ret;
 			},
 			
 			closeTab: function(tab){

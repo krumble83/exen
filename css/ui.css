@@ -184,6 +184,10 @@ body, html{
 	cursor: col-resize;	
 }
 
+.divider:hover{
+	background-color: #777;
+}
+
 .uiPanel {
 	height: 22px;
 	padding-left: 5px;
