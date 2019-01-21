@@ -4,6 +4,7 @@
 			v-if="tab.tabOrder > 0"
 			:is="tab.ctor ? tab.ctor : 'uigraphtab'"
 			:closable="closable"
+			@click="tabClick"
 			v-bind="tab"
 		>
 		</component>
@@ -44,6 +45,7 @@
 			closeTab: function(tab){
 				console.log(tab);
 				this.$parent.closeTab(tab);
+				//this.$children[this.$children.length].checked
 			},
 			
 			getTab: function(data){
@@ -57,10 +59,21 @@
 					else
 						el.checked = false;
 				});
+			},
+			
+			tabClick: function(evt){
+				console.log('tabClick');
 			}
 		}
 	
 	}
-
-
 </script>
+
+<style>
+	.tabs {
+		position: relative;
+		height: 100%;
+		white-space: nowrap;
+	}
+
+</style>

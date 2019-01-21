@@ -1,12 +1,17 @@
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+export default {
 	state: {
 		device: {},
 		components: [],
 		graphs: [],
-		variables: []
+		variables: [],
+		datatypes: {},
+		templates: {},
+		patterns: {
+			name: '[A-Za-z$]{1,}'
+		}
 	},
 
 	mutations: {
@@ -16,18 +21,40 @@ export default new Vuex.Store({
 		
 		addGraph: function(state, data){
 			data.type = 'graph';
+			data.flags = data.flags || 0;
 			state.graphs.push(data);
 		},
 
 		addFunction: function(state, data){
 			data.type = 'function';
-			data.inputs = {};
-			data.outputs = {};
+			data.description = data.description || '';
+			data.flags = data.flags || 0;
+			data.data = data.data || {};
+			//data.inputs = data.inputs || {};
+			//data.outputs = data.outputs || {};
 			state.graphs.push(data);
 		},
 
 		addVariable: function(state, data){
+			data.type = 'variable';
+			data.flags = data.flags || 0;
+			data.data = data.data || {};
+			if(!data.data.datatype){
+				data.data.datatype = 'core.int';
+				data.data.color = '#0f0';
+			}
 			state.variables.push(data);
+		},
+
+		addMacros: function(state, data){
+			data.type = 'macro';
+			data.flags = data.flags || 0;
+			state.graph.push(data);
+		},
+		
+		addTemplate: function(state, data){
+			var no = Object.assign({}, data);
+			state.templates[no.name] = no.data;
 		},
 		
 		changeGraph: function(state, data){
@@ -46,20 +73,12 @@ export default new Vuex.Store({
 	},
 	
 	getters: {
-		getGraph: (state) => (name) => {
-			//console.log(state.graphs);
-			//return {name: 'toto'};
-			return state.graphs.find(gr => gr.name == name)
-		},
-		
-		eeegetGraph: state => name => state.graphs.find(item => item.name == name),
-		
-		zzzgetGraph: function(state, name){
-			return state.graphs.find(gr => gr.name == name)
-		},
+		getGraph: state => name => state.graphs.find(item => item.name == name),
 
+		getVariable: state => name => state.variables.find(item => item.name == name),
+		
 		nameExists: function(name){
 			return this;
 		}
 	}
-})
+}

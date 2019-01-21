@@ -1,123 +1,45 @@
 <script>
 
-	import store from '../store/project.js'
-
+	Vue.use(Vuex);
+	import ProjectStore from '../store/project.js'
+	
+	import infotabs from './infotabs.vue';
 	import uigraphtabs from './tabs.vue';
 	import uitree from './tree.vue';
 	import uiproperties from './properties.vue';
 	import uitbbutton from './toolbarbutton.vue';
-	
-	import variableImg from '../ui-img/variable.png';
-	import graphImg from '../ui-img/graph.png';
-	import functionImg from '../ui-img/function.png';
-	
-	var tabs = 1;
+		
+	var store = new Vuex.Store(ProjectStore);
 	
 	export default {
-		components: { uigraphtabs, uitree, uiproperties, uitbbutton },
+		components: { uigraphtabs, uitree, uiproperties, uitbbutton, infotabs },
+		mixins: [],
 		el: '#app',
 		store,
 		
 		data: function(){
 			return {
 				tabs: [],
+				tabsId: 1,
 				treeSelected: false,
+				panelSizes: {left:0, right:0, footer:0},
 			}
-			
 		},
 		
-		computed: {
-			variables: function(){return this.$store.state.variables},
-			graphs: function(){return this.$store.state.graphs.filter(g => g.type=='graph')},
-			functions: function(){return this.$store.state.graphs.filter(g => g.type=='function')},
-			//macros: function(){return this.$store.state.graphs.filter(g => g.type=='macros')},
-			
+		mounted: function(){
+			this.$refs.infoTabs.tabs.push({name: 'Compile Result', checked: true});
+			this.$refs.infoTabs.tabs.push({name: 'Search Result'});
+		},
+		
+		computed: {		
 			tabGraphs: function () {
 				return _.orderBy(this.$store.state.graphs, 'tabOrder');
 			}
 		},
 		
 		methods: {			
-			addGraph: function(data, doReaname){
-				var a = 0
-				, name = (data && data.name) ? data.name : 'NewGraph';
-				if(this.graphs.find(v => v.name == name)){
-					while(this.graphs.find(v => v.name == name + '_' + a))
-						a++;
-					name += '_' + a;
-				}
-				this.$store.commit('addGraph', {name: name, img:graphImg, tabOrder: 0});
-				if(doReaname === false)
-					return;
-				this.$nextTick(function(){
-					var n = this.$refs.graphsTree.findNode(name);
-					this.rename(n.data, n.el);
-				});
-			},
-			
-			openGraph: function(name){
-				var data = this.getGraph(name);
-				if(data.tabOrder == 0)
-					data.tabOrder = tabs++;
-				this.$nextTick(function(){
-					this.focusTab(data);
-				});
-			},
-						
-			getGraph: function(name){
-				return this.graphs.find(graph => graph.name == name && graph.type == 'graph');
-			},
-			
-			
-			addFunction: function(data, doReaname){
-				var a = 0
-				, name = (data && data.name) ? data.name : 'NewFunction';
-				if(this.functions.find(v => v.name == name)){
-					while(this.functions.find(v => v.name == name + '_' + a))
-						a++;
-					name += '_' + a;
-				}
-				this.$store.commit('addFunction', {name: name, img:functionImg, tabOrder: 0});
-				if(doReaname === false)
-					return;
-				this.$nextTick(function(){
-					var n = this.$refs.functionsTree.findNode(name);
-					this.rename(n.data, n.el);
-				});
-			},
-			
-			openFunction: function(name){
-				var data = this.getFunction(name);
-				if(data.tabOrder == 0)
-					data.tabOrder = tabs++;
-				this.$nextTick(function(){
-					this.focusTab(data);
-				});
-			},
-						
-			getFunction: function(name){
-				return this.functions.find(func => func.name == name && func.type == 'function');
-			},
-			
 			hasGraph: function(name){
 				return typeof this[name] !== 'undefined';
-			},
-			
-			addVariable: function(data, doReaname){
-				var a = 0
-				, name = (data && data.name) ? data.name : 'NewVar';
-				if(this.variables.find(v => v.name == name)){
-					while(this.variables.find(v => v.name == name + '_' + a))
-						a++;
-					name += '_' + a;
-				}
-				this.$store.commit('addVariable', {name: name, img:variableImg, datatype: 'core.int'});
-				if(doReaname === false)
-					return;
-				this.$nextTick(function(){
-					var n = this.$refs.variablesTree.findNode(name);
-					this.rename(n.data, n.el);
-				});
 			},
 			
 			treeClick: function(data, evt){
@@ -125,29 +47,24 @@
 				if(this.treeSelected && this.treeSelected != evt.target)
 					this.treeSelected.classList.remove('selected');
 				else if(this.treeSelected && this.treeSelected == evt.target){
-					if(evt.target.timestamp && Date.now() > evt.target.timestamp + 400)
-						this.rename(data, evt.target);
+					if(evt.target.timestamp && Date.now() > evt.target.timestamp + 400){
+						if(this[data.type + 'Rename'])
+							this[data.type + 'Rename'](data, evt.target);
+						else
+							this.rename(data, evt.target);					
+					}
+					return;
 				}
 				evt.target.classList.add('selected');
 				evt.target.timestamp = Date.now();
 				this.treeSelected = evt.target;
-								
-				switch(data.type){
-					case 'variable':
-						//this.openGraph(name);
-						break;
-				}				
+				if(this[data.type + 'Click'])
+					this[data.type + 'Click'](data, evt);
 			},
 			
 			treeDblClick: function(data, evt){
-				switch(data.type){
-					case 'graph':
-						this.openGraph(data.name);
-						break;
-					case 'function':
-						this.openFunction(data.name);
-						break;
-				}
+				if(this[data.type + 'Dblclick'])
+					this[data.type + 'Dblclick'](data, evt);
 			},
 			
 			rename: function(data, el){
@@ -172,40 +89,46 @@
 					e.stopPropagation();
 				}
 				
+				var stop = function(e){
+					e.stopPropagation();
+				}
+				
 				var change = function(evt){
 					//console.log('onchange');
 					if(evt && evt.type == 'mousedown' && evt.target == input)
 						return;
+					input.checkValidity();
 					if(input.value != data.name)
 						me.$store.commit('changeGraph', {name: data.name, props:{name: input.value}});
-					document.removeEventListener('mousedown', change);
 					var parent = input.parentNode;
 					parent.removeChild(input);
-					//me.$nextTick(function(){
-						me.treeClick(data, {target: parent});
-					//});
+					me.treeClick(data, {target: parent});
 				}
 				
 				var keyup = function(evt){
 					//console.log('change', evt.keyCode);
+					input.checkValidity();
 					if(evt.keyCode == 13)
 						input.onchange(evt);
+					//if(input.validate)
+					//	input.validate(evt);
 				}
 				
 				input.ondragstart = prevent;
-				input.ondblclick = prevent;
-				input.onkeyup = keyup;
+				input.ondblclick = stop;
+				input.onclick = stop;
+				input.oninput = keyup;
 				input.onchange = change;
-				document.addEventListener('mousedown', change);
+				input.pattern="[a-zA-Z_$][a-zA-Z_$0-9]*"
+				input.onblur = change;
 				
 				this.$nextTick(function(){
-					if(!input)
-						return;
 					input.focus();
+					input.select();
 					el.classList.remove('selected');
 					me.treeSelected = false;
-				}, 100);
-				
+				});
+				return input;
 			},
 			
 			closeTab: function(tab){
@@ -214,18 +137,32 @@
 			},
 			
 			focusTab: function(data){
-				var t = this.$refs.tabsContainer.focusTab(data);
+				this.$refs.tabsContainer.focusTab(data);
 			},
 			
 			
-			fullscreen: function(value){
-				console.log('fullscreen');
-				document.querySelector('#left').style.width = 0;
-				document.querySelector('#footer').style.width = 0;
-				document.querySelector('#right').style.width = 0;
-			}
-
-			//genUid: genUid,
+			goFullscreen: function(value){
+				//console.log('fullscreen');
+				if(value){
+					this.panelSizes.left = document.querySelector('#left').style.width;
+					this.panelSizes.footer = document.querySelector('#footer').style.height;
+					this.panelSizes.right = document.querySelector('#right').style.width;
+					
+					//document.querySelector('#left').animate([{transform: 'scale(0,1)'}], {duration: 1000, iterations: 1});
+					
+					document.querySelector('#left').style.width = 0;
+					document.querySelector('#footer').style.height = 0;
+					document.querySelector('#right').style.width = 0;
+					this.$emit('app:fullscreen');
+				}
+				else {
+					document.querySelector('#left').style.width = this.panelSizes.left;
+					document.querySelector('#footer').style.height = this.panelSizes.footer;
+					document.querySelector('#right').style.width = this.panelSizes.right;				
+					this.$emit('app:normallayout');
+				}
+			},
+			
 		},
 	}
 </script>
