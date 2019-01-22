@@ -12,7 +12,6 @@
 		<script src="elibs/vuex.js"></script>
 		<script src="elibs/browser-vue-loader.js"></script>
 		<script src="elibs/svg-pan-zoom.js"></script>
-		<script src="elibs/loadhash.js"></script>
 		<script src="utils/directives.js"></script>
 		
 		<style>
@@ -21,44 +20,41 @@
 	</head>
 	<body>
 		<div id="app" class="flexChild columnParent">
+			<uicontextmenu ref="contextmenu"></uicontextmenu>
 			<div id="header" class="flexChild"></div>
-			<div id="columnChild23344" class="flexChild rowParent">
-				<div id="left" class="flexChild columnParent">
+			<div class="flexChild rowParent">
+				<div id="left" class="flexChild columnParent" v-panel.left>
 					<div id="leftTop" class="flexChild">
-						<div class="uiPanel">&nbsp;&nbsp;Project</div>
+						<div class="uiPaneltitle">&nbsp;&nbsp;Project</div>
 						<div style="padding:3px;">
 
 						</div>
 					</div>
-					<div id="leftHdivider" class="flexChild divider"></div>
-					<div id="leftBottom" class="flexChild">
-						<div class="uiPanel">&nbsp;&nbsp;BluePrint</div>
+					<div id="leftBottom" class="flexChild" v-panel.bottom>
+						<div class="uiPaneltitle">&nbsp;&nbsp;BluePrint</div>
 						<div style="padding:3px;">
 							<uitree v-if="hasGraph('graphs')" :draggable="false" label="Graphs" type="graph" :items="graphs" :button="{text: 'Add Graph', action:'addGraph'}" ref="graphsTree"></uitree>
 							<uitree v-if="hasGraph('functions')" label="Functions" type="function" :items="functions" :button="{text: 'Function', action:'addFunction'}" ref="functionsTree"></uitree>
-							<uitree v-if="hasGraph('macros')" label="Macros" type="macro" :items="macros" :button="{text: 'Macro', action:'addMacro'}" ref="functionsTree"></uitree>
+							<uitree v-if="hasGraph('macros')" label="Macros" type="macro" :items="macros" :button="{text: 'Macro', action:'addMacro'}" ref="macrosTree"></uitree>
 							<uitree v-if="hasGraph('variables')" label="Variables" type="variable" :items="variables" :button="{text: 'Variable', action:'addVariable'}" ref="variablesTree"></uitree>					
 						</div>
 					</div>
 				</div>
-				<div id="leftDivider" class="flexChild divider"></div>
-				<div id="rowChild87681" class="flexChild columnParent">
+				<div class="flexChild columnParent">
 					<div id="toolbar" class="flexChild">
 						<uitbbutton label="Check" img="ui-img/check.png" action="check" title="Check current Project" ></uitbbutton>
 						<uitbbutton label="Save" img="ui-img/save.png" :disabled="true" action="save" title="Save current Project" ></uitbbutton>
-						<uitbbutton label="F.screen" img="ui-img/fullscreen.png" action="goFullscreen" :toggle="1" title="Toggle fullscreen" ></uitbbutton>
+						<uitbbutton label="F.screen" img="ui-img/fullscreen.png" action="switchFullscreen" :toggle="1" title="Toggle fullscreen" ></uitbbutton>
 					</div>
 					<div id="center" class="flexChild">		
 						<uigraphtabs ref="tabsContainer" :closable="true"></uigraphtabs>
 					</div>
-					<div id="bottomDivider" class="flexChild divider"></div>
-					<div id="footer" class="flexChild selected">
+					<div id="footer" class="flexChild selected" v-panel.bottom="-30">
 						<infotabs ref="infoTabs"><infotabs>
 					</div>
 				</div>
-				<div id="rightDivider" class="flexChild divider"></div>
-				<div id="right" class="flexChild">
-					<div class="uiPanel">&nbsp;&nbsp;Properties</div>
+				<div id="right" class="flexChild" v-panel.right>
+					<div class="uiPaneltitle">&nbsp;&nbsp;Properties</div>
 					<div style="padding:3px;">
 						<uiproperties ref="properties"></uiproperties>
 					</div>
@@ -77,86 +73,10 @@
 			
 			import App from './ui-vues/app.vue';
 			var test = new Vue(App);
-			console.log(test);
-			test.addFunction({name: 'setup', flags: F_NO_RENAME|F_LOCK_IO}, false);
+			console.log(Vue);
+			test.addFunction({name: 'setup', flags: F_READ_ONLY|F_LOCK_IO}, false);
 			test.addFunction({name: 'loop'}, false);
-			//test.addFunction({name: 'loop'});		
-		
-			var screenWidth = window.innerWidth;
-			var screenHeight = window.innerHeight;
-
-			/*****************************************************************************/
-			var lDivider = document.getElementById('leftDivider');
-			var lFrame = document.getElementById('left');
 			
-			var leftF = function(evt){
-				lFrame.style.width = evt.clientX + 'px';			
-			}
-			
-			lDivider.addEventListener('mousedown', function(){
-				screenWidth = window.innerWidth;
-				document.addEventListener('mousemove', leftF);
-				document.addEventListener('mouseup', function(){
-					document.removeEventListener('mousemove', leftF);
-				}, {once: true});
-			});
-
-			
-			/*****************************************************************************/
-			var lhDivider = document.getElementById('leftHdivider');
-			var lhFrame = document.getElementById('leftBottom');
-
-			var lefthF = function(evt){
-				lhFrame.style.height = (screenHeight - evt.clientY) + 'px';
-			}
-			
-			lhDivider.addEventListener('mousedown', function(){
-				screenHeight = window.innerHeight;
-				document.addEventListener('mousemove', lefthF);
-				document.addEventListener('mouseup', function(){
-					document.removeEventListener('mousemove', lefthF);
-				}, {once: true});
-			});
-
-			
-			/*****************************************************************************/
-			var rDivider = document.getElementById('rightDivider');
-			var rFrame = document.getElementById('right');
-			
-			var rightF = function(evt){
-				rFrame.style.width = (screenWidth - evt.clientX) + 'px';			
-			}
-			
-			rDivider.addEventListener('mousedown', function(){
-				screenWidth = window.innerWidth;
-				document.addEventListener('mousemove', rightF);
-				document.addEventListener('mouseup', function(){
-					document.removeEventListener('mousemove', rightF);
-				}, {once: true});
-			});			
-
-
-			/*****************************************************************************/
-			var fDivider = document.getElementById('bottomDivider');
-			var fFrame = document.getElementById('footer');
-			var fHeader = document.getElementById('header');
-			
-			var footerF = function(evt){
-				fFrame.style.height = (screenHeight - evt.clientY) + 'px';			
-			}
-			
-			fDivider.addEventListener('mousedown', function(){
-				screenHeight = window.innerHeight;
-				document.addEventListener('mousemove', footerF);
-				document.addEventListener('mouseup', function(){
-					document.removeEventListener('mousemove', footerF);
-				}, {once: true});
-			});			
-			
-
-			console.log(window.innerHeight);
-		
-		
 		</script>
 	</body>
 </html>

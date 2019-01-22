@@ -8,7 +8,9 @@ export default {
 		graphs: [],
 		variables: [],
 		datatypes: {},
-		templates: {},
+		templates: {
+			'function': {description: '', type: 'function', flags: F_IS_FUNCTION, data: {nodes: [], links: []}}
+		},
 		patterns: {
 			name: '[A-Za-z$]{1,}'
 		}
@@ -26,9 +28,11 @@ export default {
 		},
 
 		addFunction: function(state, data){
+			//var obj = Object.assign({}, this.state.templates.function, data);
 			data.type = 'function';
 			data.description = data.description || '';
-			data.flags = data.flags || 0;
+			data.flags = (data.flags || 0) | F_IS_FUNCTION;
+			//data.flags = data.flags | F_IS_FUNCTION;
 			data.data = data.data || {};
 			//data.inputs = data.inputs || {};
 			//data.outputs = data.outputs || {};

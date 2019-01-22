@@ -6,6 +6,10 @@ const F_LOCK_OUTPUTS = 16;
 const F_LOCK_IO = 24;
 const F_READ_ONLY = 31;
 
+const F_NO_CUT = 32;
+const F_NO_COPY = 64;
+const F_NO_PASTE = 128;
+
 const F_IS_FUNCTION = 4096;
 const F_IS_GRAPH = 8192;
 const F_IS_VARIABLE = 16384;

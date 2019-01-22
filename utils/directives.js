@@ -28,4 +28,67 @@ Vue.directive('inline', {
 	componentUpdated: inline
 });
 
+Vue.directive('panel', {
+	inserted: function(el, bind, vm){
+		//console.log(el);
+		const div = document.createElement('div');
+		div.classList.add('flexChild');
+
+		if(bind && bind.modifiers && bind.modifiers.left){
+			const move = function(evt){
+				el.style.width = evt.clientX + (bind.value || 0) + 'px';			
+			};
+			
+			div.classList.add('vDivider');
+			el.after(div);
+			div.onmousedown = function(){
+				document.addEventListener('mousemove', move);
+				div.classList.add('hover');
+				document.addEventListener('mouseup', function(){
+					div.classList.remove('hover');
+					document.removeEventListener('mousemove', move);
+				}, {once: true});
+			}
+			
+		}
+		else if(bind && bind.modifiers && bind.modifiers.right){
+			const move = function(evt){
+				el.style.width = (screenWidth - evt.clientX) + (bind.value || 0) + 'px';	
+			};
+			var screenWidth = window.innerWidth;
+			
+			div.classList.add('vDivider');
+			el.parentNode.insertBefore(div, el);
+			div.onmousedown = function(){
+				div.classList.add('hover');
+				screenWidth = window.innerWidth;
+				document.addEventListener('mousemove', move);
+				document.addEventListener('mouseup', function(){
+					div.classList.remove('hover');
+					document.removeEventListener('mousemove', move);
+				}, {once: true});
+			}
+			
+		}
+		else if(bind && bind.modifiers && bind.modifiers.bottom){
+			const move = function(evt){
+				el.style.height = (screenHeight - evt.clientY) + (bind.value || 0) + 'px';			
+			};
+			var screenHeight = window.innerHeight;
+			
+			div.classList.add('hDivider');
+			el.parentNode.insertBefore(div, el);
+			div.onmousedown = function(){
+				div.classList.add('hover');
+				screenHeight = window.innerHeight
+				document.addEventListener('mousemove', move);
+				document.addEventListener('mouseup', function(){
+					div.classList.remove('hover');
+					document.removeEventListener('mousemove', move);
+				}, {once: true});
+			}			
+		}
+		
+	}
+});
 //}());

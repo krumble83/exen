@@ -1,24 +1,21 @@
 <template>
 	<ul :style="styleObject" :class="classObject">
 		<component v-for="(item, idx) in items" :key="idx"
-			:is="item.ctor ? item.ctor : 'ex-menuitem'"
+			:is="item.ctor ? item.ctor : 'MenuItem'"
 			ref="items"
 			v-bind="item"
 		></component>
 	</ul>
 </template>
 
-<template id="ex-menuitem-tpl">
-	<li :id="id" :class="classObject" :title="desc" :shortcut="shortcut" @mousedown.stop="click">
-		<a>{{title}}</a>
-		<component is="ex-contextmenu" v-if="classObject.sub" ref="submenu"></component>
-	</li>
-</template>
+
 
 <script>
 
-	module.exports = {
-	
+	import MenuItem from './contextmenu.item.vue';
+
+	export default {
+		components: {MenuItem},
 		data: function(){
 			return {
 				classObject: {
@@ -55,7 +52,7 @@
 			},
 			
 			addSubMenu: function(str){
-				this.items.push({ctor: 'ex-menuitem', title: str, classObject: {sub: true}, submenuNode: false});
+				this.items.push({ctor: 'MenuItem', title: str, classObject: {sub: true}, submenuNode: false});
 				//this.$forceUpdate();
 				this.$mount();
 				return this.$refs.items[this.$refs.items.length-1].$refs.submenu;
@@ -66,11 +63,11 @@
 			},
 			
 			addSeparator: function(){
-				this.items.push({ctor: 'ex-menuitem', classObject: {sep: true}})
+				this.items.push({ctor: 'MenuItem', classObject: {sep: true}})
 			},
 			
 			addTitle: function(str){
-				this.items.push({ctor: 'ex-menuitem', title: str, classObject: {title: true}})
+				this.items.push({ctor: 'MenuItem', title: str, classObject: {title: true}})
 			},
 			
 			getItem: function(id){
@@ -89,8 +86,15 @@
 			
 			showAt: function(x, y){
 				var me = this;
-				this.styleObject.left = x;
-				this.styleObject.top = y;
+				if(x.clientX){
+					//console.log(x.clientX, x.clientY);
+					this.styleObject.left = x.clientX + 'px';
+					this.styleObject.top = x.clientY + 'px';
+				}
+				else {
+					this.styleObject.left = x + 'px';
+					this.styleObject.top = y + 'px';
+				}
 				this.classObject.visible = true;
 				document.addEventListener('mousedown', function(evt){
 					//console.log(evt);
@@ -104,62 +108,6 @@
 		}
 	}
 	
-
-	var MenuItem = {
-		props: {
-			id: {type: String, default: genUid()},
-			classObject: {
-				disabled: false,
-			},
-			title: String,
-			desc: String,
-			shortcut: String,
-			callback: {},
-			ctor: {},
-		},
-		
-		beforeDestroy: function(){
-			console.log('destroy');
-			//this.items = [];
-		},
-
-		methods: {
-			click: function(evt){				
-				evt.stopPropagation();
-				if(typeof this.callback === 'function')
-					this.callback();
-			},
-		},
-		template: '#ex-menuitem-tpl'
-	};
-	Vue.component('ex-menuitem', MenuItem);
-	
-	
-	const ContextMenu = {
-		created: function(){
-			this.$on('mouse:context', this.onContextMenu);
-		},
-		
-		beforeDestroy: function(){
-			this.$off('mouse:context', this.onContextMenu);
-		},
-		
-		methods: {
-			onContextMenu: function(evt){
-				const me = this
-				, menu = this.$root.$refs.contextmenu;
-				
-				menu.clear();
-				Vue.nextTick(function(){
-					if(me.buildContextMenu)
-						me.buildContextMenu(menu);
-					me.$emit('cmenu', menu);
-					me.$worksheet.$emit(me.$options._componentTag + ':contextmenu', me, menu);
-					menu.showAt(evt.clientX, evt.clientY-10);					
-				});
-			}
-		}
-	}
 	
 </script>
 <style>

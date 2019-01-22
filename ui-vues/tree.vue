@@ -5,22 +5,15 @@
 			<div v-if="button" :class="{add: true, disabled: button.disabled}" @click.stop.prevent="doAdd"><img src="ui-img/add.png" /><span>{{button.text}}</span></div>
 			<label :for="'folder_' + label">{{label}}</label>
 			<ul>
-				<li v-for="(item,id) in items" :key="id"
-					:is="item.ctor ? item.ctor : 'li'"
-					:draggable="draggable"
-					ref="nodes"
-					class="child"
-					:name="item.name" 
-					:index="id"
-					:type="type"
-					@click="onClick($event,id)"
-					@contextmenu.stop.prevent="onContext($event,id)"
-					@dblclick="onDblClick($event,id)"
-					@mouseenter.stop=""
-					@mousemove.stop=""
+				<component v-for="(item,id) in items" :key="id"
+					:is="item.ctor ? item.ctor : 'treeitem'"
+					v-bind="item"
+					:id="id"
+					:onClick="onClick"
+					:onContext="onContext"
+					:onDblClick="onDblClick"
 				>
-					<span><img :src="item.img">&nbsp;{{item.name}}</span>
-				</li>
+				</component>
 			</ul>
 		</li>
 		<li class="sep"></li>
@@ -28,7 +21,11 @@
 </template>
 
 <script>
+
+	import treeitem from './tree.item.vue';
+
 	export default {
+		components: {treeitem},
 		props: {
 			label: String,
 			filter: String,
@@ -53,12 +50,20 @@
 			},
 			
 			onDblClick: function(evt, id){
+				console.log('dblclick', id);
 				this.$emit('dblclick', evt, this.items[id]);
 				if(typeof this.$parent.treeDblClick === 'function')
 					this.$parent.treeDblClick(this.items[id], evt);
 			},
 			
 			onClick: function(evt, id){
+				if(evt.target.timestamp && Date.now() > evt.target.timestamp + 400)					
+					if(this.renameItem(evt, this.items[id]) == false)
+						return;
+
+				evt.target.classList.add('selected');
+				evt.target.timestamp = Date.now();
+			
 				this.$emit('click', evt, this.items[id]);
 				if(typeof this.$parent.treeClick === 'function')
 					this.$parent.treeClick(this.items[id], evt);
@@ -66,6 +71,11 @@
 			
 			onContext: function(evt, id){
 				this.$emit('contextmenu', evt, this.items[id]);
+			},
+			
+			renameItem: function(evt, data){
+				this.$emit('rename', evt, data);
+				//return false;
 			},
 			
 			findNode: function(name){

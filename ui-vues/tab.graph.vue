@@ -2,12 +2,14 @@
 	<div class="tab" :name="name">
 		<input type="radio" :id="'tab_' + name" name="tab-group" :checked="checked">
 		<label :for="'tab_' + name"><img :src="img" style="vertical-align:bottom;padding-right:5px;" /><span>{{name}}<span v-if="edited">&nbsp;*</span></span><img v-if="closable" :src="closeImg" @click.stop="close" style="padding-top:5px;padding-left:7px;float:right" /></label>
-		<div :id="'tab_' + name + '_content'" class="content">{{name}}<slot /></div>
+		<div :id="'tab_' + name + '_content'" class="content">
+			{{name}}<slot />
+		</div>
 	</div>
 </template>
 
 <script>
-	import {genUid} from '../utils'
+	//import {genUid} from '../utils'
 	
 	import closeImg from '../ui-img/closetab.png';
 

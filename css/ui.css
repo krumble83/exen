@@ -1,7 +1,7 @@
 body, html{
-	margin:0;     /* This is used to reset any browser-default margins */
+	margin:0;
 	padding: 0;
-	height:100%; /* This is needed to overcome a Chrome bug. */
+	height:100%;
 	width:100%;
 	background-color: #222222;
 	
@@ -14,12 +14,6 @@ body, html{
 }
 
 
-/*
-#flexcanvas{
-	width: 100%;
-	height: 600px !important;
-}
-*/
 .rowParent, .columnParent{
 	display: -webkit-box;
 	display: -ms-flexbox;
@@ -63,75 +57,68 @@ body, html{
 	align-self: auto;
 }
 
-#footer{
-	-webkit-box-flex: 0;
-	-webkit-flex: 0 0 auto;
-	-ms-flex: 0 0 auto;
-	flex: 0 0 auto; height: 150px;
-	padding-top: 27px;
-}
-
-#toolbar{
+.vDivider{
 	-webkit-box-flex: 0;
 	-webkit-flex: 0 0 auto;
 	-ms-flex: 0 0 auto;
 	flex: 0 0 auto; 
+	width: 3px;
+	cursor: col-resize;	
+	margin: 1px;
+}
+
+.hDivider{
+	-webkit-box-flex: 0;
+	-webkit-flex: 0 0 auto;
+	-ms-flex: 0 0 auto;
+	flex: 0 0 auto; 
+	height: 3px;
+	cursor: row-resize;
+	margin: 1px;
+}
+
+.hDivider.hover,
+.hDivider:hover,
+.vDivider.hover,
+.vDivider:hover{
+	background-color: #777;
+}
+
+#toolbar,
+#footer,
+#right,
+#header,
+#left,
+#leftBottom
+#center {
+	-webkit-box-flex: 0;
+	-webkit-flex: 0 0 auto;
+	-ms-flex: 0 0 auto;
+	flex: 0 0 auto; 	
+}
+
+#toolbar{
 	height: 54px;
 	margin-bottom: 5px;
 	border-radius: 7px;
 	background-color: #606060;
 }
 
-#bottomDivider{
-	-webkit-box-flex: 0;
-	-webkit-flex: 0 0 auto;
-	-ms-flex: 0 0 auto;
-	flex: 0 0 auto; 
-	height: 5px;
-}
-
-#leftBottom{
-	-webkit-box-flex: 0;
-	-webkit-flex: 0 0 auto;
-	-ms-flex: 0 0 auto;
-	flex: 0 0 auto; 
-	height: 70%;
-	background-color: #606060;
-} 
-
-#leftHdivider{
-	-webkit-box-flex: 0;
-	-webkit-flex: 0 0 auto;
-	-ms-flex: 0 0 autod
-	flex: 0 0 auto; 
-	height: 5px;
-}
-
-#rightDivider{
-	-webkit-box-flex: 0;
-	-webkit-flex: 0 0 auto;
-	-ms-flex: 0 0 auto;
-	flex: 0 0 auto; 
-	width: 5px;
-}
-
-#leftDivider{
-	-webkit-box-flex: 0;
-	-webkit-flex: 0 0 auto;
-	-ms-flex: 0 0 auto;
-	flex: 0 0 auto; 
-	width: 5px;
+#footer{
+	height: 150px;
+	padding-top: 27px;
 }
 
 #right{
-	-webkit-box-flex: 0;
-	-webkit-flex: 0 0 auto;
-	-ms-flex: 0 0 auto;
-	flex: 0 0 auto; 
 	width: 180px;
 	max-width: 300px;
 	background-color: #606060;
 	overflow: hidden;
+}
+
+#header{
+
+	height: 24px;
 }
 
 #left{
@@ -144,28 +131,23 @@ body, html{
 	overflow: hidden;
 }
 
-#header{
+#leftBottom{
 	-webkit-box-flex: 0;
 	-webkit-flex: 0 0 auto;
 	-ms-flex: 0 0 auto;
 	flex: 0 0 auto; 
-	height: 24px;
-}
+	height: 70%;
+	background-color: #606060;
+} 
 
 #center{
 	padding-top: 27px;
 	height: 100%;
 }
 
-
-
 #app{
 	height: 100%;
 	width:100%;
-}
-
-#leftTop{
-
 }
 
 #leftTop,
@@ -173,22 +155,8 @@ body, html{
 	border: 1px solid #606060;
 }
 
-#bottomDivider,
-#leftHdivider{
-	cursor: row-resize;
 
-}
-
-#leftDivider,
-#rightDivider{
-	cursor: col-resize;	
-}
-
-.divider:hover{
-	background-color: #777;
-}
-
-.uiPanel {
+.uiPaneltitle {
 	height: 22px;
 	padding-left: 5px;
 	margin-right: -25px;
@@ -200,14 +168,6 @@ body, html{
 	background: linear-gradient(to bottom, #4c4c4c 0%,#595959 12%,#666666 25%,#474747 39%,#2c2c2c 50%,#000000 51%,#111111 60%,#2b2b2b 76%,#1c1c1c 91%,#131313 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4c4c4c', endColorstr='#131313',GradientType=0 ); /* IE6-9 */
 }
-
-
-/********************************************************************************
-	Tabs
-********************************************************************************/
-
-		
-
 
 
 

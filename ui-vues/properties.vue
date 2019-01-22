@@ -3,10 +3,9 @@
 		<slot name="trees"
 			v-for="item in items"
 		>
-			<component :is="item.ctor" v-bind="item" />
-		
+			<component :is="item.ctor" v-bind="item" />	
 		</slot>
-  {{test}}
+		{{test}}
 	</div>
 </template>
 
@@ -14,9 +13,10 @@
 <script>
 
 	import uitree from './tree.vue';
+	import uipropitem from './properties.item.vue';
 
 	export default {
-		components: {uitree},
+		components: {uitree, uipropitem},
 	
 		data: function(){
 			return {
@@ -79,7 +79,7 @@
 					label: 'Inputs', 
 					button: {text: 'Add Input', action: 'addInput', disabled: ((this.pData.flags & F_LOCK_INPUTS) == F_LOCK_INPUTS)},
 					items: [
-						{name: 'input1'}
+						{ctor: 'uipropitem', name: 'input1'}
 					]						
 				},
 				{
@@ -87,7 +87,7 @@
 					label: 'Outputs', 
 					button: {text: 'Add Output', action: 'addOutput', disabled: ((this.pData.flags & F_LOCK_OUTPUTS) == F_LOCK_OUTPUTS)},
 					items: [
-						{name: 'output1'}
+						{ctor: 'uipropitem', name: 'output1'}
 					]						
 				});
 			

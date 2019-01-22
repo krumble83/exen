@@ -8,6 +8,16 @@
 			functions: function(){return this.$store.state.graphs.filter(g => g.type=='function')}
 		},
 		
+		mounted: function(){
+			//var me = this;
+			this.$refs.functionsTree.$on('contextmenu', this.functionContextMenu);
+			this.$refs.functionsTree.$on('rename', this.functionRename);
+		},
+		
+		beforeDestroy: function(){
+			this.$refs.functionsTree.$off('contextmenu', this.functionContextMenu);
+		},
+		
 		methods: {
 			addFunction: function(data, doReaname){
 				var a = 0
@@ -37,10 +47,50 @@
 					this.focusTab(data);
 				});
 			},
-						
-			zzzgetFunction: function(name){
-				return this.functions.find(func => func.name == name && func.type == 'function');
-			}					
+			
+			functionContextMenu: function(evt, data){
+				var me = this;
+				//console.log(evt);
+				const menu = me.$refs.contextmenu;
+				console.log('cmenu');
+				menu.clear();
+				menu.addTitle('Function');
+				
+				menu.addItem({id: 'rename', title: 'rename', callback: function(){
+					me.rename(data, evt.target);
+				}, disabled: ((data.flags & F_NO_RENAME) == F_NO_RENAME)});
+				
+				menu.addItem({id: 'delete', title: 'delete', callback: function(){
+					
+				}, disabled: ((data.flags & F_NO_DELETE) == F_NO_DELETE)});
+
+				menu.addItem({id: 'duplicate', title: 'duplicate', callback: function(){
+					
+				}, disabled: ((data.flags & F_NO_COPY) == F_NO_COPY)});
+
+				menu.addItem({id: 'refs', title: 'find references', callback: function(){
+					
+				}});
+				
+				menu.showAt(evt);
+			},
+			
+			functionRename: function(evt, data){
+				const t = this.rename(data, evt.target)
+					.success(function(value){
+						console.log('ok');
+					})
+					.validate(function(){
+						return;
+					});
+					//console.log(t);
+			},
+			
+			isFunction: function(data){
+				return ((data.flags & F_IS_FUNCTION) == F_IS_FUNCTION);
+				
+			},
+					
 		}
 	});
 	

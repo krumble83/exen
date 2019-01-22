@@ -53,15 +53,17 @@
 			},
 			
 			focusTab: function(data){
+				var me = this;
 				this.$children.forEach(function(el){
-					if(el.name == data.name)
+					if(el.name == data.name){
 						el.checked = true;
-					else
-						el.checked = false;
+						me.$emit('tab:focus');
+					}
 				});
 			},
 			
 			tabClick: function(evt){
+				this.$emit('tab:focus');
 				console.log('tabClick');
 			}
 		}
