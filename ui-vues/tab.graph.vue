@@ -20,6 +20,9 @@
 			closable: Boolean,
 			edited: Boolean,
 			data: {},
+			$data: {},
+			props: {},
+			$tabOrder: {},
 		},
 		
 		data: function(){

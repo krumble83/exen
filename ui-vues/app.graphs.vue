@@ -17,7 +17,7 @@
 						a++;
 					name += '_' + a;
 				}
-				this.$store.commit('addGraph', {name: name, img:graphImg, tabOrder: 0});
+				this.$store.commit('addGraph', {name: name, img:graphImg, $tabOrder: 0});
 				if(doReaname === false)
 					return;
 				this.$nextTick(function(){
@@ -27,8 +27,8 @@
 			},
 			
 			graphDblclick: function(data, evt){
-				if(data.tabOrder == 0)
-					data.tabOrder = this.tabsId++;
+				if(data.$tabOrder == 0)
+					data.$tabOrder = this.tabsId++;
 				this.$nextTick(function(){
 					this.focusTab(data);
 				});

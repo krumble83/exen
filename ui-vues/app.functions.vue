@@ -34,7 +34,7 @@
 				data = data || {};
 				data.name = name;
 				data.img = functionImg;
-				data.tabOrder = 0;
+				data.$tabOrder = 0;
 				this.$store.commit('addFunction', data);
 				
 				if(doReaname === false)
@@ -47,8 +47,8 @@
 			},
 			
 			functionDblclick: function(evt, data){
-				if(data.tabOrder == 0)
-					data.tabOrder = this.tabsId++;
+				if(data.$tabOrder == 0)
+					data.$tabOrder = this.tabsId++;
 				this.$nextTick(function(){
 					this.focusTab(data);
 				});
@@ -64,15 +64,15 @@
 				
 				menu.addItem({id: 'rename', title: 'rename', callback: function(){
 					me.functionRename(evt, data);
-				}, disabled: ((data.flags & F_NO_RENAME) == F_NO_RENAME)});
+				}, disabled: ((data.flags & F_NO_RENAME) == F_NO_RENAME), shortcut: 'F2'});
 				
 				menu.addItem({id: 'delete', title: 'delete', callback: function(){
 					
-				}, disabled: ((data.flags & F_NO_DELETE) == F_NO_DELETE)});
+				}, disabled: ((data.flags & F_NO_DELETE) == F_NO_DELETE), shortcut: 'Del'});
 
 				menu.addItem({id: 'duplicate', title: 'duplicate', callback: function(){
 					
-				}, disabled: ((data.flags & F_NO_COPY) == F_NO_COPY)});
+				}, disabled: ((data.flags & F_NO_COPY) == F_NO_COPY), shortcut: 'Ctrl+D'});
 
 				menu.addItem({id: 'refs', title: 'find references', callback: function(){
 					

@@ -1,5 +1,5 @@
 <template>
-	<li :id="id" :class="classObject" :title="desc" :shortcut="shortcut" @mousedown.stop="click">
+	<li :id="id" :class="classObject" :title="desc" :shortcut="shortcut" @mousedown.stop="click" :data-shortcut="shortcut">
 		<a>{{title}}</a>
 		<slot>
 			<ul v-for="(item, idx) in items" :key="idx"

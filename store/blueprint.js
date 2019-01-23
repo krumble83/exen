@@ -3,7 +3,9 @@
 export default {
 	state: {
 		nodes: [],
-		links: []
+		links: [],
+		inputs: [],
+		outputs: [],
 	},
 
 	mutations: {

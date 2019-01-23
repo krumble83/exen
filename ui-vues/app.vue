@@ -39,7 +39,7 @@
 		
 		computed: {		
 			tabGraphs: function () {
-				return _.orderBy(this.$store.state.graphs, 'tabOrder');
+				return _.orderBy(this.$store.state.graphs, '$tabOrder');
 			}
 		},
 		
@@ -56,7 +56,7 @@
 			treeClick: function(evt, data){
 				//console.log(evt.target.type)				
 				if(this.treeSelected && (!evt || this.treeSelected != evt.target)){
-					this.treeSelected.classList.remove('selected');
+					this.treeSelected.classList.remove('selected', 'focused');
 					this.treeSelected == false;
 				}
 				if(evt && evt.target)
@@ -129,7 +129,7 @@
 				this.$nextTick(function(){
 					input.focus();
 					input.select();
-					el.classList.remove('selected');
+					el.classList.remove('selected', 'focused');
 					me.treeSelected = false;
 				});
 
@@ -138,10 +138,11 @@
 			
 			closeTab: function(tab){
 				//console.log('closezz ', tab);
-				this.$store.state.graphs.find(v => v.name == tab.name).tabOrder = 0;
+				this.$store.state.graphs.find(v => v.name == tab.name).$tabOrder = 0;
 			},
 			
 			focusTab: function(data){
+				console.log('zz');
 				this.$refs.tabsContainer.focusTab(data);
 			},
 			

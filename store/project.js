@@ -33,14 +33,16 @@ export default {
 			data.props = data.props || {};
 			data.props.description = data.props.description || '';
 			data.flags = (data.flags || 0) | F_IS_FUNCTION | F_IS_GRAPH;
-			//data.data = data.data || {inputs: [], outputs: []};
-			data.$store = new Vuex.Store(FunctionStore);
+			data.$data = new Vuex.Store(FunctionStore);
+			data.$data.replaceState({ nodes: [], links: [], inputs:[], outputs:[] });
 			state.graphs.push(data);
 		},
 
 		addVariable: function(state, data){
+			data.props = data.props || {};
+			data.props.description = data.props.description || '';
 			data.flags = (data.flags || 0) | F_IS_VARIABLE;
-			data.data = data.data || {};
+
 			if(!data.data.datatype){
 				data.data.datatype = 'core.int';
 				data.data.color = '#0f0';

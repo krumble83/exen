@@ -25,6 +25,7 @@
 				test: '',
 				items: [],
 				pData: false,
+				labelWidth: 50,
 			}
 		},
 	
@@ -54,12 +55,12 @@
 		
 		methods: {
 			addInput: function(){
-				this.pData.$store.commit('addInput', {ctor: 'uipropitem', name: 'input2'});
-				//this.pData.$store.state.inputs.push({ctor: 'uipropitem', name: 'input2'});
+				this.pData.$data.commit('addInput', {ctor: 'uipropitem', name: 'input2'});
+				//this.pData.$data.state.inputs.push({ctor: 'uipropitem', name: 'input2'});
 			},
 			
 			addOutput: function(){
-				this.pData.$store.commit('addInput', {ctor: 'uipropitem', name: 'input2'});
+				this.pData.$data.commit('addOutput', {ctor: 'uipropitem', name: 'input2'});
 			},
 			
 			showFunctionProperties: function(){
@@ -75,13 +76,13 @@
 					ctor: 'uitree', 
 					label: 'Inputs', 
 					button: {text: 'Add Input', action: 'addInput', disabled: ((this.pData.flags & F_LOCK_INPUTS) == F_LOCK_INPUTS)},
-					items: this.pData.$store.state.inputs						
+					items: this.pData.$data.state.inputs						
 				},
 				{
 					ctor: 'uitree', 
 					label: 'Outputs', 
 					button: {text: 'Add Output', action: 'addOutput', disabled: ((this.pData.flags & F_LOCK_OUTPUTS) == F_LOCK_OUTPUTS)},
-					items: this.pData.$store.state.outputs					
+					items: this.pData.$data.state.outputs					
 				});
 			},
 			

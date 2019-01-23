@@ -1,7 +1,7 @@
 <template>
 	<div class="tabs">
 		<component v-for="tab in orderedTabs"
-			v-if="tab.tabOrder > 0"
+			v-if="tab.$tabOrder > 0"
 			:is="tab.ctor ? tab.ctor : 'uigraphtab'"
 			:closable="closable"
 			@click="tabClick"
@@ -34,7 +34,7 @@
 			tabs: function(){return this.$store.state.graphs},
 			
 			orderedTabs: function () {
-				return _.orderBy(this.tabs, '_tabOrder')
+				return _.orderBy(this.tabs, '$tabOrder')
 			}
 		},
 		

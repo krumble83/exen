@@ -45,6 +45,16 @@
 			}
 		},
 		
+		mounted: function(){
+			var me = this;
+			document.addEventListener('mousedown', function(evt){
+				if(evt.target.classList.contains('focused', 'child'))
+					return;
+				if(me.$el.querySelector('.focused'))
+					me.$el.querySelector('.focused').classList.remove('focused');			
+			}, {useCapture: true})
+		},
+		
 		methods: {
 			doAdd: function(evt){
 				//console.log(this.button.action);
@@ -60,7 +70,8 @@
 			
 			onClick: function(evt, id){
 				clearTimeout(this.timer);
-				if(evt.target.classList.contains('selected')){
+				if(evt.target.classList.contains('focused')){
+					console.log('focused');
 					const me = this;
 					this.timer = setTimeout(function(){
 						me.renameItem(evt, me.items[id]);
@@ -69,9 +80,9 @@
 				}
 			
 				if(this.$el.querySelector('.selected'))
-					this.$el.querySelector('.selected').classList.remove('selected');
+					this.$el.querySelector('.selected').classList.remove('selected', 'focused');
 
-				evt.target.classList.add('selected');				
+				evt.target.classList.add('selected', 'focused');				
 				this.$emit('select', evt, this.items[id]);
 				this.$parent.$emit('tree:select', evt, this.items[id]);
 			},
@@ -93,7 +104,9 @@
 				if(!node)
 					return false;
 				return {data: this.items[node.getAttribute('index')], target: node};
-			}
+			},
+			
+			alert: function(){alert('a')}
 		}
 	}
 </script>
@@ -202,12 +215,17 @@
 		padding: 3px 0 3px 0;
 		white-space: nowrap;
 	}
-
+	
 	ul.uiTree li.child.selected,
 	ul.uiTree li.child.selected:hover{
-		background-color: #dea309;
+		background-color: #898989;
 	}
 
+	ul.uiTree li.child.focused,
+	ul.uiTree li.child.focused:hover{
+		background-color: #dea309;
+	}
+	
 	ul.uiTree li.child:hover{
 		background-color: #494949;
 	}

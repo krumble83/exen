@@ -111,7 +111,8 @@
 	
 </script>
 <style>
-.exMenu {
+.exMenu,
+.exMenu ul {
 	font-family: sans-serif;
 	font-size: 12px;
 	border: 1px solid #000;
@@ -119,6 +120,7 @@
 	cursor: default;
 	border-radius: 2px;
 	min-width: 120px;
+	white-space: nowrap;
 
 	background: #292929; /* Old browsers */
 	background: -moz-linear-gradient(top, #292929 0%, #1a1a1a 20%, #1a1a1a 50%, #1a1a1a 80%, #292929 100%); /* FF3.6-15 */
@@ -147,17 +149,10 @@
 
 .exMenu ul {
 	display: none;
+	position: absolute; 
+	top: -1px; 
+	left: 100%;
 	white-space: nowrap;
-	padding: 0; 
-	margin: 0;
-	border: 1px solid #000;
-	border-radius: 2px;
-
-	background: #292929; /* Old browsers */
-	background: -moz-linear-gradient(top, #292929 0%, #1a1a1a 20%, #1a1a1a 50%, #1a1a1a 80%, #292929 100%); /* FF3.6-15 */
-	background: -webkit-linear-gradient(top, #292929 0%,#1a1a1a 20%,#1a1a1a 50%,#1a1a1a 80%,#292929 100%); /* Chrome10-25,Safari5.1-6 */
-	background: linear-gradient(to bottom, #292929 0%,#1a1a1a 20%,#1a1a1a 50%,#1a1a1a 80%,#292929 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#292929', endColorstr='#292929',GradientType=0 ); /* IE6-9 */
 }
 
 .exMenu li {
@@ -180,14 +175,14 @@
 	white-space: nowrap;
 }
 
-.exMenu li:after {
+.exMenu li:before {
     content: attr(data-shortcut) '';
-	position: absolute;
+	float: right;
 	top: 5px; 
-	left: 110px;
 	white-space: nowrap;
 	font-size: 11px;
 	color: #777;
+	margin: 5px 10px 0 0;
 	pointer-events: none;
 }
 
@@ -204,10 +199,6 @@
 
 .exMenu li:hover > ul{
 	display: block; 
-	position: absolute; 
-	top: -1px; 
-	left: 100%;
-	white-space: nowrap;
 }
 
 .exMenu li.sep {
@@ -226,7 +217,8 @@
 	pointer-events: none;
 }
 
-.exMenu li.title a:hover {
+.exMenu li.title a:hover,
+.exMenu li.disabled a:hover {
 	background-color: #1a1a1a;
 }
 
@@ -236,7 +228,6 @@
 }
 
 .exMenu li.disabled a:hover {
-	background-color: #1a1a1a;
 	pointer-events: none;
 }
 
@@ -250,12 +241,21 @@
 	border: 0;
 }
 
-.exMenu.horizontal ul {
+.exMenu.horizontal > li > ul ul {
+	position: relative;
+	top: -22px;
+	left: 95%;
+	width: auto;
+	min-width: 100px;
+}
+
+.exMenu.horizontal > li > ul {
 	margin-top: 22px;
 	margin-left: 4px;
 	width: auto;
 	min-width: 100px;
 }
+
 
 .exMenu.horizontal > li{
 	float: left;
