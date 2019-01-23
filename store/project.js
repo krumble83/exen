@@ -1,5 +1,6 @@
 
-Vue.use(Vuex);
+import BluePrintStore from './blueprint.js'
+import FunctionStore from './function.js'
 
 export default {
 	state: {
@@ -22,26 +23,23 @@ export default {
 		},
 		
 		addGraph: function(state, data){
-			data.type = 'graph';
-			data.flags = data.flags || 0;
+			//data.type = 'graph';
+			data.description = data.description || '';
+			data.flags = (data.flags || 0) | F_IS_BLUEPRINT | F_IS_GRAPH;
 			state.graphs.push(data);
 		},
 
 		addFunction: function(state, data){
-			//var obj = Object.assign({}, this.state.templates.function, data);
-			data.type = 'function';
-			data.description = data.description || '';
-			data.flags = (data.flags || 0) | F_IS_FUNCTION;
-			//data.flags = data.flags | F_IS_FUNCTION;
-			data.data = data.data || {};
-			//data.inputs = data.inputs || {};
-			//data.outputs = data.outputs || {};
+			data.props = data.props || {};
+			data.props.description = data.props.description || '';
+			data.flags = (data.flags || 0) | F_IS_FUNCTION | F_IS_GRAPH;
+			//data.data = data.data || {inputs: [], outputs: []};
+			data.$store = new Vuex.Store(FunctionStore);
 			state.graphs.push(data);
 		},
 
 		addVariable: function(state, data){
-			data.type = 'variable';
-			data.flags = data.flags || 0;
+			data.flags = (data.flags || 0) | F_IS_VARIABLE;
 			data.data = data.data || {};
 			if(!data.data.datatype){
 				data.data.datatype = 'core.int';
@@ -81,8 +79,12 @@ export default {
 
 		getVariable: state => name => state.variables.find(item => item.name == name),
 		
-		nameExists: function(name){
-			return this;
-		}
+		nameExists: (state) => (name) => {
+			if(state.graphs.find(item => item.name == name))
+				return true;
+			if(state.variables.find(item => item.name == name))
+				return true;
+			return false;
+		}		
 	}
 }

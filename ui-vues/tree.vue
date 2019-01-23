@@ -8,7 +8,8 @@
 				<component v-for="(item,id) in items" :key="id"
 					:is="item.ctor ? item.ctor : 'treeitem'"
 					v-bind="item"
-					:id="id"
+					ref="nodes"
+					:index="id"
 					:onClick="onClick"
 					:onContext="onContext"
 					:onDblClick="onDblClick"
@@ -40,33 +41,39 @@
 		data: function(){
 			return {
 				currentSelected: false,
+				timer: false,
 			}
 		},
 		
 		methods: {
 			doAdd: function(evt){
-				console.log(this.button.action);
+				//console.log(this.button.action);
+				this.$emit('action:' + this.button.action);
 				this.$parent[this.button.action]();
 			},
 			
 			onDblClick: function(evt, id){
-				console.log('dblclick', id);
+				//console.log('dblclick', id);
+				clearTimeout(this.timer);
 				this.$emit('dblclick', evt, this.items[id]);
-				if(typeof this.$parent.treeDblClick === 'function')
-					this.$parent.treeDblClick(this.items[id], evt);
 			},
 			
 			onClick: function(evt, id){
-				if(evt.target.timestamp && Date.now() > evt.target.timestamp + 400)					
-					if(this.renameItem(evt, this.items[id]) == false)
-						return;
-
-				evt.target.classList.add('selected');
-				evt.target.timestamp = Date.now();
+				clearTimeout(this.timer);
+				if(evt.target.classList.contains('selected')){
+					const me = this;
+					this.timer = setTimeout(function(){
+						me.renameItem(evt, me.items[id]);
+					}, 200);
+					return;
+				}
 			
-				this.$emit('click', evt, this.items[id]);
-				if(typeof this.$parent.treeClick === 'function')
-					this.$parent.treeClick(this.items[id], evt);
+				if(this.$el.querySelector('.selected'))
+					this.$el.querySelector('.selected').classList.remove('selected');
+
+				evt.target.classList.add('selected');				
+				this.$emit('select', evt, this.items[id]);
+				this.$parent.$emit('tree:select', evt, this.items[id]);
 			},
 			
 			onContext: function(evt, id){
@@ -75,17 +82,15 @@
 			
 			renameItem: function(evt, data){
 				this.$emit('rename', evt, data);
-				//return false;
 			},
 			
 			findNode: function(name){
-				var node;
 				this.$mount();
-				if(!this.$refs.nodes)
+				const node = this.$el.querySelector('li[name="' + name + '"]');
+				
+				if(!node)
 					return false;
-				node = this.$refs.nodes.find(el => el.attributes[1].value == name);
-				//console.log(this.$refs.nodes[this.$refs.nodes.length-1].attributes[1].value);
-				return {data: this.items[node.attributes[2].value], el: node};
+				return {data: this.items[node.getAttribute('index')], target: node};
 			}
 		}
 	}

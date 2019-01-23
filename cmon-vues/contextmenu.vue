@@ -1,10 +1,12 @@
 <template>
-	<ul :style="styleObject" :class="classObject">
-		<component v-for="(item, idx) in items" :key="idx"
-			:is="item.ctor ? item.ctor : 'MenuItem'"
-			ref="items"
-			v-bind="item"
-		></component>
+	<ul :style="styleObject" :class="classObject">		
+		<slot>
+			<component v-for="(item, idx) in items" :key="idx"
+				:is="item.ctor ? item.ctor : 'MenuItem'"
+				ref="items"
+				v-bind="item"
+			></component>
+		</slot>
 	</ul>
 </template>
 
@@ -53,7 +55,6 @@
 			
 			addSubMenu: function(str){
 				this.items.push({ctor: 'MenuItem', title: str, classObject: {sub: true}, submenuNode: false});
-				//this.$forceUpdate();
 				this.$mount();
 				return this.$refs.items[this.$refs.items.length-1].$refs.submenu;
 			},
@@ -86,8 +87,7 @@
 			
 			showAt: function(x, y){
 				var me = this;
-				if(x.clientX){
-					//console.log(x.clientX, x.clientY);
+				if(x.clientX && x.clientY){
 					this.styleObject.left = x.clientX + 'px';
 					this.styleObject.top = x.clientY + 'px';
 				}
@@ -97,13 +97,13 @@
 				}
 				this.classObject.visible = true;
 				document.addEventListener('mousedown', function(evt){
-					//console.log(evt);
 					me.hide();
 				}, {once: true, capture: true});
 			},
 			
 			hide: function(){
 				this.classObject.visible = false;
+				this.clear();
 			},
 		}
 	}
@@ -112,10 +112,6 @@
 </script>
 <style>
 .exMenu {
-	position: absolute;
-	display: none;
-	top: 300px;
-	left: 300px;
 	font-family: sans-serif;
 	font-size: 12px;
 	border: 1px solid #000;
@@ -123,7 +119,6 @@
 	cursor: default;
 	border-radius: 2px;
 	min-width: 120px;
-	z-index: 1000;
 
 	background: #292929; /* Old browsers */
 	background: -moz-linear-gradient(top, #292929 0%, #1a1a1a 20%, #1a1a1a 50%, #1a1a1a 80%, #292929 100%); /* FF3.6-15 */
@@ -135,6 +130,15 @@
 	-moz-user-select: none; /* Firefox */
 	-ms-user-select: none; /* IE10+/Edge */
 	user-select: none; /* Standard */	
+}
+
+.exMenu.context,
+.exMenu.vertical {
+	position: absolute;
+	display: none;
+	top: 300px;
+	left: 300px;
+	z-index: 1000;
 }
 
 .exMenu.visible {
@@ -154,10 +158,7 @@
 	background: -webkit-linear-gradient(top, #292929 0%,#1a1a1a 20%,#1a1a1a 50%,#1a1a1a 80%,#292929 100%); /* Chrome10-25,Safari5.1-6 */
 	background: linear-gradient(to bottom, #292929 0%,#1a1a1a 20%,#1a1a1a 50%,#1a1a1a 80%,#292929 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#292929', endColorstr='#292929',GradientType=0 ); /* IE6-9 */
-	
-	
 }
-
 
 .exMenu li {
 	list-style-type: none;
@@ -190,7 +191,6 @@
 	pointer-events: none;
 }
 
-
 .exMenu li a:hover {
 	background-color: #dea309;
 	border-radius: 2px;
@@ -202,7 +202,7 @@
 	background-repeat: no-repeat;
 }
 
-.exMenu li:hover > ul {
+.exMenu li:hover > ul{
 	display: block; 
 	position: absolute; 
 	top: -1px; 
@@ -239,4 +239,45 @@
 	background-color: #1a1a1a;
 	pointer-events: none;
 }
+
+
+
+/***********************************************************
+	Horizontal menu
+***********************************************************/
+.exMenu.horizontal{
+	margin: 0;
+	border: 0;
+}
+
+.exMenu.horizontal ul {
+	margin-top: 22px;
+	margin-left: 4px;
+	width: auto;
+	min-width: 100px;
+}
+
+.exMenu.horizontal > li{
+	float: left;
+	padding: 2px 5px 2px 5px;
+}
+
+ul.exMenu.horizontal > li > a {
+	padding: 5px 10px 5px 5px !important;
+}
+
+.exMenu.horizontal ul:active {
+	display: none;
+}
+
+.exMenu.horizontal li a {
+	padding: 5px 10px 5px 20px;
+}
+
+.exMenu.horizontal li a:hover {
+	background-color: #dea309;
+	border-radius: 0;
+}
+
+
 </style>

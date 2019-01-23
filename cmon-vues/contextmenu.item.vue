@@ -1,17 +1,23 @@
 <template>
 	<li :id="id" :class="classObject" :title="desc" :shortcut="shortcut" @mousedown.stop="click">
 		<a>{{title}}</a>
-		<component is="ex-contextmenu" v-if="classObject.sub" ref="submenu"></component>
+		<slot>
+			<ul v-for="(item, idx) in items" :key="idx"
+				:is="item.ctor ? item.ctor : 'uimenu'"
+				ref="items"
+				v-bind="item"
+			></ul>
+		</slot>
 	</li>
 </template>
 
 <script>
 
-	//import ContextMenu from './contextmenu.vue';
+	//import uimenu from './contextmenu.vue';
 	import {genUid} from '../utils';
 	
 	export default {
-		//components: {ContextMenu},
+		//components: {Menu},
 		props: {
 			id: {type: String, default: genUid()},
 			classObject: {
@@ -21,19 +27,27 @@
 			desc: String,
 			shortcut: String,
 			callback: {},
+			emit: String,
+			action: String,
 			ctor: {},
 		},
 		
-		beforeDestroy: function(){
-			console.log('destroy');
-			//this.items = [];
+		data: function(){
+			return {
+				items: []
+			}
 		},
 
 		methods: {
-			click: function(evt){				
+			click: function(evt){
+				console.log(this.$options);
 				evt.stopPropagation();
 				if(typeof this.callback === 'function')
 					this.callback();
+				else if(this.emit)
+					this.$root.$emit(this.emit);
+				else if(this.action)
+					this.$root[this.action]();
 			},
 		}
 	};

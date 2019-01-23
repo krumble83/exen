@@ -1,24 +1,9 @@
-<template>
+<template functional>
 	<li 
 		class="child"
-		:name="name" 
-		:flags="flags"
+		:name="props.name" 
+		:flags="props.flags"
 	>
-		<span><img :src="img">&nbsp;{{name}}</span>
+		<span><img :src="img">&nbsp;{{props.name}}</span>
 	</li>
 </template>
-
-<script>
-	export default {
-		props: {
-			ctor: String,
-			name: String,
-			flags: Number,
-			img: String
-		}
-	}
-</script>
-
-<style>
-
-</style>

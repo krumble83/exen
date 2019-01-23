@@ -5,7 +5,7 @@
 	
 	App.mixins.push({
 		computed: {	
-			macros: function(){return this.$store.state.graphs.filter(g => g.type=='macros')}
+			macros: function(){return this.$store.state.graphs.filter(g => (g.flags & F_IS_MACRO) == F_IS_MACRO)}
 		},
 		
 		methods: {

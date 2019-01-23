@@ -8,12 +8,13 @@
 	import uitree from './tree.vue';
 	import uiproperties from './properties.vue';
 	import uitbbutton from './toolbarbutton.vue';
-	import uicontextmenu from '../cmon-vues/contextmenu.vue';
-		
+	import uimenu from '../cmon-vues/contextmenu.vue';
+	import uimenuitem from '../cmon-vues/contextmenu.item.vue';
+	
 	var store = new Vuex.Store(ProjectStore);
 	
 	export default {
-		components: { uigraphtabs, uitree, uiproperties, uitbbutton, infotabs, uicontextmenu },
+		components: { uigraphtabs, uitree, uiproperties, uitbbutton, infotabs, uimenu, uimenuitem },
 		mixins: [],
 		el: '#app',
 		store,
@@ -29,6 +30,11 @@
 		mounted: function(){
 			this.$refs.infoTabs.tabs.push({name: 'Compile Result', checked: true});
 			this.$refs.infoTabs.tabs.push({name: 'Search Result'});
+			this.$on('tree:select', this.treeClick);
+		},
+		
+		beforeDestroy: function(){
+			this.$off('tree:click', this.treeClick);
 		},
 		
 		computed: {		
@@ -42,53 +48,35 @@
 				return typeof this[name] !== 'undefined';
 			},
 			
-			treeClick: function(data, evt){
-				//console.log(evt.target.type)
-				if(this.treeSelected && this.treeSelected != evt.target)
+			isType: function(obj, type){
+				return (obj.flags & type) == type;
+			
+			},
+			
+			treeClick: function(evt, data){
+				//console.log(evt.target.type)				
+				if(this.treeSelected && (!evt || this.treeSelected != evt.target)){
 					this.treeSelected.classList.remove('selected');
-				/*
-				else if(this.treeSelected && this.treeSelected == evt.target){
-					if(evt.target.timestamp && Date.now() > evt.target.timestamp + 400){
-						if(this[data.type + 'Rename'])
-							this[data.type + 'Rename'](data, evt.target);
-						else
-							this.rename(data, evt.target).success(function(){
-								console.log('coucou :)');
-							});;					
-					}
-					return;
+					this.treeSelected == false;
 				}
-				*/
-				evt.target.classList.add('selected');
-				evt.target.timestamp = Date.now();
-				this.treeSelected = evt.target;
-				if(this[data.type + 'Click'])
-					this[data.type + 'Click'](data, evt);
+				if(evt && evt.target)
+					this.treeSelected = evt.target;
+
 			},
-			
-			treeDblClick: function(data, evt){
-				if(this[data.type + 'Dblclick'])
-					this[data.type + 'Dblclick'](data, evt);
-			},
-			
+
 			rename: function(data, el){
-				var me = this
-				, input = document.querySelector('input.editor')
+				const me = this
 				, ret = {
 					success: function(cb){this.succesCb = cb; return this},
 					validate: function(cb){this.validateCb = cb; return this}
 				}
+				var input = document.querySelector('input.editor');
 				
-				if(input && input.checkValidity())
+				if(input)
 					input.blur();
-				else if(input && !input.checkValidity())
-					return ret;
-				
+
 				if(data.flags && ((data.flags & F_NO_RENAME) == F_NO_RENAME))
 					return ret;
-				
-				if(this.treeSelected)
-					this.treeSelected.classList.remove('selected');
 				
 				input = document.createElement('input');				
 				input.setAttribute('type', 'text');
@@ -109,24 +97,19 @@
 				
 				const change = function(evt){
 					//console.log('onchange');
-					
-					if(!input.checkValidity())
-						return;
-					
-					if(input.value != data.name && input.checkValidity())
-						me.$store.commit('changeGraph', {name: data.name, props:{name: input.value}});
 					const parent = input.parentNode;
 					parent.removeChild(input);
-					me.treeClick(data, {target: parent});
-					if(ret.succesCb)
-						ret.succesCb(input.value);
+					if(input.checkValidity() && typeof ret.succesCb === 'function')
+						ret.succesCb(input);
 				}
 				
 				const keyup = function(evt){
 					//console.log('keyup', evt);
-					if(ret.validateCb && ret.validateCb(evt, input) == false){
-						input.setCustomValidity("name allready in use");
-						return;
+					if(typeof ret.validateCb === 'function'){
+						if(ret.validateCb(evt, input) == false)
+							input.setCustomValidity('name allready in use');
+						else
+							input.setCustomValidity('');
 					}
 					if(!input.checkValidity())
 						return;
@@ -186,6 +169,10 @@
 				}
 			},
 			
+			openProject: function(){
+				console.log('open project');
+			}
+			
 		},
 	}
 </script>
@@ -193,7 +180,7 @@
 <style>
 
 	.width0{
-		width: 1px !important;
+		width: 0 !important;
 		-moz-transition: width 0.05s ease;
 		-webkit-transition: width 0.05s ease;
 		-o-transition: width 0.05s ease;
@@ -201,7 +188,7 @@
 	}
 	
 	.height0{
-		height: 1px !important;
+		height: 0 !important;
 		-moz-transition: height 0.05s ease;
 		-webkit-transition: height 0.05s ease;
 		-o-transition: height 0.05s ease;

@@ -5,42 +5,48 @@
 	
 	App.mixins.push({
 		computed: {	
-			functions: function(){return this.$store.state.graphs.filter(g => g.type=='function')}
+			functions: function(){return this.$store.state.graphs.filter(g => (g.flags & F_IS_FUNCTION) == F_IS_FUNCTION)}
 		},
 		
 		mounted: function(){
-			//var me = this;
 			this.$refs.functionsTree.$on('contextmenu', this.functionContextMenu);
 			this.$refs.functionsTree.$on('rename', this.functionRename);
+			this.$refs.functionsTree.$on('dblclick', this.functionDblclick);
 		},
 		
 		beforeDestroy: function(){
 			this.$refs.functionsTree.$off('contextmenu', this.functionContextMenu);
+			this.$refs.functionsTree.$off('rename', this.functionRename);
+			this.$refs.functionsTree.$off('dblclick', this.functionDblclick);
 		},
 		
 		methods: {
 			addFunction: function(data, doReaname){
 				var a = 0
 				, name = (data && data.name) ? data.name : 'NewFunction';
-				if(this.functions.find(v => v.name == name)){
-					while(this.functions.find(v => v.name == name + '_' + a))
+				
+				if(this.$store.getters.nameExists(name)){
+					while(this.$store.getters.nameExists(name + '_' + a))
 						a++;
 					name += '_' + a;
 				}
+				
 				data = data || {};
 				data.name = name;
 				data.img = functionImg;
 				data.tabOrder = 0;
 				this.$store.commit('addFunction', data);
+				
 				if(doReaname === false)
 					return;
+				
 				this.$nextTick(function(){
 					var n = this.$refs.functionsTree.findNode(name);
-					this.rename(n.data, n.el);
+					this.functionRename(n, n.data);
 				});
 			},
 			
-			functionDblclick: function(data, evt){
+			functionDblclick: function(evt, data){
 				if(data.tabOrder == 0)
 					data.tabOrder = this.tabsId++;
 				this.$nextTick(function(){
@@ -53,11 +59,11 @@
 				//console.log(evt);
 				const menu = me.$refs.contextmenu;
 				console.log('cmenu');
-				menu.clear();
+				//menu.clear();
 				menu.addTitle('Function');
 				
 				menu.addItem({id: 'rename', title: 'rename', callback: function(){
-					me.rename(data, evt.target);
+					me.functionRename(evt, data);
 				}, disabled: ((data.flags & F_NO_RENAME) == F_NO_RENAME)});
 				
 				menu.addItem({id: 'delete', title: 'delete', callback: function(){
@@ -76,14 +82,18 @@
 			},
 			
 			functionRename: function(evt, data){
+				console.log('functionRename');
+				const me = this;
 				const t = this.rename(data, evt.target)
-					.success(function(value){
-						console.log('ok');
+					.success(function(input){
+						me.$store.commit('changeGraph', {name: data.name, props:{name: input.value}});
 					})
-					.validate(function(){
-						return;
+					.validate(function(evt, input){
+						if(input.value == data.name)
+							return;
+						if(me.$store.getters.nameExists(input.value))
+							return false;
 					});
-					//console.log(t);
 			},
 			
 			isFunction: function(data){

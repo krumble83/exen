@@ -3,9 +3,10 @@
 		class="child"
 		:name="props.name" 
 		:flags="props.flags"
-		@click.stop.left="props.onClick($event,props.id)"
-		@contextmenu.stop.prevent="props.onContext($event,props.id)"
-		@dblclick="props.onDblClick($event,props.id)"
+		:index="props.index"
+		@click.stop.left="props.onClick($event,props.index)"
+		@contextmenu.stop.prevent="props.onContext($event,props.index)"
+		@dblclick="props.onDblClick($event,props.index)"
 		@mouseenter.stop=""
 		@mousemove.stop=""
 	>

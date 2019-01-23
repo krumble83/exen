@@ -5,7 +5,7 @@
 	
 	App.mixins.push({
 		computed: {	
-			graphs: function(){return this.$store.state.graphs.filter(g => g.type=='graph')}
+			graphs: function(){return this.$store.state.graphs.filter(g => (g.flags & F_IS_BLUEPRINT) == F_IS_BLUEPRINT)}
 		},
 		
 		methods: {
@@ -34,7 +34,7 @@
 				});
 			},
 						
-			getGraph: function(name){
+			zzzgetGraph: function(name){
 				return this.graphs.find(graph => graph.name == name && graph.type == 'graph');
 			}		
 		}

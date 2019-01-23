@@ -34,7 +34,7 @@
 			tabs: function(){return this.$store.state.graphs},
 			
 			orderedTabs: function () {
-				return _.orderBy(this.tabs, 'tabOrder')
+				return _.orderBy(this.tabs, '_tabOrder')
 			}
 		},
 		
