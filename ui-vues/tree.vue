@@ -77,6 +77,8 @@
 			},
 			
 			onContext: function(evt, id){
+				this.onClick(evt, id);
+				clearTimeout(this.timer);
 				this.$emit('contextmenu', evt, this.items[id]);
 			},
 			
