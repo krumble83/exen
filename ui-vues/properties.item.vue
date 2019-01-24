@@ -1,9 +1,8 @@
 <template functional>
 	<li 
 		class="child"
-		:name="props.name" 
-		:flags="props.flags"
+		:name="props.key"
 	>
-		<span><img :src="img">&nbsp;{{props.name}}</span>
+		<span>{{props.key}}</span>
 	</li>
 </template>

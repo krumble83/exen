@@ -222,6 +222,9 @@
 	background-color: #1a1a1a;
 }
 
+.exMenu li.disabled{
+	pointer-events: none;
+}
 
 .exMenu li.disabled a{
 	color: #777;

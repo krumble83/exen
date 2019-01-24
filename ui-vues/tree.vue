@@ -2,7 +2,7 @@
 	<ul class="uiTree">
 		<li style="width:100%" class="main">
 			<input type="checkbox" :id="'folder_' + label" checked="true">
-			<div v-if="button" :class="{add: true, disabled: button.disabled}" @click.stop.prevent="doAdd"><img src="ui-img/add.png" /><span>{{button.text}}</span></div>
+			<div v-if="button" :class="{add: true, disabled: button.disabled}" @click.stop.prevent="btnClick"><img src="ui-img/add.png" /><span>{{button.text}}</span></div>
 			<label :for="'folder_' + label">{{label}}</label>
 			<ul>
 				<component v-for="(item,id) in items" :key="id"
@@ -29,12 +29,9 @@
 		components: {treeitem},
 		props: {
 			label: String,
-			filter: String,
-			storename: String,
-			action: {},
 			button: {},
-			type: String,
 			draggable: {type: Boolean, default: true},
+			selectable: {type: Boolean, default: true},
 			items: {default: function(){return[]}},
 		},
 		
@@ -47,6 +44,8 @@
 		
 		mounted: function(){
 			var me = this;
+			if(!this.selectable)
+				return;
 			document.addEventListener('mousedown', function(evt){
 				if(evt.target.classList.contains('focused', 'child'))
 					return;
@@ -56,10 +55,10 @@
 		},
 		
 		methods: {
-			doAdd: function(evt){
+			btnClick: function(evt){
 				//console.log(this.button.action);
 				this.$emit('action:' + this.button.action);
-				this.$parent[this.button.action]();
+				//this.$parent[this.button.action]();
 			},
 			
 			onDblClick: function(evt, id){
@@ -69,6 +68,8 @@
 			},
 			
 			onClick: function(evt, id){
+				if(!this.selectable)
+					return;
 				clearTimeout(this.timer);
 				if(evt.target.classList.contains('focused')){
 					console.log('focused');

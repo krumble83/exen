@@ -22,9 +22,8 @@
 	</head>
 	<body>
 		<div id="app" class="flexChild columnParent">
-			<uimenu class="context" ref="contextmenu"></uimenu>
 			<div id="header" class="flexChild">
-				<uimenu class="horizontal">
+				<uimenu class="horizontal" ref="menu">
 					<uimenuitem title="File">
 						<uimenu>
 							<uimenuitem title="New Project" action="newProject"></uimenuitem>
@@ -97,7 +96,10 @@
 					</div>
 				</div>
 			</div>
+			<uimenu ref="contextmenu" class="context"></uimenu>
+			<uidialog ref="dialog"></uidialog>
 		</div>
+		
 		<!--<div style="position:absolute;top:0;left:0;background-color:#000;opacity:0.5;width:100%;height:100%"></div>-->
 		
 		<script type="boom!">
@@ -116,7 +118,7 @@
 			
 			test.addFunction(n, false);
 			test.addFunction({name: 'loop'}, false);
-			
+					
 			console.log(n);
 			
 		</script>

@@ -1,11 +1,15 @@
 <template>
 	<div style="width:100%;height:100%">
-		<slot name="trees"
-			v-for="item in items"
-		>
-			<component :is="item.ctor" v-bind="item" />	
+		<slot>
+			<component v-for="item in items" 
+				:is="item.ctor" 
+				v-bind="item" 
+				ref="props" 
+				:selectable="false" 
+				:draggable="false" 
+			/>	
 		</slot>
-		{{test}}
+		{{text}}
 	</div>
 </template>
 
@@ -19,10 +23,10 @@
 	
 	export default {
 		components: {uitree, uipropitem},
-	
+		mixins: [],
 		data: function(){
 			return {
-				test: '',
+				text: '',
 				items: [],
 				pData: false,
 				labelWidth: 50,
@@ -31,16 +35,17 @@
 	
 		created: function(){
 			var me = this;
+			return
 			this.$parent.$watch('treeSelected', function(newValue, oldValue) {
 				me.items = [];
 				if(!newValue){
-					me.test = 'no properties';
+					me.text = 'no properties';
 					return;
 				}
 				console.log(newValue.getAttribute('flags'), newValue.flags & F_IS_FUNCTION, F_IS_FUNCTION);
 				if((newValue.getAttribute('flags') & F_IS_FUNCTION) == F_IS_FUNCTION){
 					me.pData = me.$store.getters.getGraph(newValue.getAttribute('name'));
-					me.test = '';
+					me.text = '';
 					me.showFunctionProperties();				
 				}
 				else if((newValue.getAttribute('flags') & F_IS_VARIABLE) == F_IS_VARIABLE){
@@ -48,42 +53,16 @@
 					me.showVariableProperties();				
 				}
 				else {
-					me.test = 'no properties';
+					me.text = 'no properties';
 				}
 			});
 		},
 		
 		methods: {
-			addInput: function(){
-				this.pData.$data.commit('addInput', {ctor: 'uipropitem', name: 'input2'});
-				//this.pData.$data.state.inputs.push({ctor: 'uipropitem', name: 'input2'});
-			},
-			
-			addOutput: function(){
-				this.pData.$data.commit('addOutput', {ctor: 'uipropitem', name: 'input2'});
-			},
 			
 			showFunctionProperties: function(){
 				//console.log((this.pData.flags & F_LOCK_OUTPUTS) == F_LOCK_OUTPUTS);
-				this.items.push({
-					ctor: 'uitree', 
-					label: 'General', 
-					items: [
-						{name: this.pData.description}
-					]
-				},
-				{
-					ctor: 'uitree', 
-					label: 'Inputs', 
-					button: {text: 'Add Input', action: 'addInput', disabled: ((this.pData.flags & F_LOCK_INPUTS) == F_LOCK_INPUTS)},
-					items: this.pData.$data.state.inputs						
-				},
-				{
-					ctor: 'uitree', 
-					label: 'Outputs', 
-					button: {text: 'Add Output', action: 'addOutput', disabled: ((this.pData.flags & F_LOCK_OUTPUTS) == F_LOCK_OUTPUTS)},
-					items: this.pData.$data.state.outputs					
-				});
+
 			},
 			
 			showVariableProperties: function(){

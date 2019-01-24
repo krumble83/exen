@@ -10,11 +10,12 @@
 	import uitbbutton from './toolbarbutton.vue';
 	import uimenu from '../cmon-vues/contextmenu.vue';
 	import uimenuitem from '../cmon-vues/contextmenu.item.vue';
+	import uidialog from '../cmon-vues/dialog.vue';
 	
 	var store = new Vuex.Store(ProjectStore);
 	
 	export default {
-		components: { uigraphtabs, uitree, uiproperties, uitbbutton, infotabs, uimenu, uimenuitem },
+		components: { uigraphtabs, uitree, uiproperties, uitbbutton, infotabs, uimenu, uimenuitem, uidialog },
 		mixins: [],
 		el: '#app',
 		store,
@@ -34,7 +35,7 @@
 		},
 		
 		beforeDestroy: function(){
-			this.$off('tree:click', this.treeClick);
+			this.$off('tree:select', this.treeClick);
 		},
 		
 		computed: {		
@@ -43,14 +44,17 @@
 			}
 		},
 		
+		watch: {
+			treeSelected: function(val){
+				const proptree = this.$refs.properties;
+				if(!val && proptree)
+					proptree.items.splice(0);
+			}
+		},
+		
 		methods: {			
 			hasGraph: function(name){
 				return typeof this[name] !== 'undefined';
-			},
-			
-			isType: function(obj, type){
-				return (obj.flags & type) == type;
-			
 			},
 			
 			treeClick: function(evt, data){
@@ -145,8 +149,7 @@
 				console.log('zz');
 				this.$refs.tabsContainer.focusTab(data);
 			},
-			
-			
+					
 			switchFullscreen: function(value){
 				//console.log('fullscreen');
 				const left = document.querySelector('#left')
@@ -159,21 +162,51 @@
 					left.classList.add('width0');
 					footer.classList.add('height0');
 					header.classList.add('height0');
-					this.$emit('app:fullscreen');
+					this.$emit('fullscreen');
+					this.$refs.menu.$el.style.display = 'none';
 				}
 				else {
 					right.classList.remove('width0');
 					left.classList.remove('width0');
 					footer.classList.remove('height0');
 					header.classList.remove('height0');
-					this.$emit('app:normallayout');
+					this.$refs.menu.$el.style.display = '';
+					this.$emit('normallayout');
 				}
 			},
 			
 			openProject: function(){
 				console.log('open project');
-			}
+			},
 			
+			isGraph: function(data){
+				return hasFlag(data, F_IS_GRAPH);
+				
+			},
+			
+			isType: function(obj, type){
+				return (obj.flags & type) == type;
+			
+			},
+
+			graphDelete: function(data, force){
+				const me = this,
+				func = function(){
+					if(me.treeSelected && me.treeSelected.getAttribute('name') == data.name)
+						me.treeSelected = false;
+					me.$store.commit('deleteGraph', data.name);
+					me.$emit('graph:delete', data);
+				}
+				
+				if(force == true)
+					return func();
+
+				me.$refs.dialog.yesno('Delete', 'Delete this Function ?').yes(function(){
+					func();
+				});
+
+			},
+						
 		},
 	}
 </script>
