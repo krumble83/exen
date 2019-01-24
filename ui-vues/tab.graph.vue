@@ -78,10 +78,10 @@
 	}
 	.tabs .tab input[type=radio]:checked ~ label {
 		background: #606060;
-		z-index: 2;
+		/*z-index: 2;*/
 	}
 	.tabs .tab input[type=radio]:checked ~ label ~ .content {
-		z-index: 1;
+		/*z-index: 1;*/
 		opacity: 1;
 	}
 </style>

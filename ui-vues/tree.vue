@@ -63,6 +63,7 @@
 			
 			onDblClick: function(evt, id){
 				//console.log('dblclick', id);
+				console.assert(this.items[id]);
 				clearTimeout(this.timer);
 				this.$emit('dblclick', evt, this.items[id]);
 			},

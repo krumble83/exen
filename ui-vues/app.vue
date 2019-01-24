@@ -37,13 +37,13 @@
 		beforeDestroy: function(){
 			this.$off('tree:select', this.treeClick);
 		},
-		
+		/*
 		computed: {		
 			tabGraphs: function () {
 				return _.orderBy(this.$store.state.graphs, '$tabOrder');
 			}
 		},
-		
+		*/
 		watch: {
 			treeSelected: function(val){
 				const proptree = this.$refs.properties;
@@ -142,7 +142,8 @@
 			
 			closeTab: function(tab){
 				//console.log('closezz ', tab);
-				this.$store.state.graphs.find(v => v.name == tab.name).$tabOrder = 0;
+				this.$store.commit('changeGraph', {name: tab.name, props: {$tabOrder: 0}});
+				//this.$store.state.graphs.find(v => v.name == tab.name).$tabOrder = 0;
 			},
 			
 			focusTab: function(data){

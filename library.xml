@@ -1,20 +1,21 @@
 <node id="core.array.push" _import="">
-	<entry />
-	<exit />
+	<input entry />
+	<output exit />
 	<input name="array" array="1" datatype="" />
 	<input />
 	<output />
 </node>
 
 
-<datatype id="device" type="enum|class" inherits="core.string" label="" color="" description="">
-	<color>#fff</color>
-</datatype>
+<datatype id="device" type="object|scalar|enum|class" inherits="core.string" label="" color="" description="" />
 
-<class id="arduino.serial">
-	<method id="open" />
-	<member id="" />
-	<method static="1">
+<datatype id="arduino.serial" type="class">
+	<node id="open">
+		<input />
+		<output />
+	</node>
+	<node id="" />
+	<node static="1">
 		
 	</method>
 </class>

@@ -143,6 +143,7 @@ body, html{
 #center{
 	padding-top: 27px;
 	height: 100%;
+	overflow-x: hidden;
 }
 
 #app{

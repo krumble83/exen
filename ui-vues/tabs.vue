@@ -38,7 +38,15 @@
 			}
 		},
 		
-		created: function(){
+		watch: {
+			tabs: function(){
+				//console.log('tabs change');
+				return;
+				this.$nextTick(function(){
+					console.log(this.$el.querySelector('input:checked'));
+				});
+				
+			}
 		},
 		
 		methods: {

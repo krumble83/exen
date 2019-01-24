@@ -43,7 +43,7 @@
 				data = data || {};
 				data.name = name;
 				data.img = functionImg;
-				data.$tabOrder = 0;
+				//data.$tabOrder = 0;
 				this.$store.commit('addFunction', data);
 				
 				if(doReaname === false)
@@ -56,8 +56,8 @@
 			},
 			
 			functionDblclick: function(evt, data){
-				if(data.$tabOrder == 0)
-					data.$tabOrder = this.tabsId++;
+				if(!data.$tabOrder || data.$tabOrder == 0)
+					Vue.set(data, '$tabOrder', this.tabsId++);
 				this.$nextTick(function(){
 					this.focusTab(data);
 				});
@@ -67,7 +67,7 @@
 				var me = this;
 				//console.log(evt);
 				const menu = me.$refs.contextmenu;
-				console.log('cmenu');
+				console.assert(menu);
 				//menu.clear();
 				menu.addTitle('Function');
 				
@@ -91,9 +91,10 @@
 			},
 			
 			functionRename: function(evt, data){
-				console.log('functionRename');
+				//console.log('functionRename');
 				const me = this;
-				const t = this.rename(data, evt.target)
+				console.assert(data.name);
+				this.rename(data, evt.target)
 					.success(function(input){
 						me.$store.commit('changeGraph', {name: data.name, props:{name: input.value}});
 					})
