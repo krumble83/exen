@@ -283,14 +283,15 @@
 
 
 
-	.uiTree input.editor {
+	.uiTree li.child input.editor {
 		position: absolute;
 		left: 36px;
 		padding: 0;
 		margin-top: -1px;
 		background-color: #e7e7e7;
+		border: 1px solid #444;
 		border-radius: 5px;
-		height: 14px;
+		height: 16px;
 		font-size: 12px;
 		outline: none;
 		width: 120px;

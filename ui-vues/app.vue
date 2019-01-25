@@ -15,7 +15,7 @@
 	var store = new Vuex.Store(ProjectStore);
 	
 	export default {
-		components: { uigraphtabs, uitree, uiproperties, uitbbutton, infotabs, uimenu, uimenuitem, uidialog },
+		components: { uigraphtabs, uitree, uiproperties, uitbbutton, infotabs, uimenu, uimenuitem, uidialog},
 		mixins: [],
 		el: '#app',
 		store,
@@ -68,6 +68,7 @@
 
 			},
 
+			/*
 			rename: function(data, el){
 				const me = this
 				, ret = {
@@ -139,7 +140,7 @@
 
 				return ret;
 			},
-			
+			*/
 			closeTab: function(tab){
 				//console.log('closezz ', tab);
 				this.$store.commit('changeGraph', {name: tab.name, props: {$tabOrder: 0}});

@@ -42,6 +42,19 @@ export default {
 			Vue.set(state.graphs, state.graphs.indexOf(n), nn);			
 		},
 		
+		changeGraphProp: function(state, data){
+			var n = state.graphs.find(gr => gr.name === data.name);
+			console.assert(n);
+			var nn = Object.assign({}, n);
+			for(var index in data.props) { 
+				if (data.props.hasOwnProperty(index)) {
+					//n[index] = data.props[index];
+					Vue.set(nn.props, index, data.props[index]);
+				}
+			}
+			Vue.set(state.graphs, state.graphs.indexOf(n), nn);			
+		},
+
 		deleteGraph: function(state, name){
 			const graph = state.graphs.find(item => item.name == name);
 			console.assert(graph);
@@ -52,7 +65,7 @@ export default {
 
 		addFunction: function(state, data){
 			data.props = data.props || {};
-			data.props.description = data.props.description || '';
+			data.props.description = data.props.description || 'aa';
 			data.flags = (data.flags || 0) | F_IS_FUNCTION | F_IS_GRAPH;
 			data.$data = new Vuex.Store(FunctionStore);
 			data.$data.replaceState({ nodes: [], links: [], inputs:[], outputs:[] });

@@ -1,13 +1,24 @@
 <template>
 	<div style="width:100%;height:100%">
 		<slot>
-			<component v-for="item in items" 
-				:is="item.ctor" 
-				v-bind="item" 
-				ref="props" 
-				:selectable="false" 
-				:draggable="false" 
-			/>	
+			<ul v-for="tree in items" class="uiTree" ref="props">
+				<li style="width:100%" class="main">
+					<input type="checkbox" :id="'folder_' + tree.label" checked="true">
+					<div v-if="tree.button" :class="{add: true, disabled: tree.button.disabled}" @click.stop.prevent="btnClick(tree.button)"><img src="ui-img/add.png" /><span>{{tree.button.text}}</span></div>
+					<label :for="'folder_' + tree.label">{{tree.label}}</label>
+					<ul>
+						<component v-for="(item,id,val) in tree.items" :key="id"
+							:is="item.ctor ? item.ctor : 'uipropitem'"
+							v-bind="item"							
+							:value="item"
+							:index="id"
+							:labelwidth="labelWidth"
+						>
+						</component>
+					</ul>
+				</li>
+				<li class="sep"></li>
+			</ul>
 		</slot>
 		{{text}}
 	</div>
@@ -18,18 +29,18 @@
 
 	import uitree from './tree.vue';
 	import uipropitem from './properties.item.vue';
+	import texteditor from './editor.text.vue';
 
 	uitree.components.uipropitem = uipropitem;
 	
 	export default {
-		components: {uitree, uipropitem},
+		components: {uitree, uipropitem, texteditor},
 		mixins: [],
 		data: function(){
 			return {
 				text: '',
 				items: [],
-				pData: false,
-				labelWidth: 50,
+				labelWidth: 80,
 			}
 		},
 	
@@ -59,12 +70,20 @@
 		},
 		
 		methods: {
-			
-			showFunctionProperties: function(){
-				//console.log((this.pData.flags & F_LOCK_OUTPUTS) == F_LOCK_OUTPUTS);
-
+		
+			btnClick: function(button){
+				if(button.emit)
+					this.$emit('action:' + button.emit);
 			},
 			
+			resize: function(){
+			
+			},
+			
+			onChange: function(){
+				console.log('change');
+			},
+
 			showVariableProperties: function(){
 				this.items.push({
 					ctor: 'uitree', 
