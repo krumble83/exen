@@ -8,6 +8,7 @@
 		
 		
 		<title>eXen</title>
+		<script src="utils/deepmerge.js"></script>
 		<script src="defs.js"></script>
 		<script src="stylebug.js"></script>
 		<script src="elibs/vue.js"></script>
@@ -32,8 +33,8 @@
 					</uimenuitem>
 					<uimenuitem title="Edition">
 						<uimenu>
-							<uimenuitem title="Undo"></uimenuitem>
-							<uimenuitem title="Redo"></uimenuitem>
+							<uimenuitem title="Undo" action="undo" :disabled="$store.getters['undoRedo/canUndo']"></uimenuitem>
+							<uimenuitem title="Redo" action="redo" :disabled="$store.getters['undoRedo/canRedo']"></uimenuitem>
 							<uimenuitem class="sep"></uimenuitem>
 							<uimenuitem title="Cut"></uimenuitem>
 							<uimenuitem title="Copy"></uimenuitem>
@@ -118,8 +119,11 @@
 			
 			test.addFunction(n, false);
 			test.addFunction({name: 'loop'}, false);
-					
-			console.log(n);
+			
+			console.dir(test.$store);
+			console.log(test.$store.getters['undoRedo/canUndo']);
+			//test.$store.dispatch('undo');
+			
 			
 		</script>
 	</body>

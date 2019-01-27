@@ -44,9 +44,9 @@
 				evt.stopPropagation();
 				if(typeof this.callback === 'function')
 					this.callback();
-				else if(this.emit)
+				if(this.emit)
 					this.$root.$emit(this.emit);
-				else if(this.action)
+				if(this.action && typeof this.$root[this.action] === 'function')
 					this.$root[this.action]();
 			},
 		}

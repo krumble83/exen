@@ -218,19 +218,20 @@
 }
 
 .exMenu li.title a:hover,
-.exMenu li.disabled a:hover {
+.exMenu li.disabled a:hover,
+.exMenu li[disabled="disabled"] a:hover {
 	background-color: #1a1a1a;
-}
-
-.exMenu li.disabled{
 	pointer-events: none;
 }
 
-.exMenu li.disabled a{
-	color: #777;
+.exMenu li.disabled,
+.exMenu li[disabled="disabled"]{
+	pointer-events: none;
 }
 
-.exMenu li.disabled a:hover {
+.exMenu li.disabled a,
+.exMenu li[disabled="disabled"] a{
+	color: #777;
 	pointer-events: none;
 }
 

@@ -60,6 +60,7 @@
 			},
 			
 			blur: function(evt){
+				console.log('blur');
 				const parent = this.$el.parentNode;
 				//parent.removeChild(this.$el);
 				if(this.$el.checkValidity() && typeof this.success === 'function')

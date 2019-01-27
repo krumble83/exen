@@ -31,3 +31,6 @@ store.mutations.addOutput = function(state, data){
 */
 
 export default store;
+
+
+

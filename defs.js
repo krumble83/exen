@@ -18,6 +18,36 @@ const F_IS_VARIABLE = 16384;
 const F_IS_MACRO = 32768;
 const F_IS_COMPONENT = 65536;
 
+const F_IS_NODE = 131072;
+
 const F_IS_INPUT = 262144;
 const F_IS_OUTPUT = 524288;
 const F_IS_IO = 1048576;
+
+
+const Exen = {
+	Template: {
+		_templates:{},
+		
+		define: function(name, data){
+			this._templates[name] = data;
+		},
+		
+		merge: function(name, src){
+			return deepmerge(this._templates[name], src);
+		}
+	},
+	
+	Pattern: {
+		_patterns:{},
+		
+		define: function(name, str){
+			this._patterns[name] = str;
+		},
+		
+		get: function(name){
+			return this._patterns[name];
+		}
+	}
+	
+}

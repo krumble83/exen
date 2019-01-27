@@ -7,11 +7,9 @@
 					<div v-if="tree.button" :class="{add: true, disabled: tree.button.disabled}" @click.stop.prevent="btnClick(tree.button)"><img src="ui-img/add.png" /><span>{{tree.button.text}}</span></div>
 					<label :for="'folder_' + tree.label">{{tree.label}}</label>
 					<ul>
-						<component v-for="(item,id,val) in tree.items" :key="id"
-							:is="item.ctor ? item.ctor : 'uipropitem'"
+						<component v-for="(item) in tree['items']" :key="id"
+							:is="item.ctor ? item.ctor : tree.itemctor ? tree.itemctor : 'uipropitem'"
 							v-bind="item"							
-							:value="item"
-							:index="id"
 							:labelwidth="labelWidth"
 						>
 						</component>
@@ -29,12 +27,14 @@
 
 	import uitree from './tree.vue';
 	import uipropitem from './properties.item.vue';
+	import uipropioitem from './properties.item.io.vue';
 	import texteditor from './editor.text.vue';
 
-	uitree.components.uipropitem = uipropitem;
+	//uitree.components.uipropitem = uipropitem;
+	//uitree.components.uipropioitem = uipropioitem;
 	
 	export default {
-		components: {uitree, uipropitem, texteditor},
+		components: {uitree, uipropitem, texteditor, uipropioitem},
 		mixins: [],
 		data: function(){
 			return {

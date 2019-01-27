@@ -36,7 +36,8 @@
 		
 		methods: {
 			addFunction: function(data, doReaname){
-				var a = 0
+				var me = this
+				, a = 0
 				, name = (data && data.name) ? data.name : 'NewFunction';
 				
 				if(this.$store.getters.nameExists(name)){
@@ -49,14 +50,17 @@
 				data.name = name;
 				data.img = functionImg;
 				//data.$tabOrder = 0;
-				this.$store.commit('addFunction', data);
+				//this.startSequence();
+				this.$store.dispatch('addFunc', data);
 				
 				if(doReaname === false)
 					return;
 				
 				this.$nextTick(function(){
 					var n = this.$refs.functionsTree.findNode(name);
-					this.functionRename(n, n.data);
+					this.functionRename(n, n.data, function(){
+						//me.stopSequence();
+					});
 				});
 			},
 			
@@ -95,7 +99,7 @@
 				menu.showAt(evt);
 			},
 			
-			functionRename: function(evt, data){
+			functionRename: function(evt, data, callback){
 				//console.log('functionRename', evt.target);
 				const me = this;
 				console.assert(data.name);
@@ -108,6 +112,7 @@
 				editor.value = data.name;
 				editor.required = true;
 				editor.pattern = '[a-zA-Z_$][0-9a-zA-Z_$]*';
+				
 				editor.validate = function(evt, input){
 					if(input.value == data.name)
 						return;
@@ -118,6 +123,8 @@
 				editor.success = function(input){
 					me.$store.commit('changeGraph', {name: data.name, props:{name: input.value}});
 					editor.$destroy();
+					if(typeof callback === 'function')
+						callback();
 				};
 				
 				editor.$mount();
@@ -130,33 +137,44 @@
 				
 				this.pData = data;
 				
+				proptree.$children.forEach(function(el){
+					//el.$destroy();
+				});
+				
 				proptree.items.splice(0);
-				proptree.items.push({
-					ctor: 'uitree', 
-					label: 'General', 
-					items: [{
-						name: 'description', 
-						editor: {
-							ctor: 'texteditor',
-							value: data.props.description,
-							success: function(input){
-								me.$store.commit('changeGraphProp', {name: data.name, props:{description: input.value}});
+				this.$nextTick(function(){
+					proptree.items.push({
+						ctor: 'uitree', 
+						label: 'General', 
+						items: [{
+							name: 'description', 
+							editor: {
+								ctor: 'texteditor',
+								value: data.props.description,
+								success: function(input){
+									console.log('success');
+									me.$store.commit('changeGraphProp', {name: data.name, props:{description: input.value}});
+								},
+								validate: function(input){
+									console.log(input);
+								}
 							}
-						}
-					}]
-				},
-				{
-					ctor: 'uitree', 
-					label: 'Inputs', 
-					button: {text: 'Input', emit: 'addInput', disabled: hasFlag(data, F_LOCK_INPUTS)},
-					items: data.$data.state.inputs						
-				},
-				{
-					ctor: 'uitree', 
-					label: 'Outputs', 
-					button: {text: 'Output', emit: 'addOutput', disabled: hasFlag(data, F_LOCK_OUTPUTS)},
-					items: data.$data.state.outputs					
-				});				
+						}]
+					},
+					{
+						ctor: 'uitree', 
+						itemctor: 'uipropioitem',
+						label: 'Inputs', 
+						button: {text: 'Input', emit: 'addInput', disabled: hasFlag(data, F_LOCK_INPUTS)},
+						items: data.$data.state.inputs
+					},
+					{
+						ctor: 'uitree', 
+						label: 'Outputs', 
+						button: {text: 'Output', emit: 'addOutput', disabled: hasFlag(data, F_LOCK_OUTPUTS)},
+						items: data.$data.state.outputs
+					});				
+				});
 			},
 			
 			isFunction: function(data){

@@ -12,7 +12,10 @@
 	import uimenuitem from '../cmon-vues/contextmenu.item.vue';
 	import uidialog from '../cmon-vues/dialog.vue';
 	
+	//import undo from '../cmon-vues/undo.vue';
+	
 	var store = new Vuex.Store(ProjectStore);
+	store.dispatch('initUndo');
 	
 	export default {
 		components: { uigraphtabs, uitree, uiproperties, uitbbutton, infotabs, uimenu, uimenuitem, uidialog},
@@ -66,6 +69,14 @@
 				if(evt && evt.target)
 					this.treeSelected = evt.target;
 
+			},
+			
+			undo: function(){
+				this.$store.dispatch('undo');
+			},
+
+			redo: function(){
+				this.$store.dispatch('redos');
 			},
 
 			/*

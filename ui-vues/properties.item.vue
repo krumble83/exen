@@ -5,7 +5,7 @@
 	>
 		<div class="label" :style="'width:' + props.labelwidth + 'px'">{{props.name}}<img /></div>
 		<div v-if="props.editor" class="editor">
-			<component :is="props.editor.ctor" :success="props.editor.success"></component>
+			<component :is="props.editor.ctor" v-bind="props.editor"></component>
 		</div>
 	</li>
 </template>
