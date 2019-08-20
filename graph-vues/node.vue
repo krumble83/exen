@@ -2,16 +2,18 @@
 	<svg
 		:class="classObject"
 		:style="styleObject"
-		:id="id"
+		:id="gid"
 		:x="mX" 
 		:y="mY" 
 		:width="mWidth" 
 		:height="mHeight" 
 		:type="type"
 		overflow="visible"
-		@mousedown.left.stop="$emit('mouse:leftdown', $event)" 
-		@mouseup.right="$emit('mouse:rightup', $event)" 
-		@contextmenu.prevent.stop="$emit('mouse:context', $event)"
+		@click.stop="$emit('mouse:click', $event)" 
+		@mousedown.left="$emit('mouse:leftdown', $event)" 
+		@mouseup.left="$emit('mouse:leftup', $event)" 
+		@mouseup.right.stop="$emit('mouse:rightup', $event)" 
+		@contextmenu.prevent.stop="$emit('mouse:cmenu', $event)"
 	>
 		<rect width="100%" height="100%" rx="13" ry="13" class="exNodeBody" />
 		
@@ -43,7 +45,7 @@
 		<g ref="outputs" class="exOutputs" :transform="subtitle ? 'translate(0,50)' : title ? 'translate(0,34)' : 'translate(7,14)'">
 			<slot name="outputs">	
 				<component v-for="(pin, idx) in outputs" :key="pin.id" 
-					:is="pin.ctor ? pin.ctor : 'ex-pin'" 
+					:is="pin.ctor ? pin.ctor : 'ExPin'" 
 					:max-link="pin.maxlink ? pin.maxlink : 99"
 					class="exPin"
 					:ref="'output_' + pin.name"
@@ -64,22 +66,35 @@
 
 <script>
 
+	import Color from './color.js';
+	import {SvgBase} from './mixins.js'
+	import {NodeDraggable} from './node.draggable.js'
+	import {NodeSelectable} from './node.selectable.js'
+	import {NodeContextMenu} from './contextmenu.js'
+	
+	import ExPin from './pin.vue';
+	
 	export default {
-		mixins: [],
+		mixins: [SvgBase, NodeSelectable, NodeDraggable, NodeContextMenu],
 		//mixins: [SvgBase, NodeSelectable, NodeDraggable, NodeGrid, ContextMenu],
+		components: {ExPin},
 			
 		props: {
 			title: String, 
 			subtitle: String,
 			type: String,
-			flags: String,
-			color: {default: '#00f'},
+			flags: Number,
+			color: {type: String, default: '#00f'},
 			img: String,
 			inputs: {type: Array},
 			outputs: {type: Array},
 			expendable: Boolean,
 		},
 		
+		computed: {
+			$worksheet: function(){return this.$parent;},
+		},
+
 		data: function() {
 			return {
 				classObject: {},
@@ -90,12 +105,12 @@
 		},
 		
 		watch: {
-			mWidth: function(){this.$emit('node:resize');this.$worksheet.$emit('node:resize')},
-			mHeight: function(){this.$emit('node:resize');this.$worksheet.$emit('node:resize')},
+			mWidth: function(){this.$emit('node:resize');},
+			mHeight: function(){this.$emit('node:resize');},
 		},
 
 		created: function(){
-			console.log('created');
+			//console.log('created');
 			var me = this
 			, def = {
 				props: {is: 'linearGradient',id: 'nodeHeader_' + this.color.replace('#', ''),x1: '0',y1: '0',x2: '1',y2: '0.4'},
@@ -108,25 +123,23 @@
 					{props: {is: 'stop','stop-color': new Color(this.color).darker(0.8).toString(),offset: '1'}}				
 				]
 			}
-			this.getWorksheet().addDef(def);
+			this.$worksheet.addDef(def);
 						
 			this.$on('pin:resize', this.update);
-			//this.$on('cmenu', this.contextMenu, {capture: true});
 		},
 		
 		beforeDestroy: function(){
-			//this.$off('cmenu', this.contextMenu);
 			this.$off('pin:resize', this.update);		
 		},
 		
 		
 		mounted: function(){
-			console.log('mounted');
+			//console.log('mounted');
 			this.update();
-			//console.dir(this.$store.getters.getNode(this.id));
 		},
 		
-		methods: {			
+		methods: {
+								
 			update: function(){
 				//console.log('Node: Start resize ' + this.mTitle);
 				var oldSize = {w: this.mWidth, h: this.mHeight}
@@ -194,18 +207,7 @@
 					return this.$refs['output_' + name][0];
 				return this.outputs.find(pin => pin.name === name);
 			},
-			
-			buildContextMenu: function(menu){
-				console.log('1');
-				menu.addTitle('Node');
-				menu.addItem({id: 'delete', title: 'Delete', desc: 'Delete this node', callback: this.remove});
-				menu.addItem({id: 'duplicate', title: 'Duplicate', desc: 'Duplicate this node', callback: function(){alert('duplicate')}});
-				menu.addSeparator();
-				menu.addItem({id: 'break', title: 'Break All links', callback: function(){alert('break')}});
-				menu.addItem({id: 'selectall', title: 'Select All linked nodes', disabled: true, callback: function(){alert('selectall')}});
-				var s = menu.addSubMenu('submenu');
-				s.addItem({id: 'breakzz', title: 'Break linkszz', callback: function(){alert('breakzzz')}});
-			}
+
 		},
 	};
 </script>
@@ -215,6 +217,7 @@
 		cursor: move;
 		stroke: none;
 		fill: none;
+		outline: none;
 
 		-webkit-user-select: none; /* Safari */        
 		-moz-user-select: none; /* Firefox */
@@ -261,4 +264,16 @@
 	.exNode text.exNodeSubtitle{
 		fill: #999;
 	}
+	
+	
+	
+	.exWorksheet.selectEvent .exNode {
+		pointer-events: none;
+	}
+	
+	.exWorksheet .exNode.selected > rect:first-child {
+		stroke-width: 3px;
+		stroke: url(#selectionHandlerStroke);
+	}
+	
 </style>

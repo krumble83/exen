@@ -14,7 +14,8 @@ body, html{
 }
 
 
-.rowParent, .columnParent{
+.rowParent, 
+.columnParent{
 	display: -webkit-box;
 	display: -ms-flexbox;
 	display: -webkit-flex;
@@ -57,7 +58,7 @@ body, html{
 	align-self: auto;
 }
 
-.vDivider{
+.flexChild.vDivider{
 	-webkit-box-flex: 0;
 	-webkit-flex: 0 0 auto;
 	-ms-flex: 0 0 auto;
@@ -67,7 +68,7 @@ body, html{
 	margin: 1px;
 }
 
-.hDivider{
+.flexChild.hDivider{
 	-webkit-box-flex: 0;
 	-webkit-flex: 0 0 auto;
 	-ms-flex: 0 0 auto;
@@ -77,61 +78,63 @@ body, html{
 	margin: 1px;
 }
 
-.hDivider.hover,
-.hDivider:hover,
-.vDivider.hover,
-.vDivider:hover{
+.flexChild.hDivider.hover,
+.flexChild.hDivider:hover,
+.flexChild.vDivider.hover,
+.flexChild.vDivider:hover{
 	background-color: #777;
 }
 
-#toolbar,
-#footer,
-#right,
-#header,
-#left,
-#leftBottom
-#center {
+.panel.toolbar,
+.panel.footer,
+.panel.right,
+.panel.header,
+.panel.left,
+.panel.leftBottom
+.panel.center {
 	-webkit-box-flex: 0;
 	-webkit-flex: 0 0 auto;
 	-ms-flex: 0 0 auto;
 	flex: 0 0 auto; 	
 }
 
-#toolbar{
+.panel.toolbar{
 	height: 54px;
 	margin-bottom: 5px;
 	border-radius: 7px;
 	background-color: #606060;
 }
 
-#footer{
+.panel.footer{
 	height: 150px;
 	padding-top: 27px;
 }
 
-#right{
+.panel.right{
 	width: 180px;
-	max-width: 300px;
+	min-width: 170px;
+	max-width: 350px;
 	background-color: #606060;
 	overflow: hidden;
 }
 
-#header{
+.panel.header{
 
 	height: 24px;
 }
 
-#left{
+.panel.left{
 	-webkit-box-flex: 0;
 	-webkit-flex: 0 0 auto;
 	-ms-flex: 0 0 auto;
 	flex: 0 0 auto; 
 	width: 250px;
-	max-width: 300px;
+	min-width: 170px;
+	max-width: 350px;
 	overflow: hidden;
 }
 
-#leftBottom{
+.panel.leftBottom{
 	-webkit-box-flex: 0;
 	-webkit-flex: 0 0 auto;
 	-ms-flex: 0 0 auto;
@@ -140,7 +143,7 @@ body, html{
 	background-color: #606060;
 } 
 
-#center{
+.panel.center{
 	padding-top: 27px;
 	height: 100%;
 	overflow-x: hidden;
@@ -151,13 +154,13 @@ body, html{
 	width:100%;
 }
 
-#leftTop,
-#toolbar{
+.panel.leftTop,
+.panel.toolbar{
 	border: 1px solid #606060;
 }
 
 
-.uiPaneltitle {
+.panel .title {
 	height: 22px;
 	padding-left: 5px;
 	margin-right: -25px;

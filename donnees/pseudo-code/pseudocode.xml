@@ -1,0 +1,96 @@
+
+<include>
+	<file path="" as="" />
+</include>
+
+<declare>
+	<var name="" type="" flags="0">
+		<assign></assign>
+	</var>
+</declare>
+
+<function class="" name="" flags="0">
+	<params>
+		<param[var] />
+	</params>
+	<body>
+		<fragment />
+		<return>
+			<value />
+		</return>
+	</body>
+</function>
+
+
+<call name="" class="" />
+
+
+<condition>
+	<var></var>
+	<operator></operator>
+	<value></value>
+</condition>
+
+
+<literal type=""></literal>
+
+<if>
+	<conditions>
+		<condition... />
+	</conditions>
+	
+	<then></then>
+	<elseif></elseif>
+	<else></else>
+</if>
+
+<loop type="for|while|do">
+	<var></var>
+	<operator></operator>
+	<value></value>
+	<then>
+		<continue />
+		<break />	
+	</then>
+</loop>
+
+<for>
+	<init>
+		<variable />
+		<operator />
+		<value />
+	</init>
+	<while>
+		<condition />
+	</while>
+	<iteration></iteration>
+	<body>
+		<continue />
+		<break />	
+	</body>
+</for>
+
+<switch name="">
+	<case>
+		<value></value>
+		<body></body>
+	</case>
+	<default>
+		<body></body>
+	</default>
+</switch>
+
+
+
+<body>
+
+	<for></for>
+	<assign></assign>
+
+
+</body>
+
+
+<footer>
+
+</footer>

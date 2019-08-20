@@ -5,6 +5,7 @@
 			<label :for="'tabinfo_' + tab.name"><img :src="tab.img" style="vertical-align:bottom;padding-right:5px;" /><span>{{tab.name}}</span><img v-if="tab.closable" :src="closeImg" @click.stop="close" style="padding-top:5px;padding-left:7px;float:right" /></label>
 			<div :id="'tabinfo_' + tab.name + '_content'" class="content">{{tab.name}}</div>
 		</div>
+		<slot />
 	</div>
 </template>
 

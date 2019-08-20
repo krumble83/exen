@@ -1,157 +1,143 @@
+<template>
+	<uitabs 
+		id="projecttabs"
+		:flags="flags"
+		storeobject="projectcontents"
+		@tab:focus="componentFocus"
+		@tab:close="componentClose"
+	>
+		<component 
+			slot="begin"
+			:is="'defaultTab'"
+			:name="'Project'"
+			panel="project"
+			tabsname="projecttabs"
+			checked="checked"
+		>
+		</component>
+	</uitabs>
+</template>
+
 <script>
 
-	Vue.use(Vuex);
-	import ProjectStore from '../store/project.js'
+	var onKeyDown = function(evt){
+		//console.dir(document.activeElement);
+		if(!document.activeElement.__vue__ || !document.activeElement.__vue__.onKeyDown)
+			return;
+		const handled = document.activeElement.__vue__.onKeyDown(evt);
+		if(!handled){
+			//send event to parent
+			var parent = document.activeElement.__vue__.$parent;
+			while (parent){
+				if(parent.onKeyDown){
+					if(parent.onKeyDown(evt))
+						break;
+				}
+				parent = parent.$parent;
+			}
+		}
+	}
 	
-	import infotabs from './infotabs.vue';
-	import uigraphtabs from './tabs.vue';
-	import uitree from './tree.vue';
-	import uiproperties from './properties.vue';
-	import uitbbutton from './toolbarbutton.vue';
-	import uimenu from '../cmon-vues/contextmenu.vue';
-	import uimenuitem from '../cmon-vues/contextmenu.item.vue';
-	import uidialog from '../cmon-vues/dialog.vue';
-	
-	//import undo from '../cmon-vues/undo.vue';
-	
+	var onKeyUp = function(evt){
+		if(!document.activeElement.__vue__ || !document.activeElement.__vue__.onKeyUp)
+			return;
+		const handled = document.activeElement.__vue__.onKeyUp(evt);
+		if(!handled){
+			//send event to parent
+			var parent = document.activeElement.__vue__.$parent;
+			while (parent){
+				if(parent.onKeyUp){
+					if(parent.onKeyUp(evt))
+						break;
+				}
+				parent = parent.$parent;
+			}
+		}
+	}
+
+
+	import ProjectStore from '../store/store.project.js'
 	var store = new Vuex.Store(ProjectStore);
-	store.dispatch('initUndo');
+		
+	import uitabs from './tabs.vue';	
+	import defaultTab from './tabs.tab.vue';
 	
 	export default {
-		components: { uigraphtabs, uitree, uiproperties, uitbbutton, infotabs, uimenu, uimenuitem, uidialog},
+		components: {uitabs, defaultTab},
 		mixins: [],
 		el: '#app',
 		store,
 		
 		data: function(){
 			return {
-				tabs: [],
-				tabsId: 1,
-				treeSelected: false,
+				project: false,
+				tabOrder: 1,
+				debug: false,
+				flags: F_FOCUSABLE,
 			}
+		},
+		
+		computed: {
+			
+			//contents: $tore.state.components,
+			
+			projectcontents: function(){ 
+				return _.orderBy(this.$store.state.components, 'tabOrder')
+			},
 		},
 		
 		mounted: function(){
-			this.$refs.infoTabs.tabs.push({name: 'Compile Result', checked: true});
-			this.$refs.infoTabs.tabs.push({name: 'Search Result'});
-			this.$on('tree:select', this.treeClick);
+			document.addEventListener('keydown', onKeyDown);
+			document.addEventListener('keyup', onKeyUp);
+			
+			document.addEventListener('contextmenu', function(evt){
+				evt.preventDefault();
+			});
+			
+			if(this.debug){
+				document.addEventListener('focusin', function(e) { 
+					console.log('focusin!', document.activeElement);
+				});
+			}
 		},
 		
 		beforeDestroy: function(){
-			this.$off('tree:select', this.treeClick);
+			document.removeEventListener('keydown', onKeyDown);
+			document.removeEventListener('keyup', onKeyUp);
 		},
-		/*
-		computed: {		
-			tabGraphs: function () {
-				return _.orderBy(this.$store.state.graphs, '$tabOrder');
-			}
-		},
-		*/
+
 		watch: {
-			treeSelected: function(val){
-				const proptree = this.$refs.properties;
-				if(!val && proptree)
-					proptree.items.splice(0);
-			}
 		},
 		
-		methods: {			
-			hasGraph: function(name){
-				return typeof this[name] !== 'undefined';
+		methods: {
+			
+			addTab: function(data){
+			},
+		
+			componentFocus: function(tab, evt){
+				//console.log('componentFocus', evt);
 			},
 			
-			treeClick: function(evt, data){
-				//console.log(evt.target.type)				
-				if(this.treeSelected && (!evt || this.treeSelected != evt.target)){
-					this.treeSelected.classList.remove('selected', 'focused');
-					this.treeSelected == false;
-				}
-				if(evt && evt.target)
-					this.treeSelected = evt.target;
-
+			componentClose: function(tab, evt){
+				//var selected = this.$children[0].getSelected();
+				this.$store.commit('updateComponent', {name: tab.name, props: {tabOrder: 0}});
+				//this.$children[0].selectTab(selected.name);
 			},
+			
+			
+			
+			
+			
+			
 			
 			undo: function(){
 				this.$store.dispatch('undo');
 			},
 
 			redo: function(){
-				this.$store.dispatch('redos');
+				this.$store.dispatch('redo');
 			},
 
-			/*
-			rename: function(data, el){
-				const me = this
-				, ret = {
-					success: function(cb){this.succesCb = cb; return this},
-					validate: function(cb){this.validateCb = cb; return this}
-				}
-				var input = document.querySelector('input.editor');
-				
-				if(input)
-					input.blur();
-
-				if(data.flags && ((data.flags & F_NO_RENAME) == F_NO_RENAME))
-					return ret;
-				
-				input = document.createElement('input');				
-				input.setAttribute('type', 'text');
-				input.setAttribute('class', 'editor');
-				input.setAttribute('required', '');
-				el.prepend(input);
-				input.value = data.name;
-				//input.setAttribute('draggable', true);
-							
-				const prevent = function(e){
-					e.preventDefault();
-					e.stopPropagation();
-				}
-				
-				const stop = function(e){
-					e.stopPropagation();
-				}
-				
-				const change = function(evt){
-					//console.log('onchange');
-					const parent = input.parentNode;
-					parent.removeChild(input);
-					if(input.checkValidity() && typeof ret.succesCb === 'function')
-						ret.succesCb(input);
-				}
-				
-				const keyup = function(evt){
-					//console.log('keyup', evt);
-					if(typeof ret.validateCb === 'function'){
-						if(ret.validateCb(evt, input) == false)
-							input.setCustomValidity('name allready in use');
-						else
-							input.setCustomValidity('');
-					}
-					if(!input.checkValidity())
-						return;
-					if(evt.keyCode == 13)
-						input.blur();
-				}
-				
-				input.ondragstart = prevent;
-				input.ondblclick = stop;
-				input.onclick = stop;
-				input.onkeyup = keyup;
-				input.onchange = function(){input.checkValidity();}
-				//input.onchange = change;
-				input.pattern="[a-zA-Z_$][0-9a-zA-Z_$]*";
-				input.onblur = change;
-				
-				this.$nextTick(function(){
-					input.focus();
-					input.select();
-					el.classList.remove('selected', 'focused');
-					me.treeSelected = false;
-				});
-
-				return ret;
-			},
-			*/
 			closeTab: function(tab){
 				//console.log('closezz ', tab);
 				this.$store.commit('changeGraph', {name: tab.name, props: {$tabOrder: 0}});
@@ -222,9 +208,43 @@
 						
 		},
 	}
+	
+	
 </script>
 
 <style>
+
+	#projecttabs > .tab > label{
+		border-radius: 9px 7px 0 0;
+		background-color: transparent ;
+		line-height: 30px;
+		padding-top: 0;
+		height: 0;
+		border-bottom: 24px solid #434343;
+		border-left: 7px solid transparent;
+		border-right: 7px solid transparent;		
+	}
+	
+	#projecttabs.tabs > .tab > .content {
+		top: 27px;
+	}
+
+	#projecttabs.tabs > .tab > input[type=radio]:checked ~ label {
+		border-bottom: 24px solid #606060;
+		/*z-index: 2;*/
+	}
+
+	#projecttabs.tabs > .tab > label > img:first-child {
+		padding-top: 0;
+		padding-bottom: 6px;
+	}
+
+	#projecttabs.tabs > .tab > label > img:last-child {
+		padding-top: 12px;
+		padding-left: 10px;
+		float: right;
+	}
+
 
 	.width0{
 		width: 0 !important;

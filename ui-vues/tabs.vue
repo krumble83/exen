@@ -1,79 +1,153 @@
 <template>
-	<div class="tabs">
+	<div class="tabs" :id="id">
+		<slot name="begin" />
 		<component v-for="tab in orderedTabs"
-			v-if="tab.$tabOrder > 0"
-			:is="tab.ctor ? tab.ctor : 'uigraphtab'"
-			:closable="closable"
-			@click="tabClick"
+			v-if="tab.tabOrder > 0"
+			:is="tab.tabCtor ? tab.tabCtor : 'defaultTab'"
+			:tabindex="$hasFlag('F_FOCUSABLE') ? '-1' : ''"
+			:tabsname="mId"
+			@focus="onTabClick"
+			@close="onTabClose"
 			v-bind="tab"
+			:ref="tab.name"
 		>
+		<slot name="end" />
 		</component>
 	</div>
 </template>
 
 <script>
-	import {genUid} from '../utils';
-	import uigraphtab from './tab.graph.vue';
+	import defaultTab from './tabs.tab.vue';
 	import _ from 'amd!lodash';
 
 	export default {
-		components: { uigraphtab },
+		components: { defaultTab },
+		
 		props: {
-			id: {},
-			name: {},
-			closable: Boolean,
+			id: String,
+			name: String,
+			flags: Number,
+			//closable: Boolean,
+			storeobject: String,
 		},
 		
 		data: function(){
 			return {
-				mId: this.id || genUid()
+				mId: this.id || this.$uid(),
+				selected: false,
+				dndItem: false,
+				dndProxy: false,
 			}
 		},
 		
 		computed: {
-			tabs: function(){return this.$store.state.graphs},
-			
 			orderedTabs: function () {
-				return _.orderBy(this.tabs, '$tabOrder')
+				return this.$parent[this.storeobject];
 			}
 		},
 		
 		watch: {
-			tabs: function(){
-				//console.log('tabs change');
-				return;
+			orderedTabs: function(){
+				var me = this
+				, selected = this.getSelected();
+
 				this.$nextTick(function(){
-					console.log(this.$el.querySelector('input:checked'));
-				});
-				
+					if(selected && me.orderedTabs.find(item => item.name == selected.name))
+						me.selectTab(selected);
+					else if(me.$children[0]) {
+						me.selectTab(me.$children[0]);
+					}
+				});	
 			}
 		},
 		
 		methods: {
+			onTabClick: function(tab, evt){
+				this.selected = tab;
+				this.$emit('tab:focus', tab, evt);
+			},
+
+			onTabClose: function(tab, evt){
+				this.$emit('tab:close', tab, evt);
+			},
+
 			closeTab: function(tab){
-				console.log(tab);
-				this.$parent.closeTab(tab);
-				//this.$children[this.$children.length].checked
+				tab.close();
+			},
+			
+			getSelected: function(){
+				return this.selected;
+				
 			},
 			
 			getTab: function(data){
-				return this.tabs.find(tab => tab.name == data.name);
+				if(typeof data == 'string')
+					return this.$children.find(tab => tab.name == data);
+				else if(data && data.name)
+					return this.$children.find(tab => tab.name == data.name);
+				console.assert(false);
 			},
 			
-			focusTab: function(data){
-				var me = this;
-				this.$children.forEach(function(el){
-					if(el.name == data.name){
-						el.checked = true;
-						me.$emit('tab:focus');
-					}
-				});
+			selectTab: function(tab){
+				if(typeof tab == 'string')
+					tab = this.$children.find(item => item.name == tab);
+				console.assert(tab);
+				tab.select();
 			},
 			
-			tabClick: function(evt){
-				this.$emit('tab:focus');
-				console.log('tabClick');
-			}
+			onDragStart: function(item, evt){
+				//console.log('startDrag', item, evt);
+				evt.dataTransfer.setData('text/plain', '');
+				this.dndItem = item;
+				setTimeout(function(){
+					item.$el.querySelector('label').style.display = "none";
+				}, 10);
+				if(!this.dndProxy){
+					this.dndProxy = document.createElement('div');
+					this.dndProxy.style.width = '5px';
+					this.dndProxy.style.height = '20px';
+					this.dndProxy.style.backgroundColor = '#f00';
+					this.dndProxy.className = 'tab';
+				}
+			},
+
+			onDragOver: function(item, evt){
+				//console.log(this.$el.offsetLeft, evt.clientX);
+				//console.log(this.$el.contains(item.$el));
+				if(!this.$children.find(item => item.$el = this.dndItem.$el))
+					return;
+				
+				if(evt.clientX > (item.$el.offsetLeft + (item.$el.clientWidth /2))){
+					if(item.$el.nextSibling)
+						this.$el.insertBefore(this.dndProxy, item.$el.nextSibling);
+					else
+						this.$el.appendChild(this.dndProxy);
+				}
+				else
+					this.$el.insertBefore(this.dndProxy, item.$el);
+			},
+			
+			onDrop: function(item, evt){
+				if(!this.$children.find(item => item.$el = this.dndItem.$el))
+					return;
+				return;
+
+
+				if(evt.clientX > (item.$el.offsetLeft + (item.$el.clientWidth /2))){
+					if(item.$el.nextSibling)
+						this.$el.insertBefore(this.dndProxy, item.$el.nextSibling);
+					else
+						this.$el.appendChild(this.dndProxy);
+				}
+				else
+					this.$el.insertBefore(this.dndProxy, item.$el);				
+			},
+
+			onDragEnd: function(evt){
+				//console.log('dragend');
+				this.$el.removeChild(this.dndProxy);
+				//this.dndProxy = false;
+			},			
 		}
 	
 	}
@@ -81,9 +155,10 @@
 
 <style>
 	.tabs {
+		
 		position: relative;
 		height: 100%;
 		white-space: nowrap;
+		
 	}
-
 </style>

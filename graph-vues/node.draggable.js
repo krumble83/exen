@@ -1,0 +1,89 @@
+
+export const NodeDraggable = {
+	
+	created: function(){
+		this.$on('mouse:leftdown', this.dragMouseDown);
+	},
+	
+	beforeDestroy: function(){
+		this.$off('mouse:leftdown', this.dragMouseDown);
+	},
+	
+	data: function(){
+		return {
+			classObject: {
+				dragging: false,
+			}
+		}
+	},
+	
+	watch: {
+		x : function(val){this.mX = val},
+		y : function(val){this.mY = val},
+	},
+	
+	methods: {
+		dragMouseDown(evt) {				
+			//console.log('drag node', this);
+			const me = this;
+
+			// start drag only if cursor is moved when mouse button is down
+			setTimeout(function(){
+				
+				function drag(){
+					console.log('start dragzzzzzz');
+					var point = me.getSvgPoint()
+					, startPos = {x: me.x, y: me.y};
+					
+					me.getMousePoint(evt, point);
+					
+					const delta = {x: point.x - (me.mX + 12), y: point.y - (me.mY + 12)}
+					
+					const updateFn = () => {
+						if (me.classObject.dragging) 
+							requestAnimationFrame(updateFn);
+
+						me.mX = point.x - delta.x;
+						me.mY = point.y - delta.y;
+
+						me.$emit('dragmove', evt);
+					}
+					
+					const moveFn = (evt) => {
+						me.getMousePoint(evt, point);
+						//me.$emit('dragevent', evt);
+					}
+					
+					const stopFn = (evt) => {
+						console.log('stopdrag');
+						me.classObject.dragging = false;
+						document.removeEventListener('mousemove', moveFn);
+						if(me.mX != startPos.x || me.mY != startPos.y){
+							me.$worksheet.store.commit('changeNodeProperty', {node: me.id, props: {x: me.mX, y: me.mY}});
+							me.$emit('dragend', evt, me);
+							//this.$worksheet.$emit('node:dragend', evt, this);
+						}
+						evt.stopPropagation();
+					}
+					
+					document.addEventListener('mouseup', stopFn, {once: true, useCapture: true});
+					document.addEventListener('mousemove', moveFn);						
+
+
+					me.classObject.dragging = true;
+					me.$emit('dragstart', evt);
+					me.$worksheet.$emit('node:dragstart', me, evt);
+					
+					requestAnimationFrame(updateFn);
+					moveFn(evt);					
+				}
+				
+				document.addEventListener('mousemove', drag, {once:true});
+				document.addEventListener('mouseup', function(){
+					document.removeEventListener('mousemove', drag);
+				}, {once:true, useCapture: true});
+				
+			}, 20);
+		},
+	}
+}

@@ -1,6 +1,6 @@
 <template>
 	<svg 
-		:id="id"
+		:id="gid"
 		:class="classObject"
 		:x="x" 
 		:width="mWidth" 
@@ -14,7 +14,6 @@
 		@mouseenter="$emit('mouse:enter', $event)"
 		@mouseleave="$emit('mouse:leave', $event)"
 		@mouseup.right.stop="$emit('mouse:rightup', $event)" 
-		@contextmenu.prevent.stop="$emit('mouse:context', $event)"
 		overflow="visible"
 		v-inline.vertical="5"
 	>
@@ -22,12 +21,12 @@
 		<template v-if="type == 'output'">
 			<circle v-if="!isarray" cx="-13" :cy="mHeight/2" r="5" :stroke="color" :fill="color" class="pin" ref="pin" />
 			<rect v-if="isarray" x="-19" y="4" width="10" height="11" class="pin exArray" ref="pin" :stroke="color" stroke-width="4" :fill="'url(#pinArrayPattern' + color.replace('#', '_') + ')'" />
-			<text x="19" y="14" id="zz" transform="translate(-47)" text-anchor="end" class="label" ref="label">{{label}}</text>
+			<text x="19" y="14" id="zz" transform="translate(-47)" text-anchor="end" class="label" ref="label">{{cLabel}}</text>
 		</template>
 		<template v-else>
 			<circle v-if="!isarray" cx="13" cy="10" r="5" :stroke="color" :fill="color" class="pin" ref="pin" />
 			<rect x="8" y="4" v-if="isarray" width="11" height="10" class="pin exArray" ref="pin" :stroke="color" stroke-width="4" :fill="'url(#pinArrayPattern' + color.replace('#', '_') + ')'" />
-			<text x="26" y="14" class="label" ref="label">{{label}}</text>
+			<text x="26" y="14" class="label" ref="label">{{cLabel}}</text>
 		</template>
 		<component v-if="editor && classObject.linked==false" :is="editor.ctor" class="exEditor" />
 	</svg>
@@ -35,9 +34,13 @@
 
 <script>
 
-	module.exports = {
-		inject: ['addSvgDef'],
-		mixins: [SvgBase, PinDrawLink, ContextMenu],
+	import {SvgBase} from './mixins.js'
+	import {PinContextMenu} from './contextmenu.js'
+	
+	export default {
+		//inject: ['addSvgDef'],
+		mixins: [SvgBase, PinContextMenu],
+		//mixins: [SvgBase, PinDrawLink, ContextMenu],
 		props: {
 			name: {type: String, required: true},
 			height: {default: 20},
@@ -61,17 +64,17 @@
 					linkable: true,
 					linked: false,
 				},
-				//mName: this.name,
-				//mLabel: this.label,
-				//mType: this.type,
-				//mColor: this.color,
-				mEditor: this.editor,
+				dEditor: this.editor,
 				mLinkCount: 0,
 			}
 		},
 
 		computed: {
-			$node: function(){return this.$parent;},
+			$worksheet: function(){return this.$parent.$parent},
+			$node: function(){return this.$parent},
+			
+			cLabel: function(){ return this.label || this.name},
+			
 			center: function(){
 				var b = this.$refs.pin.getBoundingClientRect();
 				return {x: b.left-3, y: b.top-3};

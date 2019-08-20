@@ -3,6 +3,7 @@
 		:id="id"
 		:style="styleObject" 
 		:class="classObject" 
+		tabindex="-1"
 		xmlns="http://www.w3.org/2000/svg" 
 		ref="worksheet" 
 		@mousedown="setFocus(true)"
@@ -13,6 +14,8 @@
 
 		@mousedown.right="$emit('mouse:rightdown', $event)"
 		@mouseup.right="$emit('mouse:rightup', $event)"
+		
+		ondrop="this.__vue__.onDrop(event)"
 	>
 		<defs>
 			<template v-for="(def, idx) in defs" :key="def.id">
@@ -26,7 +29,7 @@
 		<slot />
 
 		<rect width="100%" height="100%" class="background" />
-		<g class="exViewport" ref="viewport">
+		<g class="exViewport" ref="viewport" @dragover="allowDrop" >
 			<rect width="100000" height="100000" transform="translate(-50000,-50000)" :fill="'url(#grid_' + id + ')'" />
 			<g class="exLinks" ref="linksEl">
 				<component v-for="link in links" :key="link.id" 
@@ -47,7 +50,7 @@
 
 			<g class="exNodes" ref="nodesEl">
 				<component v-for="node in nodes" :key="node.id" 
-					:is="node.ctor ? node.ctor : 'ex-node'"
+					:is="node.ctor ? node.ctor : 'ExNode'"
 					ref="nodes"
 					class="exNode"
 					v-bind="node"					
@@ -70,54 +73,76 @@
 	
 <script>
 
-	import {genUid} from '../utils';
 	import ExNode from './node.vue';
+	import {EventBus} from '../cmon-js/event-bus.js';
+	import {WorksheetSelection} from './worksheet.selection.js'
+	import {KeyboardEvents} from './keyboardevents.js'
 
 	export default {
-		mixins: [],
+		mixins: [WorksheetSelection, KeyboardEvents],
 		components: {ExNode},
 		//mixins: [VueUndoRedo, WorksheetGrid, WorksheetSelection, WorksheetTooltip, WorksheetLibraryMenu],
 		//inject: ['getUid'],
 		
+		provide: function(){
+			const me = this;
+			return {
+				getWorksheet: function(){
+					return me;
+				}
+			}
+		},
+		
 		props: {
-			id: {type: String, default: genUid()},
+			id: {type: String, default: function(){return Vue.options.methods.$uid()}},
+			store: Object,
+			features: {type: Array, default: function(){return []}},
 		},
 		
 		data: function(){
 			return {
 				classObject: {
-					focus: true,
+					exWorksheet: true,
 				},
-				styleObject: {},
+				styleObject: {
+					
+				},
 				defs: [],
-				//selection: [],
 				workspace: [],
 				drawlink: false,
 			}
 		},
 		
 		computed: {
-			nodes: function() {
-				return this.$store.state.nodes;
-			},
-			
-			links: function(){
-				return this.$store.state.links;
-			},
-			
-			$worksheet: function(){ return this; }
+			nodes: function(){return this.store.getters.getNode()},
+			links: function(){return this.store.getters.getLink()},
 		},
 
 		created: function(){
-			var me = this;
-			//this.$parent.$on('undo', function(){me.undo()});
-			//this.$parent.$on('redo', function(){me.redo()});
+
 		},
 	  
 		methods: {
+			
+			allowDrop: function(evt){
+				evt.preventDefault();
+			},
+			
+			onDrop: function(evt){
+				console.log('worksheetdrop: ', evt.dataTransfer.getData('text/eventbus'));
+				event.preventDefault();
+				EventBus.$emit(evt.dataTransfer.getData('text/eventbus'), this, evt);
+			},
+			
+			hasFeature: function(name){
+				return this.features.indexOf(name) != -1;
+			},
+			
 			addNode: function(data){
+				/*
 				if(!data.id)
 					data.id = genUid('node');
+				*/
 				//this.nodes.push(data);
 				this.$emit('node:add', data);
 				this.$store.commit('addNode', data);
@@ -186,13 +211,13 @@
 						return found;
 				}
 				else
-					data.props.id = genUid();
+					data.props.id = this.$uid();
 				
 				this.defs.push(data);
 				return data.id;
 			},
 			
-			getWorksheet: function(){
+			getWorksheetZ: function(){
 				return this;
 			},
 			
@@ -205,8 +230,10 @@
 			},
 
 			setFocus: function(focus){
-				console.log('setFocus');
-				this.$el.parentNode.focus();
+				console.log('setFocus worksheet');
+				this.$el.focus();
+				return;
+
 				var i = document.createElement('input');
 				i.setAttribute('display', 'none');
 				document.body.appendChild(i);
@@ -260,3 +287,48 @@
 		},
 	};
 </script>
+
+<style>
+.exWorksheet{
+	width:99.5%;
+	height:99.5%;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	border: 1px solid #000;
+	opacity: 0.9;
+}
+
+.exWorksheet .background{
+	fill: #262626;
+}
+
+.exWorksheet:focus {
+	border: 1px solid #00f;
+	opacity: 1;
+}
+
+
+.exWorksheet .medGrid{
+	stroke: #161616;
+	stroke-width: 1;
+}
+
+.exWorksheet .smallGrid{
+	stroke: #343434;
+	stroke-width: 1;
+	fill: #262626;
+}
+
+
+
+
+
+.exWorksheet .exSelectionRectangle{
+	stroke: #fff;
+	stroke-width: 1;
+	fill: none;
+}
+
+</style>

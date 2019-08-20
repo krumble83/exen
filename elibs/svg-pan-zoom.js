@@ -960,9 +960,16 @@ SvgPanZoom.prototype.handleMouseDown = function(evt, prevEvt, source) {
   } else {
     // Pan mode
     this.state = 'pan'
+	this.options.startPan(this.getPan(), evt);
     this.firstEventCTM = this.viewport.getCTM()
     this.stateOrigin = SvgUtils.getEventPoint(evt, this.svg).matrixTransform(this.firstEventCTM.inverse())
   }
+}
+
+
+SvgPanZoom.prototype.stopPan = function() {
+	this.options.endPan(this.getPan());
+    this.state = 'none'
 }
 
 /**
@@ -972,6 +979,10 @@ SvgPanZoom.prototype.handleMouseDown = function(evt, prevEvt, source) {
  */
 SvgPanZoom.prototype.handleMouseMove = function(evt) {
   if (this.options.preventMouseEventsDefault) {
+	  /*
+	  if(this.state == 'none')
+		  return;
+	  */
     if (evt.preventDefault) {
       evt.preventDefault()
     } else {
@@ -1004,6 +1015,7 @@ SvgPanZoom.prototype.handleMouseUp = function(evt) {
 
   if (this.state === 'pan') {
     // Quit pan mode
+	this.options.endPan(this.getPan(), evt);
     this.state = 'none'
   }
 }
@@ -1232,7 +1244,11 @@ SvgPanZoom.prototype.getPublicInstance = function() {
     , getZoom: function() {return that.getRelativeZoom()}
       // CTM update
     , setOnUpdatedCTM: function(fn) {that.options.onUpdatedCTM = fn === null ? null : Utils.proxy(fn, that.publicInstance); return that.pi}
-      // Reset
+    
+    , stopPan: function() {that.stopPan(); return that.pi}
+
+
+	// Reset
     , resetZoom: function() {that.resetZoom(); return that.pi}
     , resetPan: function() {that.resetPan(); return that.pi}
     , reset: function() {that.reset(); return that.pi}

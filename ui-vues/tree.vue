@@ -1,18 +1,25 @@
 <template>
 	<ul class="uiTree">
 		<li style="width:100%" class="main">
-			<input type="checkbox" :id="'folder_' + label" checked="true">
-			<div v-if="button" :class="{add: true, disabled: button.disabled}" @click.stop.prevent="btnClick"><img src="ui-img/add.png" /><span>{{button.text}}</span></div>
-			<label :for="'folder_' + label">{{label}}</label>
+			<input type="checkbox" :id="'folder_' + uid" checked="true">
+			<div v-if="button" 
+				:class="{add: true, disabled: button.disabled}" 
+				@click.stop.prevent="onBtnClick"
+			>
+				<img src="ui-img/add.png" />
+				<span>{{button.text}}</span>
+			</div>
+			<label :for="'folder_' + uid">{{label}}</label>
 			<ul>
 				<component v-for="(item,id) in items" :key="id"
 					:is="item.ctor ? item.ctor : 'treeitem'"
 					v-bind="item"
-					ref="nodes"
-					:index="id"
-					:onClick="onClick"
-					:onContext="onContext"
-					:onDblClick="onDblClick"
+					@focus="onItemClick"
+					@open="onItemOpen"
+					@delete="onItemDelete"
+					@cmenu="onContextMenu"
+					@rename:start="onRenameStart"
+					@worksheetdrop="onWorksheetdrop"
 				>
 				</component>
 			</ul>
@@ -30,85 +37,69 @@
 		props: {
 			label: String,
 			button: {},
-			draggable: {type: Boolean, default: true},
+			//draggable: {type: Boolean, default: true},
 			selectable: {type: Boolean, default: true},
 			items: {default: function(){return[]}},
 		},
 		
 		data: function(){
 			return {
-				currentSelected: false,
-				timer: false,
+				uid: this.$uid(),
 			}
 		},
 		
+		computed: {
+			
+		},
+		
+		watch: {
+		},
+		
 		mounted: function(){
-			var me = this;
-			if(!this.selectable)
-				return;
-			document.addEventListener('mousedown', function(evt){
-				if(evt.target.classList.contains('focused', 'child'))
-					return;
-				if(me.$el.querySelector('.focused'))
-					me.$el.querySelector('.focused').classList.remove('focused');			
-			}, {useCapture: true})
 		},
 		
 		methods: {
-			btnClick: function(evt){
-				//console.log(this.button.action);
-				this.$emit('action:' + this.button.action);
-				//this.$parent[this.button.action]();
+			/*
+			getLabel: function (name) {
+				return name.split(/(?=[A-Z])/).join(' ');// + (this.edited ? '&nbsp;*' : '');
+			},
+			*/
+			
+			getItem: function(item){
+				if(typeof(item == 'string'))
+					return this.$children.find(it => it.name == item);
+				else if(item.name)
+					return this.$children.find(it => it.name == item.name);
 			},
 			
-			onDblClick: function(evt, id){
-				//console.log('dblclick', id);
-				console.assert(this.items[id]);
-				clearTimeout(this.timer);
-				this.$emit('dblclick', evt, this.items[id]);
+			onWorksheetdrop: function(item, worksheet, evt){
+				this.$emit('item:worksheetdrop', item, worksheet, evt);
 			},
-			
-			onClick: function(evt, id){
-				if(!this.selectable)
-					return;
-				clearTimeout(this.timer);
-				if(evt.target.classList.contains('focused')){
-					console.log('focused');
-					const me = this;
-					this.timer = setTimeout(function(){
-						me.renameItem(evt, me.items[id]);
-					}, 200);
-					return;
-				}
-			
-				if(this.$el.querySelector('.selected'))
-					this.$el.querySelector('.selected').classList.remove('selected', 'focused');
 
-				evt.target.classList.add('selected', 'focused');				
-				this.$emit('select', evt, this.items[id]);
-				this.$parent.$emit('tree:select', evt, this.items[id]);
+			onBtnClick: function(evt){
+				this.$emit('button:' + this.button.action);
+			},
+
+			onItemClick: function(item, evt){
+				this.$emit('item:select', item, evt);
 			},
 			
-			onContext: function(evt, id){
-				this.onClick(evt, id);
-				clearTimeout(this.timer);
-				this.$emit('contextmenu', evt, this.items[id]);
+			onItemOpen: function(item, evt){
+				this.$emit('item:open', item, evt);
+			},
+
+			onItemDelete: function(item, evt){
+				this.$emit('item:delete', item, evt);
+			},
+
+			onContextMenu: function(item, menu, evt){
+				this.$emit('item:cmenu', item, menu, evt);
 			},
 			
-			renameItem: function(evt, data){
-				this.$emit('rename', evt, data);
-			},
-			
-			findNode: function(name){
-				this.$mount();
-				const node = this.$el.querySelector('li[name="' + name + '"]');
-				
-				if(!node)
-					return false;
-				return {data: this.items[node.getAttribute('index')], target: node};
-			},
-			
-			alert: function(){alert('a')}
+			onRenameStart: function(item, editor, evt){
+				this.$emit('item:rename:start', item, editor, evt);
+			}
+
 		}
 	}
 </script>
@@ -165,8 +156,10 @@
 	}
 
 	ul.uiTree li.main label {
+		/*
 		padding-top :2px;
 		z-index: 10;
+		*/
 	}
 
 	/*********************/
@@ -175,9 +168,12 @@
 		position: static;
 		margin-right: 5px;
 		margin-top: 1px;
+		margin-bottom: 4px;
 		pointer-events: all;
 		border-radius: 3px;
 		z-index: 10000;
+		font-size: 11px;
+		font-weight: normal;
 	}
 
 	ul.uiTree li.main .add span{
@@ -198,6 +194,7 @@
 	ul.uiTree li.main .add img{
 		border-radius: 3px;	
 		background-color: #444444;
+		vertical-align: bottom;
 	}
 
 	ul.uiTree li.main .add.disabled{
@@ -216,23 +213,28 @@
 	ul.uiTree li.child {
 		padding: 3px 0 3px 0;
 		white-space: nowrap;
+		outline: none;
 	}
 	
 	ul.uiTree li.child.selected,
 	ul.uiTree li.child.selected:hover{
 		background-color: #898989;
+		color: #000;
 	}
 
+	ul.uiTree li.child:focus,
 	ul.uiTree li.child.focused,
 	ul.uiTree li.child.focused:hover{
-		background-color: #dea309;
+		background-color: #dea309 !important;
 	}
 	
 	ul.uiTree li.child:hover{
 		background-color: #494949;
 	}
 
-
+	ul.uiTree li.child > span > img {
+		vertical-align: bottom;
+	}
 
 
 	ul.uiTree li.sep {
@@ -259,13 +261,6 @@
 		background-color: #3e3e3e;
 	}
 
-
-	.uiTree img{	
-		pointer-events: none;
-		vertical-align: bottom;
-	}
-
-
 	 
 	.uiTree label::before{
 		content: "\25B6";
@@ -287,6 +282,7 @@
 		position: absolute;
 		left: 36px;
 		padding: 0;
+		padding-left: 2px;
 		margin-top: -1px;
 		background-color: #e7e7e7;
 		border: 1px solid #444;
@@ -295,17 +291,25 @@
 		font-size: 12px;
 		outline: none;
 		width: 120px;
+		/*
 		-webkit-user-select: auto;
 		-moz-user-select: auto;
 		-ms-user-select: auto;
 		user-select: auto;
+		*/
 	}
 
-	.uiTree input.editor:invalid {
-		background-color: #ffc8c8;
-		border-color: #f00;
+	.uiTree li.child input.editor:invalid {
+		background-color: #ffc8c8 !important;
+		border-color: #f00 !important;
 	}
-	
+
+	.uiTree li.child input.editor:invalid:before {
+		content: "zzzzzzzzzzzz";
+		position: absolute;
+		left: 0px;
+	}
+		
 	.uiTree input.editor:valid {
 		background-color: #e7e7e7;
 	}

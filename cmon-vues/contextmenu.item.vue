@@ -1,10 +1,16 @@
 <template>
-	<li :id="id" :class="classObject" :title="desc" :shortcut="shortcut" @mousedown.stop="click" :data-shortcut="shortcut">
-		<a>{{title}}</a>
+	<li 
+		:class="classObject" 
+		:title="desc" 
+		@click.stop.capture="click" 
+		:data-shortcut="shortcut"
+	>
+		<a><img v-if="icon != null" :src="icon" />{{title}}</a>
 		<slot>
 			<ul v-for="(item, idx) in items" :key="idx"
 				:is="item.ctor ? item.ctor : 'uimenu'"
 				ref="items"
+				sub="true"
 				v-bind="item"
 			></ul>
 		</slot>
@@ -13,19 +19,16 @@
 
 <script>
 
-	//import uimenu from './contextmenu.vue';
-	import {genUid} from '../utils';
 	
 	export default {
-		//components: {Menu},
 		props: {
-			id: {type: String, default: genUid()},
 			classObject: {
 				disabled: false,
 			},
 			title: String,
 			desc: String,
 			shortcut: String,
+			icon: String,
 			callback: {},
 			emit: String,
 			action: String,
@@ -34,20 +37,22 @@
 		
 		data: function(){
 			return {
+				id: this.$uid(),
 				items: []
 			}
 		},
 
 		methods: {
 			click: function(evt){
-				console.log(this.$options);
+				console.log('menu click');
 				evt.stopPropagation();
+				if(this.action && typeof this.$root[this.action] === 'function')
+					this.$root[this.action]();
 				if(typeof this.callback === 'function')
 					this.callback();
 				if(this.emit)
 					this.$root.$emit(this.emit);
-				if(this.action && typeof this.$root[this.action] === 'function')
-					this.$root[this.action]();
+				this.$parent.close();
 			},
 		}
 	};

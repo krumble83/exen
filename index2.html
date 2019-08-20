@@ -4,124 +4,56 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="viewport" content="width=device-width">
 		<link rel="stylesheet" type="text/css" href="css/ui.css" media="all">
-		<link rel="stylesheet" href="elibs/fontawesome.css">
-		
-		
+		<link rel="stylesheet" href="elibs/fontawesome.css">	
 		<title>eXen</title>
-		<script src="utils/deepmerge.js"></script>
-		<script src="defs.js"></script>
-		<script src="stylebug.js"></script>
+
+		<script src="cmon-js/constants.js"></script>
+
 		<script src="elibs/vue.js"></script>
 		<script src="elibs/vuex.js"></script>
 		<script src="elibs/browser-vue-loader.js"></script>
 		<script src="elibs/svg-pan-zoom.js"></script>
-		<script src="utils/directives.js"></script>
+
+		<script src="cmon-js/extends.js"></script>
+		<script src="ui-js/extends.js"></script>
 		
 		<style>
 
 		</style>	
 	</head>
 	<body>
-		<div id="app" class="flexChild columnParent">
-			<div id="header" class="flexChild">
-				<uimenu class="horizontal" ref="menu">
-					<uimenuitem title="File">
-						<uimenu>
-							<uimenuitem title="New Project" action="newProject"></uimenuitem>
-							<uimenuitem title="Open Project" action="openProject"></uimenuitem>
-						</uimenu>
-					</uimenuitem>
-					<uimenuitem title="Edition">
-						<uimenu>
-							<uimenuitem title="Undo" action="undo" :disabled="$store.getters['undoRedo/canUndo']"></uimenuitem>
-							<uimenuitem title="Redo" action="redo" :disabled="$store.getters['undoRedo/canRedo']"></uimenuitem>
-							<uimenuitem class="sep"></uimenuitem>
-							<uimenuitem title="Cut"></uimenuitem>
-							<uimenuitem title="Copy"></uimenuitem>
-							<uimenuitem title="Paste"></uimenuitem>
-						</uimenu>
-					</uimenuitem>
-					<uimenuitem title="Project">
-						<uimenu>
-							<uimenuitem title="Compile"></uimenuitem>
-							<uimenuitem title="Project" class="sub">
-								<uimenu>
-									<uimenuitem styleObject="{left: '96%',top: '-23px'}" title="Compile"></uimenuitem>
-								</uimenu>
-							</uimenuitem>							
-						</uimenu>
-					</uimenuitem>
-					<uimenuitem title="?">
-						<uimenu>
-							<uimenuitem title="Help"></uimenuitem>
-							<uimenuitem title="About"></uimenuitem>
-						</uimenu>
-					</uimenuitem>
-				</uimenu>
-			</div>
-			<div class="flexChild rowParent">
-				<div id="left" class="flexChild columnParent" v-panel.left>
-					<div id="leftTop" class="flexChild">
-						<div class="uiPaneltitle">&nbsp;&nbsp;Project</div>
-						<div style="padding:3px;">
-
-						</div>
-					</div>
-					<div id="leftBottom" class="flexChild" v-panel.bottom>
-						<div class="uiPaneltitle">&nbsp;&nbsp;BluePrint</div>
-						<div style="padding:3px;">
-							<uitree v-if="hasGraph('graphs')" :draggable="false" label="Graphs" type="graph" :items="graphs" :button="{text: 'Add Graph', action:'addGraph'}" ref="graphsTree"></uitree>
-							<uitree v-if="hasGraph('functions')" label="Functions" type="function" :items="functions" :button="{text: 'Function', action:'addFunction'}" ref="functionsTree"></uitree>
-							<uitree v-if="hasGraph('macros')" label="Macros" type="macro" :items="macros" :button="{text: 'Macro', action:'addMacro'}" ref="macrosTree"></uitree>
-							<uitree v-if="hasGraph('variables')" label="Variables" type="variable" :items="variables" :button="{text: 'Variable', action:'addVariable'}" ref="variablesTree"></uitree>					
-						</div>
-					</div>
-				</div>
-				<div class="flexChild columnParent">
-					<div id="toolbar" class="flexChild">
-						<uitbbutton label="Check" img="ui-img/check.png" action="check" title="Check current Project" ></uitbbutton>
-						<uitbbutton label="Save" img="ui-img/save.png" :disabled="true" action="save" title="Save current Project" ></uitbbutton>
-						<uitbbutton label="F.screen" img="ui-img/fullscreen.png" action="switchFullscreen" :toggle="1" title="Toggle fullscreen" ></uitbbutton>
-					</div>
-					<div id="center" class="flexChild">		
-						<uigraphtabs ref="tabsContainer" :closable="true"></uigraphtabs>
-					</div>
-					<div id="footer" class="flexChild selected" v-panel.bottom="-30">
-						<infotabs ref="infoTabs"><infotabs>
-					</div>
-				</div>
-				<div id="right" class="flexChild" v-panel.right>
-					<div class="uiPaneltitle">&nbsp;&nbsp;Properties</div>
-					<div style="padding:3px;">
-						<uiproperties ref="properties"></uiproperties>
-					</div>
-				</div>
-			</div>
-			<uimenu ref="contextmenu" class="context"></uimenu>
-			<uidialog ref="dialog"></uidialog>
-		</div>
-		
+		<div id="contextMenu"></div>
+		<div id="app" />
 		<!--<div style="position:absolute;top:0;left:0;background-color:#000;opacity:0.5;width:100%;height:100%"></div>-->
 		
 		<script type="boom!">
-		
-			import './ui-vues/tree.vue';
+					
+			Vue.config.performance = true;
 			
-			import './ui-vues/app.graphs.vue';
-			import './ui-vues/app.variables.vue';
-			import './ui-vues/app.functions.vue';
+			import './ui-vues/project.vue';
 			
 			import App from './ui-vues/app.vue';
+			
+			import './ui-vues/blueprint.graph.vue';
+			import './ui-vues/blueprint.function.vue';
+			import './ui-vues/blueprint.variable.vue';
+			
 			var test = new Vue(App);
-			console.log(test.$options);
+			test.createProject();
+			//console.log('->', test.getBlueprint('newBlueprint').name);
+			//test.closeBlueprint('newBlueprint');
+			//test.openBlueprint('newBlueprint');
+			//console.log(test.$store.getters.getFreeName('newBlueprint'));
 			
-			var n = {name: 'setup', flags: F_READ_ONLY|F_LOCK_IO};
 			
-			test.addFunction(n, false);
-			test.addFunction({name: 'loop'}, false);
 			
-			console.dir(test.$store);
-			console.log(test.$store.getters['undoRedo/canUndo']);
+			
+			//var n = {name: 'setup', flags: F_READ_ONLY|F_LOCK_IO};
+			//test.addFunction(n, false);
+			//test.addFunction({name: 'loop'}, false);
+			
+			//console.dir(test.$store);
+			//console.log(test.$store.getters['undoRedo/canUndo']);
 			//test.$store.dispatch('undo');
 			
 			
