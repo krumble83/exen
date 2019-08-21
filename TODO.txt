@@ -1,0 +1,5 @@
+
+1. Selection rectangle et drag simultané noeuds
+2. interconnexion données ui et graph
+3. deplacement des tabs
+4. finir properties editor

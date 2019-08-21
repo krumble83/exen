@@ -22,7 +22,7 @@
 	});
 
 	
-	ExWorksheet.mixins.push({		
+	ExWorksheet.mixins.push({
 		props: {
 			snap: {default: 16},
 		},
@@ -42,6 +42,9 @@
 					return parseInt(y/16)*16;
 				else
 					return {x: parseInt(x/16)*16, y: parseInt(y/16)*16};
+			},
+			viewport: function(){
+				return 'rr';
 			}
 		},
 		

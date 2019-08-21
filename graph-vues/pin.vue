@@ -10,10 +10,11 @@
 		:type="type"
 		@mousedown.right.stop=""
 		@mousedown.left.stop="$emit('mouse:leftdown', $event)"
-		@mouseup.left.stop="$emit('mouse:leftup')"
+		@mouseup.left.stop="$emit('mouse:leftup', $event)"
 		@mouseenter="$emit('mouse:enter', $event)"
 		@mouseleave="$emit('mouse:leave', $event)"
 		@mouseup.right.stop="$emit('mouse:rightup', $event)" 
+		@contextmenu.prevent.stop="$emit('mouse:cmenu', $event)"
 		overflow="visible"
 		v-inline.vertical="5"
 	>
@@ -35,17 +36,19 @@
 <script>
 
 	import {SvgBase} from './mixins.js'
-	import {PinContextMenu} from './contextmenu.js'
+	import {PinContextMenu} from './contextmenu.js';
+	import PinDrawLink from './pin.link.draw.js';
 	
 	export default {
-		//inject: ['addSvgDef'],
-		mixins: [SvgBase, PinContextMenu],
+		inject: ['$worksheet', '$node', 'addSvgDef'],
+		mixins: [SvgBase, PinDrawLink, PinContextMenu],
 		//mixins: [SvgBase, PinDrawLink, ContextMenu],
 		props: {
 			name: {type: String, required: true},
 			height: {default: 20},
 			ctor: {type: String, default: 'ex-pin'},
 			label: String, 
+			description: String,
 			type: String,
 			flags: Number,
 			color: {default: '#00f', required: true},
@@ -70,8 +73,8 @@
 		},
 
 		computed: {
-			$worksheet: function(){return this.$parent.$parent},
-			$node: function(){return this.$parent},
+			//$worksheet: function(){return this.$parent.$parent},
+			//$node: function(){return this.$parent},
 			
 			cLabel: function(){ return this.label || this.name},
 			
@@ -107,7 +110,7 @@
 					{props: {is: 'stop','stop-color': this.color,'stop-opacity': '0.01',offset: '1'}}
 				]
 			};
-			this.$worksheet.addDef(def);
+			this.addSvgDef(def);
 			
 			if(this.isarray){
 				def = {
@@ -116,8 +119,8 @@
 						{props: {is: 'rect', width: 2, height: 2, x: 1, y: 1, fill: this.color}}
 					]
 				};
-				this.$worksheet.addDef(def);
-			}			
+				this.addSvgDef(def);
+			}
 		},
 		
 		beforeDestroy: function(){
@@ -193,60 +196,6 @@
 			acceptLink: function(link){
 				return 0;
 			},
-						
-			buildContextMenu: function(menu){
-				const me = this
-				, links = me.$worksheet.getLink(link => ((this.isInput()) ? link.mInputPin : link.mOutputPin) == this);
-
-				menu.addTitle('Pin');
-				menu.addItem({id: 'break', title: 'Break All links', disabled: links.length == 0, callback: function(){
-					me.$worksheet.startSequence();
-					links.forEach(function(el){
-						el.remove();						
-					});
-					me.$worksheet.stopSequence();
-					
-				}});
-
-				if(links.length > 1){
-					const s = menu.addSubMenu('Break link to...');
-					links.forEach(function(el){
-						if(me.isInput())
-							s.addItem({title: me.$worksheet.getNode(el.output.node).title + ' -> ' + el.output.pin, callback: function(){
-								el.remove();
-							}});
-						else
-							s.addItem({title: me.$worksheet.getNode(el.input.node).title + ' -> ' + el.input.pin, callback: function(){
-								el.remove();
-							}});
-					});
-				}
-				
-				if(links.length > 1){
-					const ss = menu.addSubMenu('Jump to...');
-					links.forEach(function(el){
-						if(me.isInput())
-							ss.addItem({title: me.$worksheet.getNode(el.output.node).title, callback: function(){
-								me.$worksheet.jumpToNode(el)
-							}});
-						else
-							ss.addItem({title: me.$worksheet.getNode(el.input.node).title, callback: function(){
-								me.$worksheet.jumpToNode(el)
-							}});
-					});
-				}
-				else if(links.length == 1){
-					if(me.isInput())
-						menu.addItem({title: 'Jump to `' + me.$worksheet.getNode(links[0].output.node).title + '`', callback: function(){
-							me.$worksheet.jumpToNode(links[0])
-						}});
-					else
-						menu.addItem({title: 'Jump to `' +  me.$worksheet.getNode(links[0].input.node).title + '`', callback: function(){
-							me.$worksheet.jumpToNode(links[0])
-						}});
-				}
-				
-			},
 			
 		},
 	};
@@ -264,6 +213,7 @@
 		cursor: crosshair;
 	}
 
+	.exWorksheet.selectEvent .exNode .exPin,
 	.exWorksheet .exNode.dragging .exPin{
 		pointer-events : none;
 	}

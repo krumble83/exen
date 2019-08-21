@@ -1,5 +1,9 @@
 
-export const NodeDraggable = {
+import {WorksheetHelpers} from './mixins.js';
+
+
+export default {
+	mixins: [WorksheetHelpers],
 	
 	created: function(){
 		this.$on('mouse:leftdown', this.dragMouseDown);
@@ -35,9 +39,11 @@ export const NodeDraggable = {
 					var point = me.getSvgPoint()
 					, startPos = {x: me.x, y: me.y};
 					
-					me.getMousePoint(evt, point);
+					me.$el.parentNode.appendChild(me.$el);
 					
-					const delta = {x: point.x - (me.mX + 12), y: point.y - (me.mY + 12)}
+					me.mouseToSvg(evt, point);
+					
+					const delta = {x: point.x - (me.mX), y: point.y - (me.mY)}
 					
 					const updateFn = () => {
 						if (me.classObject.dragging) 
@@ -50,7 +56,8 @@ export const NodeDraggable = {
 					}
 					
 					const moveFn = (evt) => {
-						me.getMousePoint(evt, point);
+						me.mouseToSvg(evt, point);
+						//me.getMousePoint(evt, point);
 						//me.$emit('dragevent', evt);
 					}
 					

@@ -1,76 +1,6 @@
 
-const SelectionRect = {
-	props: {
-		x: {type: Number, default: 0},
-		y: {type: Number, default: 0},
-		width: {type: Number, default: 0},
-		height: {type: Number, default: 0},
-	},
-	
-	data: function(){
-		return {
-			mX: 0,
-			mY: 0,
-			mW: 0,
-			mH: 0,
-			startPos: {}
-		}
-	},
-	
-	methods: {
-		updateFn: function(point){
-			//console.log('zz');
-			this.req = requestAnimationFrame(this.updateFn);
-			
-			this.mH = this.point.y - this.mY;
-			
-			if (this.point.x < this.mX) {
-				this.mW = this.mX - point.x;
-				this.mX = this.point.x;
-			}
-			else
-				this.mW = this.point.x - this.mX;
-
-		},
-		
-		
-		start: function(startPos, point, ctx){
-			var me = this;
-			this.startPos = startPos;
-			this.mX = startPos.x;
-			this.mY = startPos.y;
-			this.ctx = ctx;
-			this.point = point;
-			
-			document.addEventListener('mousemove', this.moveFn);
-			document.addEventListener('mouseup', function(){
-				document.removeEventListener('mousemove', me.moveFn);
-				//this.$el.removeChild(rect);
-				cancelAnimationFrame(me.req);
-				me.$el.parentNode.removeChild(me.$el);
-				me.$emit('stop');
-				me.$destroy();				
-			}, {once:true});	
-			
-			this.updateFn(startPos);
-		},
-		
-		moveFn: function(evt) {
-			//console.log('eee');
-			this.ctx.getMousePoint(evt, this.point);
-		},
-		
-		stopFn: function(){
-		}
-	},
-	template: '<rect :x="mX" :y="mY" :width="mW" :height="mH" class="exSelectionRectangle"></rect>'
-}
-
 import {WorksheetHelpers} from './mixins.js';
-
-
-
-export const WorksheetSelection = {
+export default {
 	mixins: [WorksheetHelpers],
 
 	data: function(){
@@ -92,86 +22,92 @@ export const WorksheetSelection = {
 			]			
 		};
 		this.addDef(def);
-
-		/*
-		this.$on('mouse:leftdown', function(evt){
-			if(!evt.ctrlKey)
-				me.unselectNode();	
-			me.startSelection(evt);
-		});
-		*/
+		
+		this.$on('mouse:leftdown', this.detectSelectionStart);
+	},
+	
+	beforeDestroy: function(){
+		this.$off('mouse:leftdown', this.detectSelectionStart);
 	},
 	
 	methods: {			
 		
-		unselectNode: function(node){
-			if(!node){
-				var n = this.getNode(node => node.classObject.selected == true);
-				n.forEach(el => el.classObject.selected = false);
-			}
-			else
-				node.classObject.selected = false;
-		},
-
-		switchSelectNode: function(node){
-			node.classObject.selected = !node.classObject.selected;
-		},
-		
-		selectNode: function(node){
-			node.classObject.selected = true;
-		},
-		
-		isNodeSelected: function(node){
-			return node.classObject.selected;
-		},
-		
-		removeSelected: function(){
-			const sel = this.getNode(node => node.classObject.selected)
-			sel.forEach(function(el){})
+		handleSelection: function(evt){
+			var me = this
+			, point = me.getSvgPoint()
+			, startPos = me.mouseToSvg(evt);
 			
+			var rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+			rect.setAttribute('class', 'exSelectionRectangle');
+			rect.setAttribute('x', startPos.x);
+			rect.setAttribute('y', startPos.y);
+			rect.setAttribute('width', '100');
+			rect.setAttribute('height', '100');
+			this.$el.querySelector('.exViewport').appendChild(rect);
+			
+			
+			const updateFn = () => {
+				if (me.classObject.selectEvent)
+					requestAnimationFrame(updateFn);
+
+				if(point.x - startPos.x < 0){
+					rect.setAttribute('x', point.x);
+					rect.setAttribute('width', startPos.x - point.x);
+				}
+				else
+					rect.setAttribute('width', point.x - startPos.x);
+				
+				if(point.y - startPos.y < 0){
+					rect.setAttribute('y', point.y);
+					rect.setAttribute('height', startPos.y - point.y);
+				}
+				else
+					rect.setAttribute('height', point.y - startPos.y);
+					
+			}
+			
+			const moveFn = (ev) => {
+				me.mouseToSvg(ev, point);
+				//point = me.getMousePoint(ev);
+				//me.$emit('dragevent', evt);
+			}
+			
+			const stopFn = (evt) => {
+				console.log('stopselect');
+				document.removeEventListener('mousemove', moveFn);
+				me.classObject.selectEvent = false;
+				evt.stopPropagation();
+				rect.parentNode.removeChild(rect);
+			}
+			
+			me.classObject.selectEvent = true;
+			document.addEventListener('mouseup', stopFn, {once: true, useCapture: true});
+			document.addEventListener('mousemove', moveFn);						
+
+			requestAnimationFrame(updateFn);
+			moveFn(evt);					
 		},
 		
-		getSelection: function(){
-			return this.$refs
-		},
-		
-		startSelection: function(evt){
+		detectSelectionStart: function(evt){
 			var me = this;
-			return;
+			//return;
 			var detectMove = function(mevt){
 				if((mevt.clientX - evt.clientX) > 3 || (evt.clientX - mevt.clientX) > 3
 					|| (mevt.clientY - evt.clientY) > 3 || (evt.clientY - mevt.clientY) > 3
 				){
 					console.log('start selection');
-					me.classObject.selectEvent = true;
 					document.removeEventListener('mousemove', detectMove);
-
-					var point = me.$el.createSVGPoint()
-					, startPos = me.getMousePoint(evt);
-					
-					var ComponentClass = Vue.extend(SelectionRect);
-					var instance = new ComponentClass();
-					instance.$mount();
-					me.$el.appendChild(instance.$el);
-					me.getMousePoint(evt, point);
-					instance.$once('stop', function(){
-						me.classObject.selectEvent = false;
-					});
-					instance.start(startPos, point, me);
+					me.classObject.selectEvent = true;
+					me.handleSelection(mevt);
 
 
 				}
 			}
 			
 			document.addEventListener('mousemove', detectMove);
-			return;
-			/*
 			document.addEventListener('mouseup', function(){
-				document.addEventListener('mousemove', detectMove);
-			},{once: true});
-			*/
-			
-			console.log(this);
+				document.removeEventListener('mousemove', detectMove);
+			}, {once: true});
 		}
 	}
 	

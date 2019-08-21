@@ -1,6 +1,6 @@
 
-export const NodeSelectable = {
-	
+export default {
+	//inject: ['$worksheet'],	
 	data: function(){
 		return {
 			classObject: {
@@ -57,6 +57,7 @@ export const NodeSelectable = {
 			me.$el.focus();
 			me.classObject.selected = true;
 			me.$emit('focus', me);
+			
 		},
 		
 		unselect: function(evt){

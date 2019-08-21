@@ -36,7 +36,7 @@ export const PinContextMenu = {
 	created: function(){
 		const me = this;
 
-		this.$on('mouse:rightup', function(evt){
+		this.$on('mouse:cmenu', function(evt){
 			//console.log('cmenuuuuuuu');
 			
 			var ComponentClass = Vue.extend(Menu);

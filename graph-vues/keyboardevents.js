@@ -1,4 +1,4 @@
-export const KeyboardEvents = {
+export const worksheetKeyboardEvents = {
 	
 	created: function(){
 		const me = this;

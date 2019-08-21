@@ -7,7 +7,7 @@
 		xmlns="http://www.w3.org/2000/svg" 
 		ref="worksheet" 
 		@mousedown="setFocus(true)"
-		@contextmenu.prevent.stop="$emit('mouse:context', $event)" 
+		@contextmenu.prevent.stop="$emit('mouse:cmenu', $event)" 
 
 		@mousedown.left.stop="$emit('mouse:leftdown', $event)"
 		@mouseup.left="$emit('mouse:leftup', $event)"
@@ -73,30 +73,35 @@
 	
 <script>
 
+	import WorksheetToolTip from './tooltip.js';
+
 	import ExNode from './node.vue';
+	import ExLink from './link.vue';
+
 	import {EventBus} from '../cmon-js/event-bus.js';
-	import {WorksheetSelection} from './worksheet.selection.js'
-	import {KeyboardEvents} from './keyboardevents.js'
+	import WorksheetSelection from './worksheet.selection.js'
+	import {worksheetKeyboardEvents} from './keyboardevents.js'
+	import WorksheetGrid from './worksheet.grid.js'
+	import WorksheetPanZoom from './worksheet.panzoom.js'
+	import WorksheetLibraryMenu from './worksheet.librarymenu.js'
 
 	export default {
-		mixins: [WorksheetSelection, KeyboardEvents],
-		components: {ExNode},
+		mixins: [WorksheetGrid, WorksheetPanZoom, WorksheetSelection, worksheetKeyboardEvents, WorksheetLibraryMenu, WorksheetToolTip],
+		components: {ExNode, ExLink},
 		//mixins: [VueUndoRedo, WorksheetGrid, WorksheetSelection, WorksheetTooltip, WorksheetLibraryMenu],
-		//inject: ['getUid'],
 		
-		provide: function(){
-			const me = this;
+		provide: function() {
+			var me = this;
 			return {
-				getWorksheet: function(){
-					return me;
-				}
+				addSvgDef: function(data){me.addDef(data)},
+				$worksheet: me,
 			}
 		},
 		
 		props: {
 			id: {type: String, default: function(){return Vue.options.methods.$uid()}},
 			store: Object,
-			features: {type: Array, default: function(){return []}},
+			//features: {type: Array, default: function(){return []}},
 		},
 		
 		data: function(){
@@ -119,7 +124,7 @@
 		},
 
 		created: function(){
-
+			this.$on('mouse:leftdown', function(evt){console.log(evt)});
 		},
 	  
 		methods: {
@@ -281,10 +286,6 @@
 					return;
 			}
 		},
-
-		provide: {
-			addSvgDef: function(data){this.addDef(data)},
-		},
 	};
 </script>
 
@@ -328,7 +329,44 @@
 .exWorksheet .exSelectionRectangle{
 	stroke: #fff;
 	stroke-width: 1;
+	stroke-dasharray: 5;
 	fill: none;
 }
 
+
+
+
+
+/********************************************************************************
+	tooltip
+********************************************************************************/
+#exTooltip{
+	position: absolute;
+	min-height: 15px;
+	min-width: 100px;
+	max-width: 450px;
+	background-color: #555;
+	border: 1px solid #555;
+	pointer-events: none;
+	color: #999;
+	display: none;
+	padding: 5px;
+	font: 12px arial, sans-serif;
+	/*cursor: crosshair;*/
+}
+
+#exTooltip.visible{
+	display: block;
+	z-index: 10000;
+}
+
+#exTooltip span{
+	display: block;
+}
+
+#exTooltip span:nth-of-type(2){
+	font-style:italic;
+	color:#fff;
+	padding-bottom: 6px;
+}
 </style>

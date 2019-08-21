@@ -10,9 +10,11 @@
 		:type="type"
 		overflow="visible"
 		@click.stop="$emit('mouse:click', $event)" 
-		@mousedown.left="$emit('mouse:leftdown', $event)" 
+		@mousedown.left.stop="$emit('mouse:leftdown', $event)" 
 		@mouseup.left="$emit('mouse:leftup', $event)" 
 		@mouseup.right.stop="$emit('mouse:rightup', $event)" 
+		@mouseenter="$emit('mouse:enter', $event)" 
+		@mouseleave="$emit('mouse:leave', $event)" 
 		@contextmenu.prevent.stop="$emit('mouse:cmenu', $event)"
 	>
 		<rect width="100%" height="100%" rx="13" ry="13" class="exNodeBody" />
@@ -68,16 +70,24 @@
 
 	import Color from './color.js';
 	import {SvgBase} from './mixins.js'
-	import {NodeDraggable} from './node.draggable.js'
-	import {NodeSelectable} from './node.selectable.js'
+	import NodeDraggable from './node.draggable.js'
+	import NodeSelectable from './node.selectable.js'
 	import {NodeContextMenu} from './contextmenu.js'
 	
 	import ExPin from './pin.vue';
 	
 	export default {
+		inject: ['$worksheet', 'addSvgDef'],
 		mixins: [SvgBase, NodeSelectable, NodeDraggable, NodeContextMenu],
 		//mixins: [SvgBase, NodeSelectable, NodeDraggable, NodeGrid, ContextMenu],
 		components: {ExPin},
+		
+		provide: function(){
+			var me = this;
+			return {
+				$node: me,
+			}
+		},
 			
 		props: {
 			title: String, 
@@ -92,7 +102,7 @@
 		},
 		
 		computed: {
-			$worksheet: function(){return this.$parent;},
+			//$worksheet: function(){return this.$parent;},
 		},
 
 		data: function() {
@@ -123,7 +133,8 @@
 					{props: {is: 'stop','stop-color': new Color(this.color).darker(0.8).toString(),offset: '1'}}				
 				]
 			}
-			this.$worksheet.addDef(def);
+			console.log(this);
+			this.addSvgDef(def);
 						
 			this.$on('pin:resize', this.update);
 		},
@@ -267,6 +278,7 @@
 	
 	
 	
+	.exWorksheet.drawlinkevent .exNode,
 	.exWorksheet.selectEvent .exNode {
 		pointer-events: none;
 	}

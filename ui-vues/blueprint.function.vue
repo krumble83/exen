@@ -46,7 +46,7 @@
 	import {module} from '../store/modules/store.blueprint.function.js'
 	
 	import ExWorksheet from '../graph-vues/worksheet.vue'
-	import ExWorksheetGrid from '../graph-vues/worksheet.grid.vue'
+	//import ExWorksheetGrid from '../graph-vues/worksheet.grid.vue'
 	import ExTitleBar from '../graph-vues/worksheet.titlebar.vue';
 
 	

@@ -30,5 +30,27 @@ const F_IO = 0x100000;
 
 const F_FOCUSABLE = 0x200000;
 
+const F_REQUIRED = 0x400000;
+
 
 const C_FILE_NAME_PATTERN = C_FUNCTION_NAME_PATTERN = C_VARIABLE_NAME_PATTERN = ['[a-zA-Z_$]{1,}[0-9a-zA-Z_$]*', 'Invalid format: must start with letter and contains only alphanum'];
+
+
+
+;(function(ctx){
+
+if(ctx.define)
+	return;
+
+function def(obj, name, value){
+	Object.defineProperty(obj, name, {
+			enumerable: true,
+			configurable: false,
+			writable: false,
+			value: value
+	});
+}
+def(ctx, 'define', def);
+
+
+})(window);

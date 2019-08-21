@@ -86,7 +86,7 @@ var module = {
 			
 			var undo = {
 				do: function(){
-					item.datas.outputs.push({name: n, type: F_OUTPUT, color: '#fff', datatype:''});
+					item.datas.outputs.push({name: n, type: F_OUTPUT, color: '#fff', datatype:'', description: 'pin description'});
 					//item.datas.ios.push({name: n, type: F_OUTPUT});
 				},
 				
