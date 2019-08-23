@@ -131,12 +131,29 @@
 				styleObject: {},
 				mExpanded: false,
 				outputsGroupPos: {x: 0, y:0},
+				mEdited: false,
 			}
 		},
 		
 		watch: {
-			mWidth: function(){this.$emit('node:resize')},
-			mHeight: function(){this.$emit('node:resize')},
+			mEdited: function(){
+				console.log('node:edited');
+				this.$emit('edited');
+			},
+			mX: function(){
+				this.mEdited = true;
+				this.$emit('edited');
+			},
+			mY: function(){
+				this.mEdited = true;
+				this.$emit('edited');
+			},
+			mWidth: function(){
+				this.$emit('node:resize')
+			},
+			mHeight: function(){
+				this.$emit('node:resize')
+			},
 			mExpanded: function(){
 				this.$nextTick(function(){
 					this.update();

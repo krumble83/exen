@@ -2,6 +2,7 @@
 	<div class="tabs" :id="id">
 		<slot name="begin" />
 		<component v-for="tab in tabs"
+			v-if="tab.tabOrder > 0"
 			:is="tab.tabCtor ? tab.tabCtor : 'defaultTab'"
 			:tabindex="$hasFlag('F_FOCUSABLE') ? '-1' : ''"
 			:tabsname="mId"

@@ -120,7 +120,7 @@ export default {
 				return console.assert(false, 'unknown pin type');
 			
 			var ComponentClass = Vue.extend(LinkDraw);
-			var instance = new ComponentClass({propsData: d});
+			var instance = new ComponentClass({propsData: d, parent: me.$worksheet});
 			
 			instance.$mount();
 			me.$worksheet.$el.querySelector('.exLinks').appendChild(instance.$el);

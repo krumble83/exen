@@ -53,9 +53,8 @@
 					:is="node.ctor ? node.ctor : 'ExNode'"
 					ref="nodes"
 					class="exNode"
-					v-bind="node"					
-					:x="node.x"
-					:y="node.y"
+					@edited="onEdited"
+					v-bind="node"
 				/>
 				<slot name="nodes" />
 			</g>
@@ -127,12 +126,20 @@
 				defs: [],
 				workspace: [],
 				drawlink: false,
+				mEdited: true,
 			}
 		},
 		
 		computed: {
 			nodes: function(){return this.store.getters.getNode()},
 			links: function(){return this.store.getters.getLink()},
+		},
+
+		watch: {
+			mEdited: function(){
+				console.log('worksheet:edited');
+				this.$emit('edited', this);
+			},
 		},
 
 		mounted: function(){
@@ -149,6 +156,12 @@
 				console.log('worksheetdrop: ', evt.dataTransfer.getData('text/eventbus'));
 				event.preventDefault();
 				EventBus.$emit(evt.dataTransfer.getData('text/eventbus'), this, evt);
+			},
+			
+			onEdited: function(){
+				//console.log('worksheet:edited');
+				this.mEdited=true;
+				this.$emit('edited', this);
 			},
 			
 			hasFeature: function(name){
