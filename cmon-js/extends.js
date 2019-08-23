@@ -32,6 +32,12 @@ Vue.mixin({
 			return ((this.flags & flag) == flag);			
 		},
 		
+		$capitalize: function(str){
+			if(!str)
+				return;
+			return str.charAt(0).toUpperCase() + str.slice(1);
+		},
+		
 		$loadScript(){
 			var args = Array.prototype.slice.call(arguments);
 

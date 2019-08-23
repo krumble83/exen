@@ -6,7 +6,7 @@ import {Observable} from '../../ui-js/utils.js';
 var module = {
 	namespaced: true,
 	mutations: {
-		add: function(state, data){
+		add: function(state, data){ 											// function/add
 			var node;
 			data = data || {};
 			
@@ -30,10 +30,29 @@ var module = {
 
 			data.store.commit('addNode', {name: 'entryPoint', title: data.name, flags: F_READ_ONLY});
 			node = data.store.getters.getNode('entryPoint');
+			
+			//this.commit('addOutput', {name: node.name});
 			console.assert(node);
 			Vue.set(data, 'datas', {});
 			Vue.set(data.datas, 'inputs', node.inputs);
 			Vue.set(data.datas, 'outputs', node.outputs);
+			
+			var pin = newPin();
+			pin.name = '@exit';
+			pin.pinCtor = 'PinExec';
+			pin.datatype = 'core.exec';
+			pin.type = F_OUTPUT;
+			data.datas.outputs.push(pin);
+
+			pin = newPin();
+			pin.name = 'entry';
+			//pin.pinCtor = 'core.type.bool';
+			pin.datatype = 'core.type.bool';
+			pin.type = F_INPUT;
+			pin.optional = true;
+			data.datas.inputs.push(pin);
+
+
 		},
 		
 		delete: function(state, data){
@@ -42,27 +61,34 @@ var module = {
 		
 		
 		
-		addInput: function(state, data){
-			var item = this.getters['function/getFunction'](data.name);
-			console.assert(item, item.datas, item.datas.inputs);
+		addInput: function(state, data){ 										//function/addInput
+			var func = this.getters['function/getFunction'](data.name);
+			console.assert(func, func.datas, func.datas.inputs);
 
 			var n = 'newInput'
 			, a = 1;
 			
-			if(item.datas.inputs.find(it => it.name == n)){
-				while(item.datas.inputs.find( it => it.name == n + a))
+			if(func.datas.inputs.find(it => it.name == n)){
+				while(func.datas.inputs.find( it => it.name == n + a))
 					a++;
 				n += a;
 			}
 			
 			var undo = {
 				do: function(){
-					item.datas.inputs.push({name: n, type: F_INPUT, color: '#fff', datatype:''});
+					var pin = newPin();
+					pin.name = n
+					pin.type = F_INPUT;
+					pin.datatype = data.datatype;
+					if(data.editor)
+						pin.editor = data.editor
+					
+					func.datas.inputs.push(pin);
 					//item.datas.ios.push({name: n, type: F_INPUT});
 				},
 				
 				undo: function(){
-					item.datas.inputs.splice(item.datas.inputs.indexOf(item.datas.inputs.find(it => it.name == n)), 1);
+					func.datas.inputs.splice(func.datas.inputs.indexOf(func.datas.inputs.find(it => it.name == n)), 1);
 				}
 			}
 			
@@ -71,27 +97,32 @@ var module = {
 			
 		},
 		
-		addOutput: function(state, data){
-			var item = this.getters['function/getFunction'](data.name);
-			console.assert(item, item.datas, item.datas.outputs);
+		addOutput: function(state, data){ 										//function/addOutput
+			var func = this.getters['function/getFunction'](data.name);
+			console.assert(func, func.datas, func.datas.outputs);
 
 			var n = 'newOutput'
 			, a = 1;
 			
-			if(item.datas.outputs.find(it => it.name == n)){
-				while(item.datas.outputs.find( it => it.name == n + a))
+			if(func.datas.outputs.find(it => it.name == n)){
+				while(func.datas.outputs.find( it => it.name == n + a))
 					a++;
 				n += a;
 			}
 			
 			var undo = {
 				do: function(){
-					item.datas.outputs.push({name: n, type: F_OUTPUT, color: '#fff', datatype:'', description: 'pin description'});
+					var pin = newPin();
+					pin.name = n
+					pin.type = F_OUTPUT;
+					pin.datatype = data.datatype;
+					
+					func.datas.outputs.push(pin);
 					//item.datas.ios.push({name: n, type: F_OUTPUT});
 				},
 				
 				undo: function(){
-					item.datas.outputs.splice(item.datas.outputs.indexOf(item.datas.outputs.find(it => it.name == n)), 1);
+					func.datas.outputs.splice(func.datas.outputs.indexOf(func.datas.outputs.find(it => it.name == n)), 1);
 				}
 			}
 			
@@ -124,7 +155,22 @@ var module = {
 	},
 }
 
-var node = function(){
+
+var newPin = function(){
+	return {
+		_linked: false,
+		name: 'default',
+		label: null,
+		type: F_INPUT, 
+		color: '#fff', 
+		datatype: 'core.test', 
+		optional: false,
+		description: null,
+		isarray: false,
+	}
+}
+
+var newNode = function(){
 	return {
 		name: '',
 		label: '',
@@ -147,14 +193,22 @@ var FunctionStore = {
 			data = data || {};
 			data.x = data.x || 200;
 			data.y = data.y || 200;
-			color: '#7f2197';
+			data.color = '#7f2197';
 			data.flags = data.flags | 0;
-			data.subtitle = 'Target is me!';
-			data.inputs = [];
-			data.outputs = [];
+			//data.subtitle = 'Target is me!';
+			data.inputs = data.inputs || [];
+			data.outputs = data.outputs || [];
 			state.nodes.push(data);
 		},
 		
+		addInput: function(state, data){
+			
+		},
+		
+		addOutput: function(state, data){
+			
+		},
+
 		changeNodeProperty: function(state, data){
 			
 		},

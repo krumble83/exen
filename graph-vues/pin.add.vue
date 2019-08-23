@@ -2,14 +2,8 @@
 	<svg 
 		:id="gid"
 		:class="classObject"
-		@mousedown.right.stop=""
-		@mousedown.left.stop="$emit('mouse:leftdown', $event)"
-		@mouseup.left.stop="$emit('mouse:leftup', $event)"
-		@mouseenter="$emit('mouse:enter', $event)"
-		@mouseleave="$emit('mouse:leave', $event)"
-		@mouseup.right.stop="$emit('mouse:rightup', $event)" 
 		@contextmenu.prevent.stop="$emit('mouse:cmenu', $event)"
-		overflow="visible"
+		@click="$emit('mouse:click', $event)"
 		v-inline.vertical="5"
 	>
 		<rect 
@@ -18,7 +12,7 @@
 			y="0" 
 			:width="mWidth" 
 			:height="mHeight" 
-			:fill="'url(#pinFocus' + cColor.replace('#', '_') + ')'"
+			:fill="'url(#pinFocus' + color.replace('#', '_') + ')'"
 		/>
 		<component :is="pinCtor" />
 		<text 
@@ -27,7 +21,6 @@
 			:transform="type == $flag('F_OUTPUT') ? 'translate(-52)': ''" 
 			:text-anchor="type == $flag('F_OUTPUT') ? 'end': 'start'" 
 			class="label" 
-			:stroke-color="cColor"
 			ref="label"
 		>
 		{{cLabel}}
@@ -44,22 +37,18 @@
 <script>
 
 	import {SvgBase} from './mixins.js'
+	import ExPinBase from './pin.render.default.vue';
 	import {PinContextMenu} from './contextmenu.js';
 	import PinDrawLink from './pin.link.draw.js';
-
-	import ExPinBase from './pin.render.default.vue';
-	import PinExec from './pin.render.exec.vue';
-	
-	import PinEditorInput from './pin.editor.input.vue';
 	
 	export default {
-		inject: ['$worksheet', '$node', 'addSvgDef', 'camelCaseToLabel', 'Library'],
+		inject: ['$worksheet', '$node', 'addSvgDef', 'camelCaseToLabel'],
 		mixins: [SvgBase, PinDrawLink, PinContextMenu],
-		components: {ExPinBase, PinExec, PinEditorInput},
+		components: {ExPinBase},
 		props: {
 			name: {type: String, required: true},
 			height: {type: Number, default: 20},
-			width: {type: Number, default: 30},
+			width: {type: Number, default: 60},
 			label: String, 
 			description: String,
 			type: Number,
@@ -89,20 +78,15 @@
 		},
 
 		computed: {
-			cLabel: function(){
-				if(this.name.startsWith('@'))
-					return '';
-				return this.camelCaseToLabel(this.label) || this.camelCaseToLabel(this.name)
-			},
+			//$worksheet: function(){return this.$parent.$parent},
+			//$node: function(){return this.$parent},
 			
-			cColor: function(){
-				return this.Library.getDatatype(this.datatype).Color();
-			},
-			/*
+			cLabel: function(){ return this.camelCaseToLabel(this.label) || this.camelCaseToLabel(this.name)},
+			
 			center: function(){
 				var b = this.$refs.pin.getBoundingClientRect();
 				return {x: b.left-3, y: b.top-3};
-			},*/
+			},
 		},
 		
 		watch: {
@@ -123,24 +107,24 @@
 		},
 		
 		created: function(){
-			const me = this
+			var me = this
 			, def = {
-				props: {is: 'linearGradient',id: 'pinFocus_' + me.cColor.replace('#', '')},
-				childs: [{props : {is: 'stop','stop-color': me.cColor,'stop-opacity': '0.05',offset: '0.1'}},
-					{props: {is: 'stop','stop-color': me.cColor,'stop-opacity': '0.6',offset: '0.3'}},
-					{props: {is: 'stop','stop-color': me.cColor,'stop-opacity': '0.01',offset: '1'}}
+				props: {is: 'linearGradient',id: 'pinFocus_' + this.color.replace('#', '')},
+				childs: [{props : {is: 'stop','stop-color': this.color,'stop-opacity': '0.01',offset: '0.1'}},
+					{props: {is: 'stop','stop-color': this.color,'stop-opacity': '0.4',offset: '0.3'}},
+					{props: {is: 'stop','stop-color': this.color,'stop-opacity': '0.01',offset: '1'}}
 				]
 			};
-			me.addSvgDef(def);
+			this.addSvgDef(def);
 			
-			if(me.isarray){
+			if(this.isarray){
 				def = {
-					props: {is: 'pattern', id: 'pinArrayPattern_' + me.cColor.replace('#', ''), x: 0, y: 0, width: 11, height: 11, patternUnits: 'userSpaceOnUse'},
+					props: {is: 'pattern', id: 'pinArrayPattern_' + this.color.replace('#', ''), x: 0, y: 0, width: 11, height: 11, patternUnits: 'userSpaceOnUse'},
 					childs: [
-						{props: {is: 'rect', width: 2, height: 2, x: 1, y: 1, fill: me.cColor}}
+						{props: {is: 'rect', width: 2, height: 2, x: 1, y: 1, fill: this.color}}
 					]
 				};
-				me.addSvgDef(def);
+				this.addSvgDef(def);
 			}
 		},
 		
@@ -153,16 +137,13 @@
 		},
 		
 		methods: {
-			update: function(onNextTick){
+			update: function(){
 				//console.log('Pin:start resize ' + this.mLabel);
 				const me = this;
 				var text = this.$refs.label
 				, oldWidth = this.mWidth
 				, textBox
 				, width
-				
-				if(onNextTick)
-					return me.$nextTick(function(){me.update()});
 				
 				me.$el.querySelector('rect').setAttribute('opacity', 0);
 				

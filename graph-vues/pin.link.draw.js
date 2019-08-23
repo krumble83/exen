@@ -5,18 +5,12 @@ import ExLink from './link.vue';
 const LinkDraw = {
 	extends: ExLink,
 	mixins: [WorksheetHelpers],
-	props: {
-		inputPin: Object,
-		outputPin: Object,	
-	},
 	
 	data: function(){
 		return {
 			classObject: {
 				draw: false,
 			},
-			mInputPin: this.inputPin,
-			mOutputPin: this.outputPin,
 		}
 	},
 	
@@ -63,22 +57,23 @@ const LinkDraw = {
 		},
 		
 		drawUpdate: function(evt){
-			var me = this;
+			const me = this;
+			var point = me.mouseToSvg(evt);
 			me.update();
 			if(evt && !me.mInputPin){
-				var point = me.mouseToSvg(evt);
 				me.dc1.x = point.x;
 				me.dc1.y = point.y;
-				me.dp1.x = me.dc1.x - 200;
-				me.dp1.y = me.dc1.y;					
+				me.dp1.x = me.dc1.x - this.intermediateRange;
+				me.dp1.y = me.dc1.y;
 			}
-			if(evt && !me.mOutputPin){
-				var point = me.mouseToSvg(evt);
-				me.dc2.x = point.getCenter().x;
-				me.dc2.y = point.getCenter().y;
-				me.dp2.x = me.dc2.x + 200;
+			else if(evt && !me.mOutputPin){
+				me.dc2.x = point.x;
+				me.dc2.y = point.y;
+				me.dp2.x = me.dc2.x + this.intermediateRange;
 				me.dp2.y = me.dc2.y;
-			}	
+			}
+			else
+				console.assert(false, 'unknown pin type');
 		}
 	},
 }
@@ -86,49 +81,44 @@ const LinkDraw = {
 
 
 export default {
+	inject: ['Library'],
 	mixins: [WorksheetHelpers],
 	
 	created: function(){
 		var me = this;
-		this.$on('mouse:leftdown', this.startLink);
+		this.$on('mouse:leftdown', this.startDrawLink);
 		this.$on('mouse:leftup', this.finishLink);
-		this.$on('mouse:enter', this.mouseLinkEnter);
+		//this.$on('mouse:enter', this.mouseLinkEnter);
 		
 	},
 	
 	beforeDestroy: function(){
-		this.$off('mouse:leftdown', this.startLink);
+		this.$off('mouse:leftdown', this.startDrawLink);
 		this.$off('mouse:leftup', this.finishLink);
-		this.$off('mouse:enter', this.mouseLinkEnter);
+		//this.$off('mouse:enter', this.mouseLinkEnter);
 	},
 	
 	methods: {
 
+		/*
 		mouseLinkEnter: function(evt){				
 			var me = this
-			, link = this.$worksheet.$refs.drawlink
+			, link = null
 			, valid
 			
-			if(link && link[0]){
-				link = link[0];
-
-				valid = link.isPinLinkable(this);
-				if(valid.code === 0){					
-					this.$emit('link-valid');
-				}
-				else {
-					this.$emit('link-invalid', valid);
-				}
+			link = this.$worksheet.$el.querySelector('.exLink.draw');
 			}
 		},
-		
-		startLink: function(evt){
+		*/
+		startDrawLink: function(evt){
 			var me = this;
 			if(me.isInput())
-				var d = {inputPin: me, color: me.color, datatype: me.datatype}
+				var d = {inputPin: me, color: this.Library.getDatatype(this.datatype).Color(), datatype: me.datatype}
+			else if(me.isOutput())
+				var d = {outputPin: me, color: this.Library.getDatatype(this.datatype).Color(), datatype: me.datatype}
 			else
-				var d = {outputPin: me, color: me.color, datatype: me.datatype}
-
+				return console.assert(false, 'unknown pin type');
+			
 			var ComponentClass = Vue.extend(LinkDraw);
 			var instance = new ComponentClass({propsData: d});
 			
@@ -153,6 +143,25 @@ export default {
 			if(!link || !link)
 				return;
 			link.finishLink(this);
-		}
+		},
+		
+		acceptLink: function(link){
+			console.log(link.getInput(), link.getOutput());
+			const me = this;
+			
+			if(me == link.getInput() || me == link.getOutput())
+				return 1;
+			
+			if(link.getInput() && link.getInput().$node == me.$node)
+				return 2;			
+			if(link.getOutput() && link.getOutput().$node == me.$node)
+				return 2;
+
+			if(me.isInput() && link.getInput())
+				return 4;
+			if(me.isOutput() && link.getOutput())
+				return 4;
+			return 0;
+		},
 	},
 }

@@ -29,19 +29,19 @@
 							<label for="folder_04b049d22c2f0565a8daa63b0107a957">Array</label>
 							<ul id="Array">
 								<li id="Node_core.array.add" child="1">
-									<img src="lib/img/array.png">&nbsp;Add Array Item
+									<img src="exlibs/img/array.png">&nbsp;Add Array Item
 								</li>
 								<li id="Node_core.array.length" child="1" onmouseover="event.stopPropagation();event.stopImmediatePropagation()">
-									<img src="lib/img/array.png">&nbsp;Array Length
+									<img src="exlibs/img/array.png">&nbsp;Array Length
 								</li>
 								<li id="Node_core.array.each" child="1">
-									<img src="lib/img/array.png">&nbsp;For Each Array Item
+									<img src="exlibs/img/array.png">&nbsp;For Each Array Item
 								</li>
 								<li id="Node_core.array.get" child="1">
-									<img src="lib/img/array.png">&nbsp;Get array item
+									<img src="exlibs/img/array.png">&nbsp;Get array item
 								</li>
 								<li id="Node_core.array.last" child="1">
-									<img src="lib/img/array.png">&nbsp;Get last item
+									<img src="exlibs/img/array.png">&nbsp;Get last item
 								</li>
 							</ul>
 						</li>
@@ -57,19 +57,19 @@
 							<label for="folder_04b049d22c2f0565a8daa63b0107a957">Array</label>
 							<ul id="Array">
 								<li id="Node_core.array.add" child="1">
-									<img src="lib/img/array.png">&nbsp;Add Array Item
+									<img src="exlibs/img/array.png">&nbsp;Add Array Item
 								</li>
 								<li id="Node_core.array.length" child="1" onmouseover="event.stopPropagation();event.stopImmediatePropagation()">
-									<img src="lib/img/array.png">&nbsp;Array Length
+									<img src="exlibs/img/array.png">&nbsp;Array Length
 								</li>
 								<li id="Node_core.array.each" child="1">
-									<img src="lib/img/array.png">&nbsp;For Each Array Item
+									<img src="exlibs/img/array.png">&nbsp;For Each Array Item
 								</li>
 								<li id="Node_core.array.get" child="1">
-									<img src="lib/img/array.png">&nbsp;Get array item
+									<img src="exlibs/img/array.png">&nbsp;Get array item
 								</li>
 								<li id="Node_core.array.last" child="1">
-									<img src="lib/img/array.png">&nbsp;Get last item
+									<img src="exlibs/img/array.png">&nbsp;Get last item
 								</li>
 							</ul>
 						</li>
@@ -84,19 +84,19 @@
 							<label for="folder_04b049d22c2f0565a8daa63b0107a957">Array</label>
 							<ul id="Array">
 								<li id="Node_core.array.add" child="1">
-									<img src="lib/img/array.png">&nbsp;Add Array Item
+									<img src="exlibs/img/array.png">&nbsp;Add Array Item
 								</li>
 								<li id="Node_core.array.length" child="1" onmouseover="event.stopPropagation();event.stopImmediatePropagation()">
-									<img src="lib/img/array.png">&nbsp;Array Length
+									<img src="exlibs/img/array.png">&nbsp;Array Length
 								</li>
 								<li id="Node_core.array.each" child="1">
-									<img src="lib/img/array.png">&nbsp;For Each Array Item
+									<img src="exlibs/img/array.png">&nbsp;For Each Array Item
 								</li>
 								<li id="Node_core.array.get" child="1">
-									<img src="lib/img/array.png">&nbsp;Get array item
+									<img src="exlibs/img/array.png">&nbsp;Get array item
 								</li>
 								<li id="Node_core.array.last" child="1">
-									<img src="lib/img/array.png">&nbsp;Get last item
+									<img src="exlibs/img/array.png">&nbsp;Get last item
 								</li>
 							</ul>
 						</li>
@@ -151,32 +151,53 @@ export default {
 	methods: {
 		
 		onSearch: function(evt){
-			console.log(this.$refs.input);
-			var s = this.$el.querySelector('li[child="1"].selected');
+			//console.log(this.$refs.input);
+			const me = this;
+			var s = me.$el.querySelector('li[child="1"].selected');
 			switch(evt.keyCode){
-				case 40:
-					//console.log(s);
-					if(s.nextElementSibling)
-						s.nextElementSibling.classList.add('selected');
-					else if(s.parentNode.nextElementSibling 
-						&& s.parentNode
-						&& s.parentNode.parentNode
-						&& s.parentNode.parentNode.nextElementSibling
-						&& s.parentNode.parentNode.nextElementSibling.firstChild)
-						s.parentNode.parentNode.nextElementSibling.firstChild.classList.add('selected');
-					else
-						return;
-					s.classList.remove('selected');
+				case 13: // enter
+					me.$emit('item:click', s);
+					me.close();
 					break;
-				case 38:
-					if(s.previousElementSibling)
-						s.previousElementSibling.classList.add('selected');
-					else if(s.parentNode.previousElementSibling && s.parentNode.previousElementSibling.lastChild)
-						s.parentNode.previousElementSibling.lastChild.classList.add('selected');
-					else
-						return;
-					s.classList.remove('selected');
+				
+				case 27: //esc
+					me.close();
+					break;
+					
+				case 40: // down
+					me.selectNext()
+					break;
+
+				case 38: // up
+					me.selectPrevious();
+					break;
 			}
+		},
+		
+		selectNext: function(){
+			var s = this.$el.querySelector('li[child="1"].selected');
+			if(s.nextElementSibling)
+				s.nextElementSibling.classList.add('selected');
+			else if(s.parentNode.nextElementSibling 
+				&& s.parentNode
+				&& s.parentNode.parentNode
+				&& s.parentNode.parentNode.nextElementSibling
+				&& s.parentNode.parentNode.nextElementSibling.firstChild)
+				s.parentNode.parentNode.nextElementSibling.firstChild.classList.add('selected');
+			else
+				return;
+			s.classList.remove('selected');			
+		},
+		
+		selectPrevious: function(){
+			var s = this.$el.querySelector('li[child="1"].selected');
+			if(s.previousElementSibling)
+				s.previousElementSibling.classList.add('selected');
+			else if(s.parentNode.previousElementSibling && s.parentNode.previousElementSibling.lastChild)
+				s.parentNode.previousElementSibling.lastChild.classList.add('selected');
+			else
+				return;
+			s.classList.remove('selected');			
 		},
 		
 		onBlur: function(){
@@ -281,20 +302,6 @@ export default {
 	color: red;
 } 
 
-#exMenu li[child="1"].selected{
-	background-color: #888;
-	color: #fff;
-} 
-
-#exMenu li.selected:before{
-	content: '';
-    width: 200px;
-    background-color: #888;
-    height: 20px;
-    position: absolute;
-    left: 0;
-    z-index: -1;
-} 
 
 
 #exMenu .head input[type=text] {
@@ -341,6 +348,23 @@ export default {
     padding-left: 15px;
 	
 }
+
+
+#exMenu li[child="1"].selected{
+	background-color: #888;
+	color: #000;
+} 
+
+#exMenu li.selected:before{
+	content: '';
+    width: 200px;
+    background-color: #888;
+    height: 20px;
+    position: absolute;
+    left: 0;
+    z-index: -1;
+} 
+
 
 
 #exMenu input[type=checkbox]

@@ -57,7 +57,7 @@
 					selected: false,
 				},
 				timer: false,
-				edited: false,
+				mEdited: false,
 				editor: false,
 				dndUid: this.$uid(),
 			}
@@ -65,7 +65,7 @@
 		
 		computed: {
 			label: function () {
-				return this.name + (this.edited ? '&nbsp;*' : '');
+				return this.name + (this.mEdited ? ' *' : '');
 			},
 		},
 
@@ -188,22 +188,11 @@
 				this.$nextTick(function(){
 					me.$emit('rename:start', this, this.$refs.editor);
 				});
-				
-				/*
-				var editorClass = Vue.extend(texteditor);
-				var editor = new editorClass();
-				editor.value = this.name;
-				editor.required = true;
-				editor.pattern = this.validname;
-				editor.callback = callback;
-				
-				editor.$mount();
-				this.$emit('rename:start', this, editor);
-				editor.startEdit(this.$el, true);
-				*/
 			},
 			
 			renameEnd: function(){
+				this.mEdited = true;
+				this.$emit('edited', this);
 				this.editor = false;
 			},
 			

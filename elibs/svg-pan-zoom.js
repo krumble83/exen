@@ -960,7 +960,8 @@ SvgPanZoom.prototype.handleMouseDown = function(evt, prevEvt, source) {
   } else {
     // Pan mode
     this.state = 'pan'
-	this.options.startPan(this.getPan(), evt);
+	this.startDrag = true;
+	//this.options.startPan(this.getPan(), evt);
     this.firstEventCTM = this.viewport.getCTM()
     this.stateOrigin = SvgUtils.getEventPoint(evt, this.svg).matrixTransform(this.firstEventCTM.inverse())
   }
@@ -992,6 +993,10 @@ SvgPanZoom.prototype.handleMouseMove = function(evt) {
 
   if (this.state === 'pan' && this.options.panEnabled) {
     // Pan mode
+	if(this.startDrag){
+		this.options.startPan(this.getPan(), evt);
+		this.startDrag = false;
+	}
     var point = SvgUtils.getEventPoint(evt, this.svg).matrixTransform(this.firstEventCTM.inverse())
       , viewportCTM = this.firstEventCTM.translate(point.x - this.stateOrigin.x, point.y - this.stateOrigin.y)
 

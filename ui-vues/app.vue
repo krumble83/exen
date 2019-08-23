@@ -2,19 +2,20 @@
 	<uitabs 
 		id="projecttabs"
 		:flags="flags"
-		storeobject="projectcontents"
+		:tabs="projectcontents"
 		@tab:focus="componentFocus"
 		@tab:close="componentClose"
 	>
 		<component 
 			slot="begin"
 			:is="'defaultTab'"
+			panelCtor="Project"
 			:name="'Project'"
-			panel="project"
 			tabsname="projecttabs"
 			checked="checked"
 		>
 		</component>
+		<datatype></datatype>
 	</uitabs>
 </template>
 
@@ -55,15 +56,19 @@
 		}
 	}
 
-
 	import ProjectStore from '../store/store.project.js'
 	var store = new Vuex.Store(ProjectStore);
 		
 	import uitabs from './tabs.vue';	
 	import defaultTab from './tabs.tab.vue';
 	
+	//import Project from './project.vue';
+	
 	export default {
-		components: {uitabs, defaultTab},
+		components: {
+			//Project: () => import('./project.vue'),
+			uitabs, defaultTab
+		},
 		mixins: [],
 		el: '#app',
 		store,
@@ -85,6 +90,10 @@
 				return _.orderBy(this.$store.state.components, 'tabOrder')
 			},
 		},
+		/*
+		beforeCreate: function () {
+			this.$options.components.Project = require('./project.vue').default;
+		},*/
 		
 		mounted: function(){
 			document.addEventListener('keydown', onKeyDown);

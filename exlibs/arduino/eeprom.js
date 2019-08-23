@@ -1,6 +1,6 @@
 ;exLIB.package('arduino.eeprom', function(pack){
 	
-	pack.Category('Arduino/EEPROM').Symbol('lib/img/arduino.png').Color('#9c39da');
+	pack.Category('Arduino/EEPROM').Symbol('exlibs/img/arduino.png').Color('#9c39da');
 	
 	var n = pack.Node('read', 'EEPROM.read()').Keywords('eeprom read')
 		.Tooltip('Reads a byte from the EEPROM. Locations that have never been written to have the value of 255.');

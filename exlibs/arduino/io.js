@@ -4,7 +4,7 @@
 
 exLIB.package('arduino.io', function(pack){
 	
-	pack.Category('Arduino/Digital IO Pin').Symbol('lib/img/arduino.png').Color('#87663f');
+	pack.Category('Arduino/Digital IO Pin').Symbol('exlibs/img/arduino.png').Color('#87663f');
 		
 	pack.Type('dpin', 'Arduino Digital Pin').Inherits('core.component');
 	
@@ -42,7 +42,7 @@ exLIB.package('arduino.io', function(pack){
 
 exLIB.package('arduino.io.ai', function(pack){
 	
-	pack.Category('Arduino/Analog IO Pin').Symbol('lib/img/arduino.png').Color('#87663f');
+	pack.Category('Arduino/Analog IO Pin').Symbol('exlibs/img/arduino.png').Color('#87663f');
 		
 	pack.Type('apin', 'Arduino Analog Pin').Inherits('core.component');
 		

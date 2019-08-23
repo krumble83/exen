@@ -56,6 +56,7 @@
 							:items="graphs" 
 							:button="{text: 'Add Graph', action:'addGraph'}" 
 							ref="graphsTree" 
+							@item:edited="onEdited"
 							@item:select="graphsTreeSelect"
 							@item:open="openFile"
 							@item:delete="deleteGraph"
@@ -69,6 +70,7 @@
 							:items="functions" 
 							:button="{text: 'Function', action:'addFunction'}" 
 							ref="functionsTree" 
+							@item:edited="onEdited"
 							@item:select="functionsTreeSelect"
 							@item:open="openFile"
 							@item:delete="deleteFunction"
@@ -83,6 +85,7 @@
 							:items="macros" 
 							:button="{text: 'Macro', action:'addMacro'}" 
 							ref="macrosTree" 
+							@item:edited="onEdited"
 							@item:select="macrosTreeSelect"
 							@item:open="openFile"
 							@item:delete="deleteMacro"
@@ -96,6 +99,7 @@
 							:items="variables" 
 							:button="{text: 'Variable', action:'addVariable'}" 
 							ref="variablesTree" 
+							@edited="onEdited"
 							@item:select="variablesTreeSelect"
 							@item:delete="deleteVariable"
 							@item:cmenu="variablesTreeContextMenu"
@@ -112,7 +116,13 @@
 					<uitbbutton label="F.screen" img="ui-img/fullscreen.png" action="switchFullscreen" :toggle="1" title="Toggle fullscreen" ></uitbbutton>
 				</div>
 				<div class="panel center flexChild">		
-					<uigraphtabs ref="tabsContainer" :closable="true" storeobject="files" @tab:close="closeFile"></uigraphtabs>
+					<uigraphtabs 
+						ref="tabsContainer" 
+						:closable="true" 
+						:tabs="files"
+						@tab:close="closeFile"
+						@tab:edited="onEdited"
+					/>
 				</div>
 				<div class="panel footer flexChild selected" v-panel.bottom="-30">
 					<infotabs ref="infoTabs">
@@ -212,6 +222,13 @@
 			}
 		},
 		
+		computed: {		
+			files: function(){
+				//return _.orderBy(this.store.state.files, 'tabOrder');
+				return this.store.state.files;
+			},
+		},
+		
 		created: function(){
 			//this.store = new Vuex.Store(blueprintStore);
 			//this.store.replaceState(this.$store.getters.getBlueprint(this.name).datas);
@@ -228,12 +245,6 @@
 		},
 		
 		watch: {
-		},
-		
-		computed: {		
-			files: function(){
-				return _.orderBy(this.store.state.files, 'tabOrder');
-			},
 		},
 
 		methods: {
@@ -267,6 +278,10 @@
 				this.store.commit('deleteFile', {name: item.name});
 				this.edited = true;
 				this.$refs.properties.hidePanels();
+			},
+			
+			onEdited: function(){
+				this.$emit('edited');
 			},
 			
 			onFileRename: function(item, editor, evt){

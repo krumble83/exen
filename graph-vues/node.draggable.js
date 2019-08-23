@@ -35,7 +35,7 @@ export default {
 			setTimeout(function(){
 				
 				function drag(){
-					console.log('start dragzzzzzz');
+					//console.log('start dragzzzzzz');
 					var point = me.getSvgPoint()
 					, startPos = {x: me.x, y: me.y};
 					
@@ -62,12 +62,13 @@ export default {
 					}
 					
 					const stopFn = (evt) => {
-						console.log('stopdrag');
+						//console.log('stopdrag');
 						me.classObject.dragging = false;
 						document.removeEventListener('mousemove', moveFn);
 						if(me.mX != startPos.x || me.mY != startPos.y){
 							me.$worksheet.store.commit('changeNodeProperty', {node: me.id, props: {x: me.mX, y: me.mY}});
-							me.$emit('dragend', evt, me);
+							me.$emit('drag:end', evt, me);
+							me.$worksheet.$emit('node:drag:stop', me, evt);
 							//this.$worksheet.$emit('node:dragend', evt, this);
 						}
 						evt.stopPropagation();
@@ -78,7 +79,7 @@ export default {
 
 
 					me.classObject.dragging = true;
-					me.$emit('dragstart', evt);
+					me.$emit('drag:start', evt);
 					me.$worksheet.$emit('node:dragstart', me, evt);
 					
 					requestAnimationFrame(updateFn);

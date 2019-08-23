@@ -14,6 +14,7 @@
 				<component v-for="(item,id) in items" :key="id"
 					:is="item.ctor ? item.ctor : 'treeitem'"
 					v-bind="item"
+					@edited="onEdited"
 					@focus="onItemClick"
 					@open="onItemOpen"
 					@delete="onItemDelete"
@@ -45,6 +46,7 @@
 		data: function(){
 			return {
 				uid: this.$uid(),
+				mEdited: false,
 			}
 		},
 		
@@ -70,6 +72,11 @@
 					return this.$children.find(it => it.name == item);
 				else if(item.name)
 					return this.$children.find(it => it.name == item.name);
+			},
+			
+			onEdited: function(item){
+				this.mEdited = true;
+				this.$emit('item:edited', item)
 			},
 			
 			onWorksheetdrop: function(item, worksheet, evt){

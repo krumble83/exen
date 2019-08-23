@@ -4,9 +4,20 @@
 
 <script>
 	import './blueprint.vue';
-	
-	import App from './app.vue';		
+
+	//import * as name from '../testlib.js';
+	//import {Package} from '../testlib.js';
+
+	import App from './app.vue';
+		
 	App.mixins.push({
+		provide: function(){
+			const me = this;
+			return {
+				$project: function(){return me},
+			}
+		},
+		
 		methods: {
 			getProject: function(){
 				return;
@@ -21,8 +32,8 @@
 					bp.addGraph({}, false);
 					bp.addGraph({}, false);
 					bp.addGraph({}, false);
-					bp.addFunction({name: 'setup', flags: F_LOCK_INPUTS}, false);
-					bp.addFunction({name: 'loop', flags: F_READ_ONLY | F_LOCK_IO}, false);
+					bp.addFunction({name: 'setup', flags: 0}, false);
+					bp.addFunction({name: 'loop', flags: F_LOCK_INPUTS}, false);
 					bb = bp
 					//console.log(ok);
 				});
@@ -47,11 +58,14 @@
 		}
 	});
 
-	import {module} from '../store/modules/store.blueprint.js'
-	App.store.registerModule('blueprint', module);
 
-	var ex = {
-		components: { },
+	const Project = {
+		//components: {Package},
+		
+		data: function(){
+			return {
+			}
+		},
 		
 		provide: {
 			getProject: function(){
@@ -60,19 +74,17 @@
 		},
 		
 		mounted: function(){
-			this.$root.project = this;
-			var me = this;
-			this.$parent.$on('close', function(tab, evt){
-					console.log('closed');
-					me.$parent.store.test();
-				}
-			);
+
 		},
 	}
 
+
+	import {module} from '../store/modules/store.blueprint.js'
+	App.store.registerModule('blueprint', module);
+
 	import tab from './tabs.tab.vue';
-	tab.components.project = ex;
+	tab.components.Project = Project;
 	
-	export default ex;
+	export default Project;
 	
 </script>

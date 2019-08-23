@@ -95,6 +95,18 @@
 			return {
 				addSvgDef: function(data){me.addDef(data)},
 				$worksheet: me,
+				Library: exLIB,
+				camelCaseToLabel: function(str){
+					if(!str)
+						return '';
+					return str
+						// insert a space between lower & upper
+						.replace(/([a-z])([A-Z])/g, '$1 $2')
+						// space before last upper in a sequence followed by lower
+						.replace(/\b([A-Z]+)([A-Z])([a-z])/, '$1 $2$3')
+						// uppercase the first character
+						.replace(/^./, function(str){ return str.toUpperCase(); })
+				},
 			}
 		},
 		
@@ -123,8 +135,8 @@
 			links: function(){return this.store.getters.getLink()},
 		},
 
-		created: function(){
-			this.$on('mouse:leftdown', function(evt){console.log(evt)});
+		mounted: function(){
+			//this.$emit('edited');
 		},
 	  
 		methods: {
@@ -144,13 +156,6 @@
 			},
 			
 			addNode: function(data){
-				/*
-				if(!data.id)
-					data.id = genUid('node');
-				*/
-				//this.nodes.push(data);
-				this.$emit('node:add', data);
-				this.$store.commit('addNode', data);
 			},
 			
 			getNode: function(val){
@@ -192,38 +197,26 @@
 				return this.$refs.links.find(link => link.id === val);
 			},
 			
-			jumpToNode: function(node){
-				alert('Jump to');
-			},
-			
 			addDef: function(data){
-				var me = this;
-								
+				const me = this;
+				
 				if(Array.isArray(data)){
 					data.forEach(function(el){
 						me.addDef(el);
 					});
 					return;
 				}
-
-				if(data.props.id) {
-					var found = false;
-					this.defs.forEach(function(elem){
-						if(elem.props.id == data.props.id)
-							found = elem;
-					});
+				
+				if(data.props.id){
+					var found = me.defs.find(it => it.props.id == data.props.id);
 					if(found)
-						return found;
+						return found.props.id;
 				}
 				else
-					data.props.id = this.$uid();
-				
-				this.defs.push(data);
+					data.props.id = me.$uid();
+
+				me.defs.push(data);
 				return data.id;
-			},
-			
-			getWorksheetZ: function(){
-				return this;
 			},
 			
 			getViewportEl: function(){
@@ -235,56 +228,9 @@
 			},
 
 			setFocus: function(focus){
-				console.log('setFocus worksheet');
+				//console.log('setFocus worksheet');
 				this.$el.focus();
-				return;
-
-				var i = document.createElement('input');
-				i.setAttribute('display', 'none');
-				document.body.appendChild(i);
-				i.focus({preventScroll:true});
-				document.body.removeChild(i);
-				return;
-				if(focus){
-					this.classObject.focus = true;
-					this.$el.focus();
-				} else {
-					this.classObject.focus = false;
-					this.$el.blur();				
-				}
 			},
-			
-			onContextMenu: function(evt){
-				console.log('worksheet:onContextMenu');
-				//this.$eventBus.$emit('worksheet.contextmenu', this, evt);
-				if(evt.defaultPrevented)
-					return;
-				this.$emit('worksheet.contextmenu', evt);
-			},
-			
-			onRightButtonDown: function(evt){
-				console.log('worksheet:onRightButtonDown');
-				//this.$eventBus.$emit('worksheet.rightbuttondown', this, evt);
-				if(evt.defaultPrevented)
-					return;
-				this.$emit('worksheet.rightbuttondown', evt);
-			},
-			
-			onRightButtonUp: function(evt){
-				console.log('worksheet:onRightButtonUp');
-				//this.$eventBus.$emit('worksheet.rightbuttonup', this, evt);
-				if(evt.defaultPrevented)
-					return;
-				this.$emit('worksheet.rightbuttonup', evt);
-			},
-			
-			zzzonLeftMouseDown: function(evt){
-				console.log('worksheet:onLeftButtonDown');
-				//this.$eventBus.$emit('worksheet.leftmousedown', this, evt);
-				this.$emit('leftmousedown', evt);
-				if(evt.defaultPrevented)
-					return;
-			}
 		},
 	};
 </script>

@@ -47,7 +47,7 @@ exLIB.package('os.file', function(pack){
 
 exLIB.package('arduino.sdcard', function(pack){
 	
-	pack.Category('Arduino/SD Card').Symbol('lib/img/arduino.png').Color('#87663f');
+	pack.Category('Arduino/SD Card').Symbol('exlibs/img/arduino.png').Color('#87663f');
 	
 	pack.Enum('openmode').Values(['FILE_READ', 'FILE_WRITE']);
 	

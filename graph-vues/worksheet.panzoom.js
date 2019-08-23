@@ -1,6 +1,31 @@
 
 export default {
 	
+	provide: function(){
+		var me = this;
+		
+		return {
+			preventPanCmenu: function(evts, callback){
+				var targ = this;
+				
+				me.$once('pan:start', function(){
+					targ.dPanned = true;
+				});
+				
+				targ.$on(evts, function(){
+					if(targ.dPanned){
+						targ.dPanned = false;
+						me.$once('pan:start', function(){
+							targ.dPanned = true;
+						});
+						return;
+					}
+					callback.apply(targ, arguments);
+				});
+			},
+		}
+	},
+	
 	data: function(){
 		return {
 			classObject: {
@@ -34,6 +59,7 @@ export default {
 				me.classObject.panEvent = false;
 			},
 			startPan: function(evt){
+				console.log('pan:start');
 				me.$emit('pan:start', evt);
 				me.classObject.panEvent = true;
 			},
@@ -46,5 +72,25 @@ export default {
 		stopPan: function(){
 			this.$el._panzoom.stopPan();
 		},
+		
+		preventPan: function(evts, callback){
+			var targ = this;
+			
+			targ.$once('pan:start', function(){
+				targ.dPanned = true;
+			});
+			
+			targ.$on(evts, function(evt){
+				if(targ.dPanned){
+					targ.dPanned = false;
+					targ.$once('pan:start', function(){
+						targ.dPanned = true;
+					});
+					return;
+				}
+				callback.apply(targ, arguments);
+			});
+		},
+		
 	}
 };

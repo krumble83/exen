@@ -1,6 +1,6 @@
 ;exLIB.package('arduino.wifi', function(pack){
 	
-	pack.Category('Arduino/WiFi').Color('#87663f').Symbol('lib/img/esp8266.png');
+	pack.Category('Arduino/WiFi').Color('#87663f').Symbol('exlibs/img/esp8266.png');
 		
 	pack.Enum('status', 'Wifi Status').Values(['WL_CONNECTED', 'WL_NO_SHIELD', 'WL_IDLE_STATUS', 'WL_NO_SSID_AVAIL', 'WL_SCAN_COMPLETED', 'WL_CONNECT_FAILED', 'WL_CONNECTION_LOST', 'WL_DISCONNECTED']);
 	

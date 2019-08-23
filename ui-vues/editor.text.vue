@@ -133,12 +133,9 @@
 					return;
 				}
 				
-				/*
-				if(typeof this.success === 'function')
-					this.success(this.$el, this);
-				if(typeof this.callback == 'function')
-					this.callback();
-				*/
+				if(typeof this.successfn === 'function')
+					this.successfn(this.$el.value, this);
+
 				this.$emit('end', this.$el.value, this);
 			},
 			onDrag: function(){},

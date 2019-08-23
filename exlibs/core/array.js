@@ -3,7 +3,7 @@
 
 exLIB.package('core.array', function(pack){
 
-	pack.Symbol('lib/img/array.png').Category('Utilities/Array').Color('#C3C3C3');
+	pack.Symbol('exlibs/img/array.png').Category('Utilities/Array').Color('#C3C3C3');
 	
 	var n = pack.Node('get', 'Get array item')
 		.Keywords('array get,get array,get item,arrayget');

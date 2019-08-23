@@ -37,7 +37,6 @@ define(ctx.exLIB, 'init', function(callback){
 		});
 });
 
-
 /***************************************************************************
 	Nodes
 ***************************************************************************/
@@ -103,11 +102,12 @@ define(ctx.exLIB, 'getGenerator', function(id){
 	Datatype
 ***************************************************************************/
 
-define(ctx.exLIB, 'getDataType2', function(id){
+define(ctx.exLIB, 'getDatatype', function(id){
 	//console.log('exLIB.getDataType()', id, exprt);
 	if(exLIB.isArrayDataType(id))
 		id = exLIB.swapArrayDataType(id);
-	return libz.select('type[id="' + id + '"],class[id="' + id + '"],structure[id="' + id + '"],enum[id="' + id + '"],component[id="' + id + '"]').first()
+	return libz.select('[isdatatype="1"][id="' + id + '"]').first();
+	//return libz.select('type[id="' + id + '"],class[id="' + id + '"],structure[id="' + id + '"],enum[id="' + id + '"],component[id="' + id + '"]').first()
 	//return libz.GetType(id);
 });
 

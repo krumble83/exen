@@ -349,6 +349,7 @@ exGRAPH.Device = exBASE.invent({
 			exGRAPH.Base.prototype.init.apply(this, arguments);
 			this.Id(id);
 			this.Label(label);
+			this.attr('isdatatype', '1');
 			return this;
 		},
 
@@ -402,6 +403,7 @@ exGRAPH.Component = exBASE.invent({
 			exGRAPH.Base.prototype.init.apply(this, arguments);
 			this.Id(id);
 			this.Label(label);
+			this.attr('isdatatype', '1');
 			//this.Color('#ff0');
 			return this;
 		},
@@ -519,6 +521,7 @@ exGRAPH.Type = exBASE.invent({
 			this.Id(id);
 			this.Label(label);
 			this.Type('scalar');
+			this.attr('isdatatype', '1');
 			return this.Ctor('Pin').Color('#fff');
 		},
 		
@@ -667,6 +670,7 @@ exGRAPH.Structure = exBASE.invent({
 		init: function(){
 			exGRAPH.Type.prototype.init.apply(this, arguments);
 			this.Inherits('core.type.struct');
+			this.attr('isdatatype', '1');
 			return this;
 		},
 		
@@ -734,6 +738,7 @@ exGRAPH.Enum = exBASE.invent({
 		init: function(){
 			exGRAPH.Type.prototype.init.apply(this, arguments);
 			this.Inherits('core.type.enum');
+			this.attr('isdatatype', '1');
 			return this;
 		},
 				
@@ -764,6 +769,7 @@ exGRAPH.Interface = exBASE.invent({
 		init: function(){
 			exGRAPH.Object.prototype.init.apply(this, arguments);
 			this.Inherits('core.object');
+			this.attr('isdatatype', '1');
 			return this;
 		},
 		
@@ -804,7 +810,12 @@ exGRAPH.Class = exBASE.invent({
 	inherit: exGRAPH.Interface,
 	parent: exGRAPH.Package,
 	
-    extend: {
+    extend: {	
+		init: function(){
+			exGRAPH.Interface.prototype.init.apply(this, arguments);
+			this.attr('isdatatype', '1');
+			return this;
+		},
 		
 		Member: function(id, type, title){
 			var ret = this.querySelector('output[id="' + id + '"]') || this.create('Output');

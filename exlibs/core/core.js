@@ -11,12 +11,12 @@ exLIB.package('core', function(pack){
 	pack.Type('exec', 'Exec').Color('#fff').Ctor('PinExec');
 	pack.Type('wildcards', 'Wildcards').Color('#666').Ctor('PinWildcards');
 	
-	pack.Node('entrypoint', 'Function Entry').Ctor('NodeEntryPoint').Color('#7f2197').Symbol('lib/img/start.png').MakeExit().Flags(F_NO_DELETE | F_NO_CUT);
+	pack.Node('entrypoint', 'Function Entry').Ctor('NodeEntryPoint').Color('#7f2197').Symbol('exlibs/img/start.png').MakeExit().Flags(F_NO_DELETE | F_NO_CUT);
 	
-	pack.Node('returnpoint', 'Function Return').Ctor('NodeEntryPoint').Color('#7f2197').Symbol('lib/img/start.png').MakeEntry().Category('/');
+	pack.Node('returnpoint', 'Function Return').Ctor('NodeEntryPoint').Color('#7f2197').Symbol('exlibs/img/start.png').MakeEntry().Category('/');
 	
-	pack.Node('macro').Color('#555').Symbol('lib/img/macro.png');
-	pack.Node('operator').Ctor('NodeOp').Color('#555')//.Symbol('lib/img/operator.png');
+	pack.Node('macro').Color('#555').Symbol('exlibs/img/macro.png');
+	pack.Node('operator').Ctor('NodeOp').Color('#555')//.Symbol('exlibs/img/operator.png');
 	//pack.Node('reroute').Ctor('RereouteNode').Color('#aaeea0');
 
 });
@@ -44,8 +44,8 @@ exLIB.package('tpl', function(pack){
 /******************************************************************
 	Comparators
 ******************************************************************/	
-	pack.Node('node.function').Color('#78c8fe').Symbol('lib/img/function.png');
-	pack.Node('node.pure').Color('#aaeea0').Symbol('lib/img/function.png');
+	pack.Node('node.function').Color('#78c8fe').Symbol('exlibs/img/function.png');
+	pack.Node('node.pure').Color('#aaeea0').Symbol('exlibs/img/function.png');
 
 	var n = pack.NodeTpl('op.eq').Import('core.operator').Symbol('lib/core/img/op.eq.png').Keywords('==,equal').Subtitle('==').Title('*1 == *1 (equal)');
 	n.Input('a', '*1');

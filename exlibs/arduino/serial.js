@@ -4,7 +4,7 @@
 
 exLIB.package('arduino.serial', function(pack){
 	
-	pack.Category('Arduino/Serial').Symbol('lib/img/arduino.png').Color('#87663f');
+	pack.Category('Arduino/Serial').Symbol('exlibs/img/arduino.png').Color('#87663f');
 	
 	pack.Type('connection', 'Arduino Serial Connection').Inherits('core.object');
 	pack.Type('port', 'Arduino Serial Port Component').Inherits('core.component');

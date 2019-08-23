@@ -4,7 +4,7 @@
 exLIB.package('core.date', function(pack){
 	var s;
 	
-	pack.Category('Date Time').Symbol('lib/img/date.png');
+	pack.Category('Date Time').Symbol('exlibs/img/date.png');
 
 	exLIB.package('core.type', function(p){
 		s = p.Struct('date', 'DateTime');

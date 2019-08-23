@@ -12,61 +12,66 @@
 		@click.stop="$emit('mouse:click', $event)" 
 		@mousedown.left.stop="$emit('mouse:leftdown', $event)" 
 		@mouseup.left="$emit('mouse:leftup', $event)" 
-		@mouseup.right.stop="$emit('mouse:rightup', $event)" 
+		@mouseup.right="$emit('mouse:rightup', $event)" 
 		@mouseenter="$emit('mouse:enter', $event)" 
 		@mouseleave="$emit('mouse:leave', $event)" 
 		@contextmenu.prevent.stop="$emit('mouse:cmenu', $event)"
 	>
-		<rect width="100%" height="100%" rx="13" ry="13" class="exNodeBody" />
+		<rect width="100%" height="100%" rx="13" ry="13" class="exNodeBody" fill="url(#exBgGradient)" filter="url(#exBgFilter)" />
 		
 		<g class="exNodeHeader" ref="header">
 			<path v-if="title && subtitle" :d="'m2,12c0,-5 5,-10 10,-10l+' + (mWidth-24) + ',0c5,0 10,5 10,10l0,30l-' + (mWidth - 4) + ',0l0,-30z'" class="exHeader" :fill="'url(#nodeHeader_' + color.replace('#', '') + ')'" />
 			<path v-if="title && !subtitle" :d="'m2,11.5c0,-5 5,-10 10,-10l+' + (mWidth-24) + ',0c5,0 10,5 10,10l0,16-' + (mWidth - 4) + ',0l0,-13z'" class="exHeader" :fill="'url(#nodeHeader_' + color.replace('#', '') + ')'" />
 			<image v-if="img" :href="'img/' + img" x="10" y="6" width="16" height="16" />
 			<g>
-				<text v-if="title" class="exNodeTitle" :x="img ? '28' : 10" y="19">{{title}}</text>
+				<text v-if="title" class="exNodeTitle" :x="img ? '28' : 10" y="19">{{cTitle}}</text>
 				<text v-if="subtitle" class="exNodeSubtitle" :x="img ? '28' : 10" y="34">{{subtitle}}</text>
 			</g>
 		</g>
 		
-		<g ref="inputs" class="exInputs" :transform="subtitle ? 'translate(0,50)' : title ? 'translate(0,34)' : 'translate(7,14)'">
+		<g ref="inputs" class="exInputs" :transform="subtitle ? 'translate(0,50)' : title ? 'translate(0,34)' : ''">
 			<slot name="inputs">
-				<component v-for="(pin, idx) in inputs" :key="pin.id" 
-					:is="pin.ctor ? pin.ctor : 'ex-pin'"
+				<component v-for="(pin, idx) in cInputs" :key="pin.id" 
+					class="input"
+					:is="pin.ctor ? pin.ctor : 'ExPin'"
 					:max-link="pin.maxlink ? pin.maxlink : 1"
-					class="exPin"
 					:ref="'input_' + pin.name"
-					type="input" 
-					:x="0"
-					@pin-resize="$emit('pin-resize')"
+					:type="$flag('F_INPUT')"
+					@pin-resize="$emit('pin-resize', $event)"
 					v-bind="pin"
 				/>
 			</slot>
 		</g>
 		
-		<g ref="outputs" class="exOutputs" :transform="subtitle ? 'translate(0,50)' : title ? 'translate(0,34)' : 'translate(7,14)'">
+		<g ref="outputs" class="exOutputs" :transform="'translate(' + outputsGroupPos.x + ',' + outputsGroupPos.y + ')'">
 			<slot name="outputs">	
-				<component v-for="(pin, idx) in outputs" :key="pin.id" 
+				<component v-for="(pin, idx) in cOutputs" :key="pin.id" 
+					class="output"
 					:is="pin.ctor ? pin.ctor : 'ExPin'" 
 					:max-link="pin.maxlink ? pin.maxlink : 99"
-					class="exPin"
 					:ref="'output_' + pin.name"
-					type="output" 
-					@pin-resize="$emit('pin-resize')"
+					:type="$flag('F_OUTPUT')"
+					@pin-resize="$emit('pin-resize', $event)"
 					v-bind="pin"
-				/>				
+				/>
 			</slot>
 		</g>
-		<!--
-		<svg class="exExtend" @mousedown.stop="" v-inline.vertical.debug="10" >
-			<rect x="3" y="0" width="98%" height="15" rx="8" ry="8" ref="optional" ></rect>
-			<text x="0" y="0" width="100%">↓</text>
+		<svg
+			v-if="hasOptionalPin"
+			ref="optional"
+			class="exExtend" 
+			@click.stop="mExpanded = !mExpanded" 
+			@mousedown.stop=""
+		>
+			<rect x="3" y="0" width="98%" height="15" rx="6" ry="6" ></rect>
+			<polygon v-if="!mExpanded" :points="(mWidth/2-5) + ',4 ' + (mWidth/2+5) + ',4 ' + (mWidth/2) + ',12'"></polygon>
+			<polygon v-if="mExpanded" :points="(mWidth/2-5) + ',12 ' + (mWidth/2+5) + ',12 ' + (mWidth/2) + ',4'"></polygon>
 		</svg>
-		-->
 	</svg>
 </template>
 
 <script>
+
 
 	import Color from './color.js';
 	import {SvgBase} from './mixins.js'
@@ -77,7 +82,7 @@
 	import ExPin from './pin.vue';
 	
 	export default {
-		inject: ['$worksheet', 'addSvgDef'],
+		inject: ['$worksheet', 'addSvgDef', 'camelCaseToLabel'],
 		mixins: [SvgBase, NodeSelectable, NodeDraggable, NodeContextMenu],
 		//mixins: [SvgBase, NodeSelectable, NodeDraggable, NodeGrid, ContextMenu],
 		components: {ExPin},
@@ -102,21 +107,46 @@
 		},
 		
 		computed: {
-			//$worksheet: function(){return this.$parent;},
+			cTitle: function(){return this.camelCaseToLabel(this.title)},
+			cInputs: function(){
+				if(this.mExpanded)
+					return this.inputs;
+				return this.inputs.filter(it => it.optional != true);
+				
+			},
+			cOutputs: function(){
+				if(this.mExpanded)
+					return this.outputs;
+				return this.outputs.filter(it => it.optional != true);
+			},
+			hasOptionalPin: function(){
+				return (this.inputs.filter(it => it.optional == true).length > 0) 
+					|| (this.outputs.filter(it => it.optional == true).length > 0);
+			},
 		},
 
 		data: function() {
 			return {
 				classObject: {},
 				styleObject: {},
-				mX: this.x,
-				mY: this.y,
+				mExpanded: false,
+				outputsGroupPos: {x: 0, y:0},
 			}
 		},
 		
 		watch: {
-			mWidth: function(){this.$emit('node:resize');},
-			mHeight: function(){this.$emit('node:resize');},
+			mWidth: function(){this.$emit('node:resize')},
+			mHeight: function(){this.$emit('node:resize')},
+			mExpanded: function(){
+				this.$nextTick(function(){
+					this.update();
+				});
+			},
+			title: function(){
+				this.$nextTick(function(){
+					this.update();console.log('zZz')
+				});
+			},
 		},
 
 		created: function(){
@@ -133,14 +163,33 @@
 					{props: {is: 'stop','stop-color': new Color(this.color).darker(0.8).toString(),offset: '1'}}				
 				]
 			}
-			console.log(this);
+			//console.log(this);
 			this.addSvgDef(def);
-						
+			
+			def = {
+				props: {is: 'linearGradient', id: 'exBgGradient', x1: '0', y1: '0', x2:'0', y2:'1'},
+				childs: [
+					{props: {is: 'stop', 'stop-opacity': '0.8', 'stop-color': '#000000', offset:'0'}},
+					{props: {is: 'stop', 'stop-opacity': '0.5', 'stop-color': '#111111', offset: '1'}}				
+				]
+			}
+			this.addSvgDef(def);
+			
+			def = {
+				props: {is: 'filter', id: 'exBgFilter', width: '2', height: '2'},
+				childs: [
+					{props: {is: 'feOffset', dx: '3', dy:'3', result:'SvgjsFeOffset1084Out', in: 'SourceAlpha'}},
+					{props: {is: 'feGaussianBlur', stdDeviation: '3 3', result: 'SvgjsFeGaussianBlur1085Out', in: 'SvgjsFeOffset1084Out'}},
+					{props: {is: 'feBlend', in: 'SourceGraphic', in2: 'SvgjsFeGaussianBlur1085Out', mode:'normal', result: 'SvgjsFeBlend1086Out'}}
+				]
+			}
+			this.addSvgDef(def);
+			
 			this.$on('pin:resize', this.update);
 		},
 		
 		beforeDestroy: function(){
-			this.$off('pin:resize', this.update);		
+			this.$off('pin:resize', this.update);
 		},
 		
 		
@@ -151,46 +200,53 @@
 		
 		methods: {
 								
-			update: function(){
+			update: function(onNextTick){
 				//console.log('Node: Start resize ' + this.mTitle);
 				var oldSize = {w: this.mWidth, h: this.mHeight}
 				, maxWidth = 100
 				, maxHeigth = 100
-				, optional = this.$refs.optional
-				, headBox = this.$refs.header.querySelector('g').getBBox()
-				, inputs = this.$refs.inputs
-				, outputs = this.$refs.outputs
-				, inputsBox
-				, outputsBox;
-				
-				// inputs
-				//inputs.setAttribute('transform', 'translate(0, ' + (headBox.y + headBox.height + 16) + ')');
-				this.$forceUpdate();
-				
-				
-				//console.log(this.$slots);
-				
-				//outputs
-				inputsBox = inputs.getBBox();
-				outputsBox = outputs.getBBox();
+				, headBox = this.$refs.header
+				, inputsBox = this.$refs.inputs.getBBox()
+				, outputsBox = this.$refs.outputs.getBBox()
 
-				outputs.setAttribute('transform', 'translate(' + (inputsBox.x + inputsBox.width + 9 + outputsBox.width) + ', ' + (headBox.y + headBox.height + 16) + ')');				
+				if(onNextTick)
+					return me.$nextTick(function(){me.update()});
 				
-				//head
-				maxWidth = Math.max(maxWidth, headBox.width + headBox.x + 16, inputsBox.x + inputsBox.width + 9 + outputsBox.width);
+				//this.$forceUpdate();
 				
+				//compute header
+				headBox.querySelector('path').style.display = 'none';
+				this.mWidth = 600;
+				var temp = headBox.getBBox();
+				this.mWidth = oldSize.w;
+				headBox.querySelector('path').style.display = 'block';
+				headBox = temp;
+				
+				
+				maxWidth = Math.max(maxWidth, headBox.width + headBox.x + 14, inputsBox.x + inputsBox.width + 9 + outputsBox.width);
+								
+				//outputs
+				this.outputsGroupPos.y = this.subtitle ? 50 : 34;
+				this.outputsGroupPos.x = maxWidth;
+				
+				//body
 				if(maxWidth != oldSize.w)
 					this.mWidth = maxWidth;
-					
+				
+
 				maxHeigth = Math.max(maxHeigth, headBox.height + headBox.y + 30, headBox.height + headBox.y + 30 + inputsBox.height, headBox.height + headBox.y + 30 + outputsBox.height);
-				//console.log(maxHeigth);
-				/*
-				if(optional){
-					optional.setAttribute('y', maxHeigth-12);
+				
+				if(this.$refs.optional){
+					this.$refs.optional.setAttribute('width', maxWidth-5);
+					this.$refs.optional.setAttribute('y', maxHeigth-14);
 					maxHeigth += 5;
 				}
-				*/
-				this.mHeight = maxHeigth;
+				
+				if(maxHeigth != oldSize.h)
+					this.mHeight = maxHeigth;
+				
+				if(maxWidth != oldSize.w || maxHeigth != oldSize.h)
+					this.$emit('resize');
 			},
 			
 			remove: function(){
@@ -198,7 +254,7 @@
 				this.$worksheet.$emit('node:remove');
 				this.$worksheet.removeNode(this.id);
 			},
-			
+			/*
 			addInput: function(data){
 				this.inputs.push(data);
 			},
@@ -206,7 +262,7 @@
 			addOutput: function(data){
 				this.outputs.push(data);
 			},
-			
+			*/
 			getInput: function(name, asComponent){
 				if(asComponent)
 					return this.$refs['input_' + name][0];
@@ -237,9 +293,9 @@
 	}
 
 	.exNode .exExtend rect {
-		fill: #000;
 		cursor: pointer;
 		pointer-events: all;
+		opacity: 0;
 	}
 
 	.exNode .exExtend {
@@ -247,14 +303,19 @@
 	}
 	
 	.exNode .exExtend rect:hover {
-		fill: #555;
 		cursor: pointer;
+		opacity: 1;
+	}
+
+	.exNode .exExtend polygon {
+		pointer-events: none;
+		fill: #eee;
 	}
 	
 	.exNode rect.exNodeBody{
 		stroke: #000;
 		stroke-width:  1px;
-		fill: #000;
+		opacity: 0.9;
 
 		-webkit-user-select: none; /* Safari */        
 		-moz-user-select: none; /* Firefox */
@@ -277,10 +338,20 @@
 	}
 	
 	
+	.exWorksheet.selectEvent .exExtend,
+	.exWorksheet.selectEvent .exExtend rect:hover,
+	.exWorksheet.selectEvent .exExtend rect{
+		pointer-events: none !important;		
+	}
+
 	
+	.exWorksheet.drawlinkevent .exNode .exExtend,
+	.exWorksheet.drawlinkevent .exNode .exExtend rect:hover,
+	.exWorksheet.drawlinkevent .exNode .exExtend rect,
 	.exWorksheet.drawlinkevent .exNode,
 	.exWorksheet.selectEvent .exNode {
-		pointer-events: none;
+		pointer-events: none !important;
+		cursor: crosshair !important;
 	}
 	
 	.exWorksheet .exNode.selected > rect:first-child {

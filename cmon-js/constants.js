@@ -36,6 +36,13 @@ const F_REQUIRED = 0x400000;
 const C_FILE_NAME_PATTERN = C_FUNCTION_NAME_PATTERN = C_VARIABLE_NAME_PATTERN = ['[a-zA-Z_$]{1,}[0-9a-zA-Z_$]*', 'Invalid format: must start with letter and contains only alphanum'];
 
 
+const C_ERR_LINK = {
+	'1': 'Same pin',
+	'2': 'Both are on the same node',
+	'4': 'Directions are not compatible',
+	'8': 'Datatypes are not compatible',
+};
+
 
 ;(function(ctx){
 

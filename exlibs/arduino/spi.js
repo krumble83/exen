@@ -3,7 +3,7 @@
 
 exLIB.package('arduino.spi', function(pack){
 	
-	pack.Category('Arduino/SPI').Symbol('lib/img/arduino.png').Color('#87663f');
+	pack.Category('Arduino/SPI').Symbol('exlibs/img/arduino.png').Color('#87663f');
 	
 	pack.Enum('dataorder', 'Data Order').Values(['MSBFIRST', 'LSBFIRST']);
 	pack.Enum('datamode', 'Data Mode').Values(['SPI_MODE0', 'SPI_MODE1', 'SPI_MODE2', 'SPI_MODE3']);

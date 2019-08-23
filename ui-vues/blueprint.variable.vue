@@ -4,6 +4,7 @@
 		return {
 			headerText: '',
 			footerText: '',
+			currentItem: false,
 			items: [
 				{
 					label: 'Variable',
@@ -74,6 +75,7 @@
 			variablesTreeSelect: function(item){
 				//console.log('--', item);
 				this.fileSelect(item);
+				this.variablePanel.currentItem = item;
 				this.$refs.properties.showPanel(this.variablePanel, item);
 			},
 			

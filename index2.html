@@ -32,8 +32,6 @@
 		
 		<script type="boom!">
 		
-			exLIB.init();
-					
 			Vue.config.performance = true;
 			
 			import './ui-vues/project.vue';
@@ -44,8 +42,11 @@
 			import './ui-vues/blueprint.function.vue';
 			import './ui-vues/blueprint.variable.vue';
 			
-			var test = new Vue(App);
-			test.createProject();
+			exLIB.init(function(){
+				var test = new Vue(App);
+				test.createProject();				
+			});
+					
 			//console.log('->', test.getBlueprint('newBlueprint').name);
 			//test.closeBlueprint('newBlueprint');
 			//test.openBlueprint('newBlueprint');

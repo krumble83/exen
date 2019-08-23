@@ -1,8 +1,7 @@
 <template>
 	<select 
-		class="editor" 
+		:class="classObject" 
 		:required="required"
-		v-model="value"
 		@dblclick.stop="" 
 		@click.stop=""
 		@mousedown.stop=""
@@ -21,11 +20,16 @@
 
 <script>
 	export default {
-		
+		props: {
+			values: Array,
+		},
 		data: function(){
 			return {
+				classObject: {
+					editor: true,
+				},
 				value: '',
-				items: [],
+				items: this.values || [],
 				required: false,
 				validate: false,
 				cancel: false,
@@ -36,7 +40,8 @@
 		methods: {		
 			
 			change: function(evt){
-				this.$el.checkValidity();
+				this.$emit('change', this.$el.value, this);
+				//this.$el.checkValidity();
 			},
 			
 			blur: function(evt){
@@ -46,7 +51,7 @@
 					this.success(this.$el, this);
 				//this.$destroy();
 			},
-			
+			/*
 			startEdit: function(targetEl, autofocus){
 				targetEl.prepend(this.$el);
 				if(!autofocus)
@@ -55,6 +60,7 @@
 					this.$el.focus();
 				});
 			}
+			*/
 		}
 	}
 </script>

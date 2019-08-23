@@ -1,13 +1,13 @@
 <template>
 	<div class="tabs" :id="id">
 		<slot name="begin" />
-		<component v-for="tab in orderedTabs"
-			v-if="tab.tabOrder > 0"
+		<component v-for="tab in tabs"
 			:is="tab.tabCtor ? tab.tabCtor : 'defaultTab'"
 			:tabindex="$hasFlag('F_FOCUSABLE') ? '-1' : ''"
 			:tabsname="mId"
 			@focus="onTabClick"
 			@close="onTabClose"
+			@edited="onEdited"
 			v-bind="tab"
 			:ref="tab.name"
 		>
@@ -27,8 +27,9 @@
 			id: String,
 			name: String,
 			flags: Number,
+			tabs: {type: Array, default: function(){return []}},
 			//closable: Boolean,
-			storeobject: String,
+			//storeobject: String,
 		},
 		
 		data: function(){
@@ -41,24 +42,29 @@
 		},
 		
 		computed: {
-			orderedTabs: function () {
+			/*
+			cTabs: function () {
 				return this.$parent[this.storeobject];
 			}
+			*/
 		},
 		
 		watch: {
-			orderedTabs: function(){
+			/*
+			cTabs: function(){
+				return;
 				var me = this
 				, selected = this.getSelected();
 
 				this.$nextTick(function(){
-					if(selected && me.orderedTabs.find(item => item.name == selected.name))
+					if(selected && me.cTabs.find(item => item.name == selected.name))
 						me.selectTab(selected);
 					else if(me.$children[0]) {
 						me.selectTab(me.$children[0]);
 					}
 				});	
 			}
+			*/
 		},
 		
 		methods: {
@@ -69,6 +75,10 @@
 
 			onTabClose: function(tab, evt){
 				this.$emit('tab:close', tab, evt);
+			},
+			
+			onEdited: function(item){
+				this.$emit('tab:edited', item);
 			},
 
 			closeTab: function(tab){

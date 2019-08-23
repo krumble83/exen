@@ -13,12 +13,10 @@ function nl2br (str, is_xhtml) {
 }
 
 function showTooltip(evt, text, timeout){
-	//console.log('exSVG.Worksheet.showTooltip()', text);
-	
+	//console.log('exSVG.Worksheet.showTooltip()', text);	
 	tooltip.innerHTML = nl2br(text);
 	tooltip.style.left = evt.pageX + 'px';
 	tooltip.style.top = (evt.pageY+10) + 'px';
-	//me.mToolTip.setAttribute('class', 'exTooltip visible');
 	tooltip.timer = setTimeout(function(){
 		if(!tooltip.timer)
 			return;
@@ -28,7 +26,6 @@ function showTooltip(evt, text, timeout){
 
 function hideTooltip(){
 	//console.log('exSVG.Worksheet.hideTooltip()');
-
 	tooltip.timer = null;
 	tooltip.setAttribute('class', 'exTooltip');
 }
@@ -45,10 +42,12 @@ if(!tooltip){
 export default {
 	created: function(){
 		this.$on('link:draw:start', this.drawLinkTooltip);
+		this.$on('pan:start', hideTooltip);
 	},
 	
 	beforeDestroy: function(){
 		this.$off('link:draw:start', this.drawLinkTooltip);
+		this.$off('pan:start', hideTooltip);
 	},
 	
 	methods: {
@@ -57,8 +56,8 @@ export default {
 			function draw(ev){
 				if(ev.srcElement.parentNode == me.$el || (ev.srcElement.parentNode.parentNode && ev.srcElement.parentNode.parentNode == me.$el))
 					showTooltip(ev, 'place new node');
-				else
-					hideTooltip();
+				//else if(!evt.button == 0)
+				//	hideTooltip();
 			}
 			
 			document.addEventListener('mousemove', draw);
@@ -73,41 +72,44 @@ export default {
 
 
 ExPin.mixins.push({
+	inject: ['Library'],
 	created: function(){
-		this.$on('mouse:enter', this.tooltipMouseEnter);		
+		this.$on('mouse:enter', this.tooltipMouseEnter);
+		this.$on('mouse:cmenu', hideTooltip);
 	},
 	
 	beforeDestroy: function(){
 		this.$off('mouse:enter', this.tooltipMouseEnter);
+		this.$off('mouse:cmenu', hideTooltip);		
 	},
 	
 	methods: {
 		tooltipMouseEnter: function(evt){				
 			var me = this
-			, link = this.$worksheet.$refs.drawlink
+			, link = this.$worksheet.$el.querySelector('.exLink.draw')
 			, valid
 			, msg;
 			
 			var move = function(ev){
-				ev.stopPropagation();
+				if(!ev.buttons == 1) // if not drawing link
+					ev.stopPropagation();
 				showTooltip(ev, msg);
 			}
 			
-			if(link && link[0]){
-				link = link[0];
-
-				valid = link.isPinLinkable(this);
-				if(valid.code === 0){					
-					this.$emit('link-valid');
-					msg = valid.label;
-				}
-				else {
-					this.$emit('link-invalid', valid);
-					msg = valid.label;
-				}
+			if(link){
+				link = this.$worksheet.$el.querySelector('.exLink.draw').__vue__;
+				var accept = me.acceptLink(link);
+				if(accept == 1)
+					return hideTooltip();
+				if(accept == 0)
+					msg = '<img src="graph-img/linkok.png" /> Create link';
+				else
+					msg = '<img src="graph-img/none.png" />&nbsp;' + C_ERR_LINK[accept];
 			}
-			else 
-				msg = this.description;
+			else {
+				msg = this.cLabel + '<br />' + this.Library.getDatatype(this.datatype).Label();
+				msg += (this.description) ? ('<br /><br />' + this.description) : '';
+			}
 				
 			this.$el.addEventListener('mousemove', move, false);
 
@@ -126,10 +128,14 @@ ExPin.mixins.push({
 ExNode.mixins.push({
 	created: function(){
 		this.$on('mouse:enter', this.tooltipMouseEnter);		
+		this.$on('mouse:cmenu', hideTooltip);		
+		this.$on('drag:start', hideTooltip);		
 	},
 	
 	beforeDestroy: function(){
 		this.$off('mouse:enter', this.tooltipMouseEnter);
+		this.$off('mouse:cmenu', hideTooltip);		
+		this.$off('drag:start', hideTooltip);		
 	},
 	
 	methods: {
@@ -139,12 +145,12 @@ ExNode.mixins.push({
 			, msg;
 			
 			
-			var move = function(evt){
-				//console.log(evt);
-				if(!me.$el.querySelector('.exNodeHeader').contains(evt.srcElement))
+			var move = function(ev){
+				//console.log(ev);
+				if(!me.$el.querySelector('.exNodeHeader').contains(ev.srcElement) && !ev.buttons == 1)
 					hideTooltip();
-				else
-					showTooltip(evt, msg);
+				else if(!ev.buttons == 1) // if not drawing link
+					showTooltip(ev, msg);
 			}
 			
 			msg = 'node desc';			

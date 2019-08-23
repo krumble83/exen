@@ -26,10 +26,10 @@
 		>
 			<component
 				:is="panelCtor"
-				@modified="onModify"
 				:name="name"
 				:flags="flags"
 				:store="store"
+				@edited="onEdit"
 			>
 			</component>
 		</div>
@@ -61,15 +61,24 @@
 			flags: Number,
 			taborder: Number,
 
-			edited: Boolean,
+			//edited: Boolean,
 			checked: {type: String, default:""},
 			//closable: Boolean,
 			},
 		
+
+		
+		computed: {
+			label: function () {
+				return this.name.split(/(?=[A-Z])/).join(' ') + (this.mEdited ? ' *' : '');
+			}
+		},
+
 		data: function(){
 			return {
 				closeImg: closeImg,
 				id: this.$uid(),
+				mEdited: false,
 			}
 		},
 		
@@ -86,13 +95,19 @@
 				this.$emit('focus', this, evt);
 			},
 			
+			onEdit: function(){
+				this.mEdited = true;
+				this.$emit('edited', this);
+			},
+
+			/*
 			close: function(){
 				console.log('closeTAb', this);
 				this.$store.commit('updateComponent', {name: this.name, props: {tabOrder: 0}});
 				//this.store.test();
 				//this._data.tabOrder = 0;
 			},
-			
+			*/
 			select: function(){
 				//console.log(this);
 				const me = this;
@@ -100,7 +115,7 @@
 					me.$el.querySelector('label').click();
 				});
 			},
-			
+			/*
 			undo: function(evt){
 				console.log('undo - ' + this.name);
 			},
@@ -112,7 +127,7 @@
 			onModify: function(){
 				
 			},
-			
+			*/
 			onKeyDown: function(evt){
 				//console.log('keydown', evt);
 				switch(evt.keyCode){
@@ -157,16 +172,6 @@
 				//this.$parent.onDrop(this, evt);
 			},
 		},
-		
-		computed: {
-			label: function () {
-				return this.name.split(/(?=[A-Z])/).join(' ') + (this.edited ? '&nbsp;*' : '');
-			}
-		},
-		
-		watch: {
-			
-		}
 	}
 </script>
 

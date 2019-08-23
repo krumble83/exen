@@ -1,7 +1,7 @@
 <template>
 	<path 
 		:id="gid" 
-		:stroke="color" 
+		:stroke="cColor" 
 		:class="classObject"
 		:d="'M' + dc1.x + ',' + dc1.y + ' C' + (dp1.x) + ',' + dp1.y + ' ' + (dp2.x) + ',' + dp2.y + ' ' + dc2.x + ',' + dc2.y" 
 		fill="none" 
@@ -18,7 +18,11 @@
 		props: {
 			id: String,
 			datatype: {type: String, default: 'totoType'},
-			color:{type: String, default: '#fff'},			
+			color: String,
+
+			inputPin: Object,
+			outputPin: Object,	
+
 			input: {
 				node: String,
 				pin: String
@@ -28,6 +32,12 @@
 				pin: String
 			},
 		},
+		
+		computed: {
+			cColor: function(){
+				return this.color || ((this.Library) ? this.Library.getDatatype(this.datatype).Color() : '#000');
+			},
+		},
 
 		data: function(){
 			return {
@@ -35,14 +45,15 @@
 				classObject: {
 					exLink: true,
 				},
-				mInputPin: false,
-				mOutputPin: false,
+				mInputPin: this.inputPin,
+				mOutputPin: this.outputPin,
+				mWatchers: {input: [], output: []},
 				
 				dc1: {x: 0, y:0},
 				dc2: {x: 0, y:0},
 				dp1: {x: 0, y:0},
 				dp2: {x: 0, y:0},
-				watchers: {input: [], output: []},
+				intermediateRange: 100,
 			}
 		},
 		
@@ -54,11 +65,11 @@
 						return;
 					//console.log('watch input ', val, old);
 					
-					this.watchers.input.push(val.$node.$watch('mX', this.update));
-					this.watchers.input.push(val.$node.$watch('mY', this.update));
+					this.mWatchers.input.push(val.$node.$watch('mX', this.update));
+					this.mWatchers.input.push(val.$node.$watch('mY', this.update));
 					val.$node.$once('remove', this.remove);
 					if(old){
-						this.watchers.input.forEach(function(el){
+						this.mWatchers.input.forEach(function(el){
 							el();
 						});
 						old.$node.$off('remove', this.remove);
@@ -73,11 +84,11 @@
 						return;
 					//console.log('watch output', this.mOutputPin);
 					
-					this.watchers.output.push(val.$node.$watch('mX', this.update));
-					this.watchers.output.push(val.$node.$watch('mY', this.update));
+					this.mWatchers.output.push(val.$node.$watch('mX', this.update));
+					this.mWatchers.output.push(val.$node.$watch('mY', this.update));
 					val.$node.$once('remove', this.remove);
 					if(old){
-						this.watchers.output.forEach(function(el){
+						this.mWatchers.output.forEach(function(el){
 							el();
 						});
 						old.$node.$off('remove', this.remove);
@@ -119,10 +130,10 @@
 			//this.$worksheet.startSequence();
 			this.$emit('remove');
 			//this.$worksheet.$emit('link:remove', this);
-			this.watchers.input.forEach(function(el){
+			this.mWatchers.input.forEach(function(el){
 				el();
 			});
-			this.watchers.output.forEach(function(el){
+			this.mWatchers.output.forEach(function(el){
 				el();
 			});
 
@@ -166,18 +177,35 @@
 				if(me.mInputPin){
 					me.dc1.x = me.mInputPin.getCenter().x;
 					me.dc1.y = me.mInputPin.getCenter().y;
-					me.dp1.x = me.dc1.x - 200;
+					me.dp1.x = me.dc1.x - this.intermediateRange;
 					me.dp1.y = me.dc1.y;
 				}
 				if(me.mOutputPin){
 					me.dc2.x = me.mOutputPin.getCenter().x;
 					me.dc2.y = me.mOutputPin.getCenter().y;
-					me.dp2.x = me.dc2.x + 200;
+					me.dp2.x = me.dc2.x + this.intermediateRange;
 					me.dp2.y = me.dc2.y;
 				}
 				//me.updateIntermediatePoints();
 			},
 			
+			addPin: function(pin){
+				if(pin.isInput())
+					this.mInputPin = pin;
+				else if(pin.isOutput())
+					this.mOutputPin = pin;
+				else
+					console.assert(false, 'unknown pin type');
+			},
+			
+			getInput: function(){
+				return this.mInputPin;
+			},
+			
+			getOutput: function(){
+				return this.mOutputPin;
+			},
+			/*
 			updateIntermediatePoints: function(){
 				var me = this;
 				if(this.mInputPin){
@@ -190,7 +218,7 @@
 				}
 			
 			},
-
+			*/
 			remove: function(){
 				//console.log('remove');
 				this.$worksheet.removeLink(this.id);

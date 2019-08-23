@@ -4,13 +4,39 @@
 import Menu from '../cmon-vues/contextmenu.vue';
 
 export const NodeContextMenu = {
+	inject: ['preventPanCmenu'],
 	
 	created: function(){
 		const me = this;
 
-		this.$on('mouse:cmenu', function(evt){
-			console.log('cmenuuuuuuu');
+
+		me.preventPanCmenu('mouse:cmenu', me.showContextMenu);
+		//me.$on('mouse:cmenu', me.showContextMenu);
+		
+		/*
+		me.$worksheet.$once('pan:start', function(){
+			me.dPanned = true;
+		});		
+		*/
+	},
+	
+	beforeDestroy: function(){
+		this.$off('mouse:cmenu', this.showContextMenu);
+	},
+	
+	methods: {
+		showContextMenu: function(evt){
+			var me = this;
 			
+			/*
+			if(me.dPanned){
+				me.dPanned = false;
+				me.$worksheet.$once('pan:start', function(){
+					me.dPanned = true;
+				});
+				return;
+			}
+			*/
 			var ComponentClass = Vue.extend(Menu);
 			var instance = new ComponentClass();
 			instance.classObject.context = true;
@@ -27,18 +53,26 @@ export const NodeContextMenu = {
 			me.$emit('cmenu:before', me, instance, evt);
 			me.$worksheet.$emit('node:cmenu', me, instance, evt);
 			instance.showAt(evt.clientX, evt.clientY);
-		});
-	},	
+
+		},
+	},
 }
 
 
 export const PinContextMenu = {
 	created: function(){
-		const me = this;
 
-		this.$on('mouse:cmenu', function(evt){
-			//console.log('cmenuuuuuuu');
-			
+		this.$on('mouse:cmenu', this.showContextMenu);
+	},
+	
+	beforeDestroy: function(){
+		this.$off('mouse:cmenu', this.showContextMenu);
+	},
+	
+	methods: {
+		showContextMenu: function(evt){
+			const me = this;
+
 			var ComponentClass = Vue.extend(Menu);
 			var instance = new ComponentClass();
 			instance.classObject.context = true;
@@ -50,6 +84,7 @@ export const PinContextMenu = {
 			me.$node.$emit('pin:cmenu', me, instance, evt);
 			me.$worksheet.$emit('pin:cmenu', me, instance, evt);
 			instance.showAt(evt.clientX, evt.clientY);
-		});
+			
+		},
 	},
 }

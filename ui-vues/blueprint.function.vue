@@ -3,6 +3,7 @@
 		is="ExWorksheet" 
 		style="position:absolute"
 		:store="store"
+		@edited="onEdited"
 	>
 		<ExTitleBar :title="name" slot="front" :toolbuttons="[]" :doToolbarAction="[]" />
 	</component>
@@ -15,13 +16,33 @@
 		return {
 			headerText: '',
 			footerText: '',
+			currentItem: false,
 			items: [
 				{
 					label: 'Function',
 					items: [
-						{name: 'name', label: 'Function Name', dataid: 'name', editor:{ctor: 'texteditor', pattern: C_FUNCTION_NAME_PATTERN, required: true}},
-						{name: 'description', dataid: 'description', editor:{ctor: 'texteditor'}},
-						{name: 'Access'},
+						{
+							name: 'name', 
+							label: 'Function Name', 
+							tooltip: '',
+							dataid: 'name', 
+							editor:{
+								ctor: 'texteditor', 
+								pattern: C_FUNCTION_NAME_PATTERN, 
+								required: true
+							}
+						},
+						{
+							name: 'description', 
+							tooltip: 'Short description of the purpose of this function',
+							dataid: 'description', 
+							editor:{
+								ctor: 'texteditor'
+							}
+						},
+						{
+							name: 'Access'
+						},
 					],
 				},
 				{
@@ -113,7 +134,8 @@
 				this.fileSelect(item);
 				
 				this.functionPanel.items.find(it => it.button && it.button.action == 'addFunctionInput').button.disabled = item.$hasFlag(F_LOCK_INPUTS);
-				this.functionPanel.items.find(it => it.button && it.button.action == 'addFunctionOutput').button.disabled = item.$hasFlag(F_LOCK_OUTPUTS);				
+				this.functionPanel.items.find(it => it.button && it.button.action == 'addFunctionOutput').button.disabled = item.$hasFlag(F_LOCK_OUTPUTS);
+				this.functionPanel.currentItem = item;
 				this.$refs.properties.showPanel(this.functionPanel, item);
 			},
 			
@@ -158,17 +180,18 @@
 			
 			onFunctionWorksheetdrop: function(item, worksheet, evt){
 				console.log(arguments);
-				worksheet.store.commit('addNode', {name: 'zozo', title: item.name, outputs: item.datas.outputs});
+				var coords = worksheet.mouseToSvg(evt);
+				worksheet.store.commit('addNode', {name: 'zozo', title: item.name, x: coords.x, y: coords.y, outputs: item.datas.outputs});
 			},
 
 			addInput: function(item){
 				console.log('addInput');
-				this.store.commit('function/addInput', {name: item.name});
+				this.store.commit('function/addInput', {name: item.name, datatype: 'core.type.int', editor: {ctor: 'PinEditorInput'}});
 			},
 			
 			addOutput: function(item){
 				console.log('addOutput');
-				this.store.commit('function/addOutput', {name: item.name});
+				this.store.commit('function/addOutput', {name: item.name, datatype: 'core.type.string'});
 			},
 		}
 	});
@@ -197,7 +220,9 @@
 		},
 
 		methods: {
-
+			onEdited: function(worksheet){
+				this.$emit('edited', worksheet);
+			},
 		}
 	}
 

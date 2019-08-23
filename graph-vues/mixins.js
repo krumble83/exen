@@ -33,11 +33,13 @@ const WorksheetHelpers = {
 		},
 		
 		getSvgPoint(x, y){
-			var ret = this.getSvg().createSVGPoint();
-			if(typeof x != 'undefined')
-				ret.x = x;
-			if(typeof y != 'undefined')
-				ret.y = y;
+			var point = this.getSvg().createSVGPoint();
+			if(typeof x == 'undefined')
+				return point;
+
+			point.x = x;
+			point.y = y;
+			var ret = point.matrixTransform(this.getViewportEl().getScreenCTM().inverse()); // <------------- /!\ getScreenCTM() /!\
 			return ret;
 		},
 	},
@@ -56,12 +58,14 @@ export const SvgBase = {
 		gid: {type: String, default: function(){return Vue.options.methods.$uid()}},
 		x: {type: Number, default: 0}, 
 		y: {type: Number, default: 0}, 
-		width: {type: Number, default: 30}, 
-		height: {type: Number, default: 100}
+		width: {type: Number, default: 100}, 
+		height: {type: Number, default: 60}
 	},
 	
 	data () {
 		return {
+			mX: this.x,
+			mY: this.y,
 			mHeight: this.height,
 			mWidth: this.width,
 		}

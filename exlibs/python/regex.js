@@ -1,6 +1,6 @@
 ;exLIB.package('python.regex', function(pack){
 	
-	pack.Category('Python/Regular Expression').Symbol('lib/img/re.png').Color('#87663f');
+	pack.Category('Python/Regular Expression').Symbol('exlibs/img/re.png').Color('#87663f');
 	
 	pack.Type('regexp', 'Python Regular Expression').Inherits('core.object');
 	pack.Type('groups', 'Python Regex group').Inherits('core.object');

@@ -1,6 +1,6 @@
 ;exLIB.package('arduino.stream', function(pack){
 	
-	pack.Symbol('lib/img/arduino.png').Color('#87663f');
+	pack.Symbol('exlibs/img/arduino.png').Color('#87663f');
 		
 	var c = pack.Class('stream', 'Arduino Stream')
 	

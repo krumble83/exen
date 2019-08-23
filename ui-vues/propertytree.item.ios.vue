@@ -13,7 +13,12 @@
 			/>
 		</div>
 		<img class="separator" style="" />
-		<div class="editor"><select><option>test</option></select></div>
+		<div class="editor">
+			<selecteditor
+				style="width:98%"
+				:values="[{value: 'core.type.bool', text:'Bool'}, {value: 'core.type.int', text: 'Integer'}]"
+			/>
+		</div>
 	</li>
 </template>
 
@@ -23,7 +28,7 @@
 	import selecteditor from './editor.select.vue';
 	
 	export default {
-		components: {texteditor},
+		components: {texteditor, selecteditor},
 		inject: ['getBlueprint'],
 		
 		props: {

@@ -51,7 +51,7 @@
 				if(this.items)
 					return this.items;
 				else if(this.dataid && this.item.datas)
-					return this.item.datas[this.dataid];
+					return this.item.datas[this.dataid].filter(it => !it.name.startsWith('@'));
 			},
 		},
 		
