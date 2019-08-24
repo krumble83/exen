@@ -211,12 +211,6 @@
 			findReferences: function(){
 				console.log('findReferences');				
 			},
-			
-			getBlueprint: function(){
-				return this.$parent.$parent;
-				
-			},
-			
 		}
 	}
 

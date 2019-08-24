@@ -29,7 +29,7 @@
 	
 	export default {
 		components: {texteditor, selecteditor},
-		inject: ['getBlueprint'],
+		inject: ['Blueprint'],
 		
 		props: {
 			name: String,
@@ -62,14 +62,14 @@
 		
 		methods: {
 			validate: function(evt, input){
-				console.log('******', this.getBlueprint())
+				console.log('******', this.Blueprint)
 				var exists = false;
 				if(this.type == 'inputs'){
-					const io = this.getBlueprint().getStore().getters['function/getInput'](this.item.name, input.value);
+					const io = this.Blueprint.getStore().getters['function/getInput'](this.item.name, input.value);
 					return  io == undefined || io == this.obj;
 				}
 				else if(this.type == 'outputs'){
-					const io = this.getBlueprint().getStore().getters['function/getOutput'](this.item.name, input.value);
+					const io = this.Blueprint.getStore().getters['function/getOutput'](this.item.name, input.value);
 					return io == undefined || io == this.obj;
 				}
 				
@@ -77,9 +77,9 @@
 			
 			success: function(input){
 				if(this.type == 'inputs')
-					this.getBlueprint().getStore().getters['function/getInput'](this.item.name, this.name).name = input.value;
+					this.Blueprint.getStore().getters['function/getInput'](this.item.name, this.name).name = input.value;
 				else if(this.type == 'outputs')
-					this.getBlueprint().getStore().getters['function/getOutput'](this.item.name, this.name).name = input.value;
+					this.Blueprint.getStore().getters['function/getOutput'](this.item.name, this.name).name = input.value;
 				
 			}
 			//onClick: function

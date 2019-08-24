@@ -25,13 +25,14 @@
 			class="content"
 		>
 			<component
+				v-if="panelCtor"
 				:is="panelCtor"
 				:name="name"
 				:flags="flags"
 				:store="store"
 				@edited="onEdit"
-			>
-			</component>
+			/>
+			<slot />
 		</div>
 	</div>
 </template>

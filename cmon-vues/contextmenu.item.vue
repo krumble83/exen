@@ -2,7 +2,7 @@
 	<li 
 		:class="classObject" 
 		:title="desc" 
-		@click.stop.capture="click" 
+		@click.capture="click" 
 		:data-shortcut="shortcut"
 	>
 		<a><img v-if="icon != null" :src="icon" />{{title}}</a>
@@ -52,7 +52,12 @@
 					this.callback();
 				if(this.emit)
 					this.$root.$emit(this.emit);
-				this.$parent.close();
+				
+				// if no items are available, close the menu
+				if(!this.$el.querySelector('ul')){
+					this.$el.blur();
+					this.$parent.close();
+				}
 			},
 		}
 	};

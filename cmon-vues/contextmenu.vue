@@ -29,6 +29,7 @@
 				classObject: {
 					visible: false,
 					exMenu: true,
+					context: false,
 				},
 				styleObject: {
 					//left: 0,
@@ -96,13 +97,17 @@
 			showAt: function(x, y){
 				var me = this;
 				
-				if(!this.$parent){
-					var el = document.createElement('div');
-					document.body.appendChild(el);
-					this.$mount(el);
-					//console.dir(this.$el);
+				if(me.$parent && me.classObject.context){
+					var div = document.createElement('div');
+					me.$parent.$el.appendChild(div);
+					me.$mount(div);
+
+					me.$once('close', function(){
+						me.$el.parentNode.removeChild(me.$el);
+					});
+					
 				}
-				
+
 				if(x.clientX && x.clientY){
 					this.styleObject.left = x.clientX + 'px';
 					this.styleObject.top = x.clientY + 'px';
@@ -112,16 +117,16 @@
 					this.styleObject.top = y + 'px';
 				}
 				this.classObject.visible = true;
-				document.addEventListener('mousedown', this.close, {capture: true});
+				document.addEventListener('mousedown', this.close, {once: true, capture: true});
 			},
 			
 			close: function(evt){
-				if(evt && this.$el.contains(evt.srcElement))
+				if((evt && this.$el.contains(evt.srcElement)) || !this.classObject.context)
 					return;
-				document.removeEventListener('mousedown', this.close, {capture: true});
+				this.$emit('close', evt);
 				this.classObject.visible = false;
 				this.clear();
-				this.$el.parentNode.removeChild(this.$el);
+				//this.$el.parentNode.removeChild(this.$el);
 				this.$destroy();
 			},
 		}
@@ -197,7 +202,7 @@
 	position: relative; 
 	/*margin: 0; */
 	width: 100%;
-	/*padding: 2px 5px 2px 5px;*/
+	padding: 1px 0 1px 0;
 }
 
 .exMenu li[data-shortcut]:before {
@@ -254,7 +259,6 @@
     filter: grayscale(100%);
 	opacity: 0.1;
 }
-
 
 .exMenu li a:only-child {
 	background-image: none;

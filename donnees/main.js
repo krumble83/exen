@@ -1,7 +1,7 @@
 					
 			Vue.use(Vuex);
 			
-			import App from './ui-vues/app.vue';
+			import App from './ui-vues/project.vue';
 			
 			var test = new Vue({
 				el: '#app',

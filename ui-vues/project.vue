@@ -1,116 +1,159 @@
 <template>
-	<div>Project
-		<library ref="lib">
-			<package id="core">
-				<datatype id="core.object" label="object" color="#55f" />
-				<datatype id="core.device" label="Device" color="#00f" />
-				<datatype id="core.component" label="Component" color="#ff0" />
-				<datatype id="core.exec" label="Exec" ctor="PinExec" color="#fff" :private="true" />
-				<datatype id="core.wildcards" label="Wildcards" ctor="PinWildcards" color="#666" />
-
-				<function id="core.operator" ctor="NodeOp" color="#555" />
-			</package>
-			
-			<package id="core.type">
-				<datatype id="scalar" color="#000" :private="true" />
-				<structure id="core.type.struct" ctor="PinStructure" color="#0057c8" :inherits="['core.type.struct']" label="Structure" :private="true" />
-
-				<datatype id="int" label="Integer " color="#1edfab" tooltip="Any non floating number" :inherits="['core.type.scalar']">
-					<editor id="input">
-						<value id="pattern">/^[+-]?\d+(\.\d+)?$/</value>
-						<value id="default">0</value>
-					</editor>
-				</datatype>
-				<datatype id="float" label="Float" color="#9FFF44" tooltip="Any floating number" :inherits="['core.type.scalar']">
-					<editor id="input">
-						<value id="pattern">/^[+-]?\d+$/</value>
-						<value id="default">0</value>
-					</editor>
-				</datatype>
-				<datatype id="bool" label="Boolean" color="#940000" tooltip="True or False" :inherits="['core.type.scalar']">
-					<editor id="bool" />
-				</datatype>
-				<datatype id="string" label="String" color="#f0f" tooltip="Any sequence of characters" :inherits="['core.type.scalar']">
-					<editor id="input" />
-				</datatype>
-				<datatype id="core.type.byte" color="#016e64" label="Byte" />
-				
-				<structure id="core.type.date" label="DateTime Structure" ctor="PinStructure" color="#0057c8" :inherits="['core.type.struct']">
-					<member id="year" datatype="core.type.int" label="Year" />
-					<member id="month" datatype="core.type.int" label="Month" />
-					<member id="day" datatype="core.type.int" label="Day" />
-					<member id="hour" datatype="core.type.int" label="Hour" />
-					<member id="minutes" datatype="core.type.int" label="Minute" />
-					<member id="seconds" datatype="core.type.int" label="Seconds" />
-				</structure>
-
-
-				<enum id="enum" color="#8000FF">
-					<editor id="select" />
-				</enum>
-				<category id="Utilities/Enum">
-					<function id="intToEnum" title="Int To Enum" color="#aaeea0" symbol="lib/img/function.png">
-						<input id="int" datatype="core.type.int" />
-						<output id="value" datatype="core.type.enum" />
-					</function>				
-				</category>				
-				
-			</package>
-			<package id="python.requests" color="#87663f" symbol="exlibs/python/requests.png">
-				<category id="Python/Requests">
-					<class id="RequestsCookieJar" label="Python Requests RequestsCookieJar" :import="[]">
-						<method id="get" label="Get Cookie">
-							<output id="name" datatype="core.type.string" />
-						</method>
-						<method id="set" label="Set Cookie">
-							<entry /><exit />
-							<input id="name" datatype="core.type.string" />
-							<input id="value" datatype="core.exec" />
-						</method>
-					</class>
-					<class id="response" label="Python Requests Response">
-						<member id="encoding" datatype="core.type.string" label="Response Encoding" />
-						<member id="url" datatype="core.type.string" label="Response Url" />
-						<member id="elapsed" datatype="core.type.int" label="Response Elapsed Time" />
-
-						<member id="text" datatype="core.type.string" label="Response Text" />
-						<member id="content" datatype="core.type.byte" label="Response Content" :array="true" />
-						<member id="json" datatype="json.jsonobject" label="Response JSON" />
-						<member id="status_code" datatype="core.type.int" label="Response status_code" />
-						<member id="headers" datatype="python.type.stringpair" label="Response Headers" :array="true" />
-						<member id="cookies" datatype="RequestsCookieJar" label="Response Cookies" />
-						<member id="history" datatype="python.requests.response" label="Response History" :array="true" />
-					</class>
-				</catagory>
-			</package>
-		</library>
+	<div id="app">
+		<uitabs 
+			id="projecttabs"
+			:flags="flags"
+			:tabs="projectcontents"
+			@tab:focus="onComponentFocus"
+			@tab:close="onComponentClose"
+		>
+			<component 
+				slot="begin"
+				:is="'defaultTab'"
+				:name="'Project'"
+				tabsname="projecttabs"
+				checked="checked"
+				:panelCtor="'ProjectPanel'"
+			/>
+		</uitabs>
+		<div id="librarydiv" style="display:none" >
+			<library ref="library">
+				<template v-for="pack in packages">
+					<component :is="pack" />
+				</template>
+			</library>
+		</div>
 	</div>
 </template>
 
 <script>
-	import './blueprint.vue';
 
-	//import * as name from '../exlibs/exlib.js';
-	import {Library,Package,Datatype,Class,Function,Input,Output,Method,Entry,Exit,Category,Editor,Enum,Value,Structure,Member} from '../exlibs/exlib.js';
-	console.log('-->', name);
+	var onKeyDown = function(evt){
+		//console.dir(document.activeElement);
+		if(!document.activeElement.__vue__ || !document.activeElement.__vue__.onKeyDown)
+			return;
+		const handled = document.activeElement.__vue__.onKeyDown(evt);
+		if(!handled){
+			//send event to parent
+			var parent = document.activeElement.__vue__.$parent;
+			while (parent){
+				if(parent.onKeyDown){
+					if(parent.onKeyDown(evt))
+						break;
+				}
+				parent = parent.$parent;
+			}
+		}
+	}
+	
+	var onKeyUp = function(evt){
+		if(!document.activeElement.__vue__ || !document.activeElement.__vue__.onKeyUp)
+			return;
+		const handled = document.activeElement.__vue__.onKeyUp(evt);
+		if(!handled){
+			//send event to parent
+			var parent = document.activeElement.__vue__.$parent;
+			while (parent){
+				if(parent.onKeyUp){
+					if(parent.onKeyUp(evt))
+						break;
+				}
+				parent = parent.$parent;
+			}
+		}
+	}
 
-	import App from './app.vue';
+	import ProjectStore from '../store/store.project.js'
+	var store = new Vuex.Store(ProjectStore);
+	
+	import {Library} from '../exlibs/exlib.js';
+	//import {Package,Datatype,Class,Function,Input,Output,Method,Entry,Exit,Category,Editor,Enum,Value,Structure,Member} from '../exlibs/exlib.js';
+	
+	//import libCoreType from '../exlibs/core/core.type.vue'
+	//import libCore from '../exlibs/core/core.vue'
+	
+	import ProjectPanel from './project.panel.vue';
+	
+	import uitabs from './tabs.vue';	
+	import defaultTab from './tabs.tab.vue';
 		
-	App.mixins.push({
+	const App = {
+		components: {uitabs,defaultTab,ProjectPanel,      Library},
+		mixins: [],
+		el: '#app',
+		store,
+		
 		provide: function(){
 			const me = this;
 			return {
-				$project: function(){return me},
+				App: me,
+				Project: me,
+				get Library() {return me.$refs.library},
+			}
+		},
+
+		data: function(){
+			return {
+				project: false,
+				tabOrder: 1,
+				//debug: false,
+				flags: F_FOCUSABLE,
+				packages: [],
 			}
 		},
 		
+		computed: {
+			projectcontents: function(){ 
+				return _.orderBy(this.$store.state.components, 'tabOrder')
+			},
+		},
+		
+		mounted: function(){
+			document.addEventListener('keydown', onKeyDown);
+			document.addEventListener('keyup', onKeyUp);
+			
+			document.addEventListener('contextmenu', function(evt){
+				evt.preventDefault();
+			});
+		},
+		
+		beforeDestroy: function(){
+			document.removeEventListener('keydown', onKeyDown);
+			document.removeEventListener('keyup', onKeyUp);
+		},
+		
 		methods: {
-			getProject: function(){
-				return;
+			
+			addTab: function(data){
+			},
+		
+			onComponentFocus: function(tab, evt){
+				//console.log('componentFocus', evt);
+			},
+			
+			onComponentClose: function(tab, evt){
+				//var selected = this.$children[0].getSelected();
+				this.$store.commit('updateComponent', {name: tab.name, props: {tabOrder: 0}});
+				//this.$children[0].selectTab(selected.name);
 			},
 			
 			createProject: function(){
 				//this.addComponent({name: 'Project', type:'project'});
+				
+			},
+			
+			addComponent: function(data, callback){
+				console.assert(data.type);
+				this.$store.commit('addComponent', data);
+				//this.$store.state.tabs.push(data)
+			},
+
+			getComponent: function(name){
+				//console.log('=>', this.$store.getters);
+				return this.$store.getters.getComponent(name);
+			},
+			
+			doTest: function(){
 				var bb;
 				this.addBlueprint(null, function(bp){
 					//console.log(bp);
@@ -127,64 +170,135 @@
 					setTimeout(function(){
 						bb.$parent.select();
 					}, 100);
-				});
+				});				
+			},
+			
+			
+			closeTab: function(tab){
+				//console.log('closezz ', tab);
+				this.$store.commit('changeGraph', {name: tab.name, props: {$tabOrder: 0}});
+				//this.$store.state.graphs.find(v => v.name == tab.name).$tabOrder = 0;
+			},
+			
+			focusTab: function(data){
+				console.log('zz');
+				this.$refs.tabsContainer.focusTab(data);
+			},
+					
+			switchFullscreen: function(value){
+				//console.log('fullscreen');
+				const left = document.querySelector('#left')
+				, footer = document.querySelector('#footer')
+				, right = document.querySelector('#right')
+				, header = document.querySelector('#header');
+				
+				if(value){
+					right.classList.add('width0');
+					left.classList.add('width0');
+					footer.classList.add('height0');
+					header.classList.add('height0');
+					this.$emit('fullscreen');
+					this.$refs.menu.$el.style.display = 'none';
+				}
+				else {
+					right.classList.remove('width0');
+					left.classList.remove('width0');
+					footer.classList.remove('height0');
+					header.classList.remove('height0');
+					this.$refs.menu.$el.style.display = '';
+					this.$emit('normallayout');
+				}
+			},
+			
+			openProject: function(){
+				console.log('open project');
+			},
+			
+			isGraph: function(data){
+				return hasFlag(data, F_IS_GRAPH);
 				
 			},
 			
-			addComponent: function(data, callback){
-				console.assert(data.type);
-				this.$store.commit('addComponent', data);
-				//this.$store.state.tabs.push(data)
+			isType: function(obj, type){
+				return (obj.flags & type) == type;
+			
 			},
 
-			getComponent: function(name){
-				//console.log('=>', this.$store.getters);
-				return this.$store.getters.getComponent(name);
-			}
-		}
-	});
+			graphDelete: function(data, force){
+				const me = this,
+				func = function(){
+					if(me.treeSelected && me.treeSelected.getAttribute('name') == data.name)
+						me.treeSelected = false;
+					me.$store.commit('deleteGraph', data.name);
+					me.$emit('graph:delete', data);
+				}
+				
+				if(force == true)
+					return func();
 
+				me.$refs.dialog.yesno('Delete', 'Delete this Function ?').yes(function(){
+					func();
+				});
 
-	const Project = {
-		components: {Library,Package,Datatype,Class,Function,Input,Output,Method,Entry,Exit,Category,Editor,Enum,Value,Structure,Member},
-		
-		data: function(){
-			return {
-				childss: [
-					{
-						_ctor: 'datatype',
-						id: 'zezette',
-					}
-				],
-			}
+			},
+						
 		},
-		
-		provide: {
-			getProject: function(){
-				return this;
-			}
-		},
-		
-		mounted: function(){
-			return;
-			this.$refs.lib.Package('prog');
-			var pack = this.$refs.lib.Package('core')
-			pack.Datatype({id: 'bool', color: '#f00'});
-			pack.Function('test').Entry();
-			pack.Function('test').Exit();
-			
-			var cl = pack.Class('testclass');
-			cl.Member({id: 'inp1', datatype: 'core.integer'});
-		},
+	}
+	
+	import {module} from '../store/modules/store.blueprint.js'
+	App.store.registerModule('blueprint', module);
+	
+	export default App;
+	
+</script>
+
+<style>
+
+	#projecttabs > .tab > label{
+		border-radius: 9px 7px 0 0;
+		background-color: transparent ;
+		line-height: 30px;
+		padding-top: 0;
+		height: 0;
+		border-bottom: 24px solid #434343;
+		border-left: 7px solid transparent;
+		border-right: 7px solid transparent;		
+	}
+	
+	#projecttabs.tabs > .tab > .content {
+		top: 27px;
+	}
+
+	#projecttabs.tabs > .tab > input[type=radio]:checked ~ label {
+		border-bottom: 24px solid #606060;
+		/*z-index: 2;*/
+	}
+
+	#projecttabs.tabs > .tab > label > img:first-child {
+		padding-top: 0;
+		padding-bottom: 6px;
+	}
+
+	#projecttabs.tabs > .tab > label > img:last-child {
+		padding-top: 12px;
+		padding-left: 10px;
+		float: right;
 	}
 
 
-	import {module} from '../store/modules/store.blueprint.js'
-	App.store.registerModule('blueprint', module);
-
-	import tab from './tabs.tab.vue';
-	tab.components.Project = Project;
+	.width0{
+		width: 0 !important;
+		-moz-transition: width 0.05s ease;
+		-webkit-transition: width 0.05s ease;
+		-o-transition: width 0.05s ease;
+		transition: width 0.05s ease;	
+	}
 	
-	export default Project;
-	
-</script>
+	.height0{
+		height: 0 !important;
+		-moz-transition: height 0.05s ease;
+		-webkit-transition: height 0.05s ease;
+		-o-transition: height 0.05s ease;
+		transition: height 0.05s ease;		
+	}
+</style>

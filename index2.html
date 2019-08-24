@@ -17,11 +17,7 @@
 
 		<script src="cmon-js/extends.js"></script>
 		<script src="ui-js/extends.js"></script>
-		
-		<script src="exlibs/_exgen/exgen.base.js"></script>
-		<script src="exlibs/_exgen/exgen.graph.js"></script>
-		<script src="exlibs/library.base.js"></script>
-		
+				
 		<style>
 
 		</style>	
@@ -34,36 +30,24 @@
 		
 			Vue.config.performance = true;
 			
-			import './ui-vues/project.vue';
-			
-			import App from './ui-vues/app.vue';
-			
+			import App from './ui-vues/project.vue';
+			console.log(App);
+
+			import './exlibs/app.vue';
+			import './exlibs/core/core.vue';
+			import './exlibs/core/core.type.vue';
+			import './exlibs/core/core.type.int.vue';
+			import './exlibs/core/core.flow.vue';
+									
 			import './ui-vues/blueprint.graph.vue';
 			import './ui-vues/blueprint.function.vue';
 			import './ui-vues/blueprint.variable.vue';
 			
-			exLIB.init(function(){
-				var test = new Vue(App);
-				test.createProject();				
-			});
-					
-			//console.log('->', test.getBlueprint('newBlueprint').name);
-			//test.closeBlueprint('newBlueprint');
-			//test.openBlueprint('newBlueprint');
-			//console.log(test.$store.getters.getFreeName('newBlueprint'));
-			
-			
-			
-			
-			//var n = {name: 'setup', flags: F_READ_ONLY|F_LOCK_IO};
-			//test.addFunction(n, false);
-			//test.addFunction({name: 'loop'}, false);
-			
-			//console.dir(test.$store);
-			//console.log(test.$store.getters['undoRedo/canUndo']);
-			//test.$store.dispatch('undo');
-			
-			
+			var test = new Vue(App);
+			test.createProject();
+			test.doTest();
+			test.packages.push('libCore', 'libCoreDatatype', 'App', 'libCoreTypeInt', 'libCoreFlow');
+
 		</script>
 	</body>
 </html>

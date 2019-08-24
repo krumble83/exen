@@ -12,96 +12,7 @@
 		</div>
 		<div class="body">
 			<ul @click="onClick">
-				<li v-for="item in items" :key="item.id">
-					<input v-if="item.items" type="checkbox" :id="'folder_' + id">
-					<label v-if="item.items" :for="'folder_' + id">{{label}}</label>
-					<ul v-if="item.items">
-				</li>
-				
-				
-				
-				<li>
-					<input type="checkbox" id="folder_fd0993bec7bec96cc5840155b9e03b3e">
-					<label for="folder_fd0993bec7bec96cc5840155b9e03b3e">Utilities</label>
-					<ul id="Utilities">
-						<li>
-							<input type="checkbox" id="folder_04b049d22c2f0565a8daa63b0107a957">
-							<label for="folder_04b049d22c2f0565a8daa63b0107a957">Array</label>
-							<ul id="Array">
-								<li id="Node_core.array.add" child="1">
-									<img src="exlibs/img/array.png">&nbsp;Add Array Item
-								</li>
-								<li id="Node_core.array.length" child="1" onmouseover="event.stopPropagation();event.stopImmediatePropagation()">
-									<img src="exlibs/img/array.png">&nbsp;Array Length
-								</li>
-								<li id="Node_core.array.each" child="1">
-									<img src="exlibs/img/array.png">&nbsp;For Each Array Item
-								</li>
-								<li id="Node_core.array.get" child="1">
-									<img src="exlibs/img/array.png">&nbsp;Get array item
-								</li>
-								<li id="Node_core.array.last" child="1">
-									<img src="exlibs/img/array.png">&nbsp;Get last item
-								</li>
-							</ul>
-						</li>
-					</ul>
-				</li>
-
-				<li>
-					<input type="checkbox" id="folder_fd0993bec7bec96cc5840155b9e03b3e">
-					<label for="folder_fd0993bec7bec96cc5840155b9e03b3e">Utilities2</label>
-					<ul id="Utilities">
-						<li>
-							<input type="checkbox" id="folder_04b049d22c2f0565a8daa63b0107a957">
-							<label for="folder_04b049d22c2f0565a8daa63b0107a957">Array</label>
-							<ul id="Array">
-								<li id="Node_core.array.add" child="1">
-									<img src="exlibs/img/array.png">&nbsp;Add Array Item
-								</li>
-								<li id="Node_core.array.length" child="1" onmouseover="event.stopPropagation();event.stopImmediatePropagation()">
-									<img src="exlibs/img/array.png">&nbsp;Array Length
-								</li>
-								<li id="Node_core.array.each" child="1">
-									<img src="exlibs/img/array.png">&nbsp;For Each Array Item
-								</li>
-								<li id="Node_core.array.get" child="1">
-									<img src="exlibs/img/array.png">&nbsp;Get array item
-								</li>
-								<li id="Node_core.array.last" child="1">
-									<img src="exlibs/img/array.png">&nbsp;Get last item
-								</li>
-							</ul>
-						</li>
-					</ul>
-				</li>
-				<li>
-					<input type="checkbox" id="folder_fd0993bec7bec96cc5840155b9e03b3e">
-					<label for="folder_fd0993bec7bec96cc5840155b9e03b3e">Utilities2</label>
-					<ul id="Utilities3">
-						<li>
-							<input type="checkbox" id="folder_04b049d22c2f0565a8daa63b0107a957">
-							<label for="folder_04b049d22c2f0565a8daa63b0107a957">Array</label>
-							<ul id="Array">
-								<li id="Node_core.array.add" child="1">
-									<img src="exlibs/img/array.png">&nbsp;Add Array Item
-								</li>
-								<li id="Node_core.array.length" child="1" onmouseover="event.stopPropagation();event.stopImmediatePropagation()">
-									<img src="exlibs/img/array.png">&nbsp;Array Length
-								</li>
-								<li id="Node_core.array.each" child="1">
-									<img src="exlibs/img/array.png">&nbsp;For Each Array Item
-								</li>
-								<li id="Node_core.array.get" child="1">
-									<img src="exlibs/img/array.png">&nbsp;Get array item
-								</li>
-								<li id="Node_core.array.last" child="1">
-									<img src="exlibs/img/array.png">&nbsp;Get last item
-								</li>
-							</ul>
-						</li>
-					</ul>
-				</li>
+				<component is="Item" v-for="(item, id) in orderedItems" v-bind="item" />
 			</ul> 
 		</div>
 	</div>
@@ -112,8 +23,11 @@
 
 var menuEl = document.querySelector('#exMenu');
 
+import Item from './librarymenu.item.vue'
 
 export default {
+	inject: ['Library'],
+	components: {Item},
 
 	data: function(){
 		return {
@@ -124,7 +38,8 @@ export default {
 			styleObject: {
 				left: 0,
 				top: 0,
-			}
+			},
+			items: [],
 		}
 	},
 	
@@ -134,7 +49,7 @@ export default {
 	// => [{ 'x': 1 }, { 'x': 2 }]
 	
 	computed: {
-		items: function(){return []},
+		orderedItems: function(){return this.items.slice().sort((a, b) => (a.name > b.name) ? 1 : -1)},
 		categories: function(){
 			return 
 		},
@@ -149,6 +64,53 @@ export default {
 	},
 
 	methods: {
+		
+		update: function(query){
+			const me = this;
+			var nodes = this.Library.getNode(query);
+			
+
+			function findUl(id, parent){
+				//console.log('findUl()', id, parent)
+				var el
+					, path = id.split('/')
+					, tid = path.shift()
+					, ul = parent.find(it => it.id == tid)
+					, li;
+				
+				if(!parent.childs)
+					parent.childs = [];
+				if(!ul){
+					li = {id: tid, childs: []}
+					parent.push(li);
+					ul = li;
+
+				}
+				if(path.length > 0)
+					return findUl(path.join('/'), ul.childs);
+				
+				return ul.childs;
+			}
+			
+			
+			nodes.forEach(function(it){
+				var vu = it.__vue__
+					, cat = me.items;
+				if(vu.Category)
+					cat = findUl(vu.Category.id, me.items);
+				cat.push({
+					name: vu.title, 
+					id: vu.fullpath,
+					symbol: vu.symbol,
+				});
+			});
+			//console.log(this.items);
+			//console.log(nodes);
+		},
+		
+		_sort: function(items){
+			return items.slice().sort((a, b) => (a.name > b.name) ? 1 : -1);
+		},
 		
 		onSearch: function(evt){
 			//console.log(this.$refs.input);
@@ -206,11 +168,12 @@ export default {
 		},
 		
 		onClick: function(evt){
-			//console.log(evt.srcElement);
+			//console.log(evt.srcElement.tagName != 'LI',!evt.srcElement.hasAttribute('child'));
+			//return;
 			var me = this;
 			if(evt.srcElement.tagName != 'LI' || !evt.srcElement.hasAttribute('child'))
 				return;
-			me.$emit('item:click', evt.srcElement);
+			me.$emit('click', evt.srcElement);
 			this.close();
 		},
 		
@@ -219,15 +182,18 @@ export default {
 		},
 		
 		showAt: function(x, y){
-			var me = this;
+			const me = this;
 			
-			if(!this.$parent){
-				var d = document.createElement('div');
-				document.body.appendChild(d);
-				this.$mount(d);
-				//console.dir(this.$el);
-			}
-			
+			if(me.$parent){
+				var div = document.createElement('div');
+				me.$parent.$el.appendChild(div);
+				me.$mount(div);
+
+				me.$once('close', function(){
+					me.$el.parentNode.removeChild(me.$el);
+				});			
+			}			
+
 			if(x.clientX && x.clientY){
 				this.styleObject.left = x.clientX + 'px';
 				this.styleObject.top = x.clientY + 'px';
@@ -237,7 +203,7 @@ export default {
 				this.styleObject.top = y + 'px';
 			}
 			this.classObject.visible = true;
-			document.addEventListener('mousedown', this.close, {capture: true});
+			document.addEventListener('mousedown', this.close, {onde: true, capture: true});
 			this.$nextTick(function(){
 				this.$refs.input.focus();
 			});
@@ -246,10 +212,10 @@ export default {
 		close: function(evt){
 			if(evt && this.$el.contains(evt.srcElement))
 				return;
-			document.removeEventListener('mousedown', this.close, {capture: true});
+			//document.removeEventListener('mousedown', this.close, {capture: true});
 			this.classObject.visible = false;
-			this.$emit('menu:close');
-			this.$el.parentNode.removeChild(this.$el);
+			this.$emit('close');
+			//this.$el.parentNode.removeChild(this.$el);
 			this.$destroy();			
 		},		
 	},

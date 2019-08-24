@@ -4,20 +4,13 @@
 import Menu from '../cmon-vues/contextmenu.vue';
 
 export const NodeContextMenu = {
-	inject: ['preventPanCmenu'],
+	inject: ['preventPanCmenu', 'App'],
 	
 	created: function(){
 		const me = this;
 
-
 		me.preventPanCmenu('mouse:cmenu', me.showContextMenu);
-		//me.$on('mouse:cmenu', me.showContextMenu);
-		
-		/*
-		me.$worksheet.$once('pan:start', function(){
-			me.dPanned = true;
-		});		
-		*/
+
 	},
 	
 	beforeDestroy: function(){
@@ -26,19 +19,11 @@ export const NodeContextMenu = {
 	
 	methods: {
 		showContextMenu: function(evt){
-			var me = this;
-			
-			/*
-			if(me.dPanned){
-				me.dPanned = false;
-				me.$worksheet.$once('pan:start', function(){
-					me.dPanned = true;
-				});
-				return;
-			}
-			*/
-			var ComponentClass = Vue.extend(Menu);
-			var instance = new ComponentClass();
+			console.log('*-*-',this.App);
+			const me = this
+				, ComponentClass = Vue.extend(Menu)
+				, instance = new ComponentClass({parent: me.App});
+				
 			instance.classObject.context = true;
 			
 			instance.addTitle('Node');
@@ -50,9 +35,9 @@ export const NodeContextMenu = {
 			instance.addSeparator();
 			instance.addItem({id: 'breaklinks', title: 'Break Links', desc: 'Break all links to this Node'});
 			
-			me.$emit('cmenu:before', me, instance, evt);
+			me.$emit('cmenu', me, instance, evt);
 			me.$worksheet.$emit('node:cmenu', me, instance, evt);
-			instance.showAt(evt.clientX, evt.clientY);
+			instance.showAt(evt);
 
 		},
 	},
@@ -60,8 +45,8 @@ export const NodeContextMenu = {
 
 
 export const PinContextMenu = {
+	inject: ['App'],
 	created: function(){
-
 		this.$on('mouse:cmenu', this.showContextMenu);
 	},
 	
@@ -74,16 +59,16 @@ export const PinContextMenu = {
 			const me = this;
 
 			var ComponentClass = Vue.extend(Menu);
-			var instance = new ComponentClass();
+			var instance = new ComponentClass({parent: me.App});
 			instance.classObject.context = true;
-			
+						
 			instance.addTitle('Pin');
 			instance.addItem({id: 'breaklinks', title: 'Break Links', desc: 'Break all links to this Pin'});
 			
 			me.$emit('cmenu', me, instance, evt);
-			me.$node.$emit('pin:cmenu', me, instance, evt);
+			me.$node.$emit('cmenu', me, instance, evt);
 			me.$worksheet.$emit('pin:cmenu', me, instance, evt);
-			instance.showAt(evt.clientX, evt.clientY);
+			instance.showAt(evt);
 			
 		},
 	},

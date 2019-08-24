@@ -2,10 +2,15 @@
 	<div class="flexChild columnParent" style="width:100%;height:100%">
 		<div class="panel header flexChild">
 			<uimenu class="horizontal" tabindex="-1" ref="menu">
-				<uimenuitem title="File">
+				<uimenuitem title="Project">
 					<uimenu>
-						<uimenuitem title="New Project" shortcut="ctrl+N" action="newProject" desc="create new project"></uimenuitem>
-						<uimenuitem title="Open Project" action="openProject" desc="open existing project"></uimenuitem>
+						<uimenuitem title="New..." shortcut="ctrl+N" action="newProject" desc="create new project" icon="ui-img/16x16/new.png" />
+						<uimenuitem title="Open.." action="openProject" desc="open existing project" icon="ui-img/16x16/folder.png" />
+						<uimenuitem class="sep"></uimenuitem>
+						<uimenuitem title="Save" action="saveProject" desc="save current project" icon="ui-img/16x16/save.png" />
+						<uimenuitem title="Save As..." action="saveProject" desc="save current project" icon="ui-img/16x16/save.png" />
+						<uimenuitem class="sep"></uimenuitem>
+						<uimenuitem title="Close" action="closeProject" desc="close current project" />
 					</uimenu>
 				</uimenuitem>
 				<uimenuitem title="Edition">
@@ -16,11 +21,14 @@
 						<uimenuitem title="Cut" shortcut="ctrl+X"icon="cmon-img/16x16/cut.png" ></uimenuitem>
 						<uimenuitem title="Copy" shortcut="ctrl+C"icon="cmon-img/16x16/copy.png" ></uimenuitem>
 						<uimenuitem title="Paste" shortcut="ctrl+V"icon="cmon-img/16x16/paste.png" ></uimenuitem>
+						<uimenuitem class="sep"></uimenuitem>
+						<uimenuitem title="Preferences" action="showPreferences" icon="ui-img/16x16/preferences.png" />
 					</uimenu>
 				</uimenuitem>
-				<uimenuitem title="Project">
+				<uimenuitem title="Compile">
 					<uimenu>
-						<uimenuitem title="Compile"></uimenuitem>
+						<uimenuitem title="Check Project" icon="ui-img/16x16/check.png"></uimenuitem>
+						<uimenuitem title="Compile Project" icon="ui-img/16x16/compile.png"></uimenuitem>
 						<uimenuitem title="Project" class="sub">
 							<uimenu>
 								<uimenuitem styleObject="{left: '96%',top: '-23px'}" title="Compile"></uimenuitem>
@@ -147,7 +155,7 @@
 
 <script>
 	
-	import App from './app.vue';
+	import App from './project.vue';
 
 	import uimenu from '../cmon-vues/contextmenu.vue';
 	import uimenuitem from '../cmon-vues/contextmenu.item.vue';
@@ -203,9 +211,10 @@
 		provide: function(){
 			const me = this;
 			return {
-				getBlueprint: function(){
+				Blueprint: me,
+				/*getBlueprint: function(){
 					return me;
-				}
+				}*/
 			}
 		},
 

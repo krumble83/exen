@@ -94,7 +94,7 @@
 			return {
 				addSvgDef: function(data){me.addDef(data)},
 				$worksheet: me,
-				Library: exLIB,
+				//Library: exLIB,
 				camelCaseToLabel: function(str){
 					if(!str)
 						return '';

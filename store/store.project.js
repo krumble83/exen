@@ -3,7 +3,6 @@ function oState(){
 	return {
 		name: 'default',
 		components: [],
-		undoredo: [],
 	}
 }
 

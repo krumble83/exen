@@ -137,6 +137,7 @@ export const Base = {
 		fullpath: function(){
 			if(this.Package)
 				return this.Package.id + '.' + this.id;
+			return this.id;
 		},
 	},
 	
@@ -176,6 +177,10 @@ export const Base = {
 				else
 					this.importedProperties.push({name: key, value: src[key]});
 			}			
+		},
+		
+		Id: function(){
+			return this.id;
 		},
 		
 		Import: function(data){
@@ -248,8 +253,18 @@ export const Library = {
 	},
 	methods: {
 
+		createQuery: function(){
+			return {
+				category: false,
+				searchString: '',
+				inputDatatype: '',
+				outputDatatype: '',
+				private: false,
+			}
+		},
+		
 		select: function(selector){
-			return this.$el.querySelectorAll(selector);
+			return this.$el.querySelectorAll(selector).__vue__ || false;
 		},
 		
 		arePinCompatible: function(input, outpout){
@@ -262,15 +277,25 @@ export const Library = {
 			return ret;
 		},
 		
+		getNodesByQuery: function(query){
+			var q = '[isfunction="true"]';
+			if(query && !query.private)
+				q += ':not([private="true"])'
+			return this.$el.querySelectorAll(q);			
+		},
+		
 		getDatatype: function(id){
 			var name = this.splitPackageName(id);
-			return this.$el.querySelector('package[id="' + name[0] + '"] datatype[id="' + name[1] + '"]');
+			//console.log(id, name, this.$el.querySelector('package[id="' + name[0] + '"] datatype[id="' + name[1] + '"]'));
+			return this.$el.querySelector('package[id="' + name[0] + '"] datatype[id="' + name[1] + '"]').__vue__;
 		},
 		
 		getNode: function(id){
-			if(!id){
-				
-			}
+			if(!id)
+				return this.getNodesByQuery(this.createQuery());
+			else if(typeof id == 'object')
+				return this.getNodesByQuery(id);
+
 			var name = this.splitPackageName(id);
 			return this.$el.querySelector('package[id="' + name[0] + '"] [isfunction="true"][id="' + name[1] + '"]');
 		},
@@ -335,7 +360,7 @@ export const Node = {
 	inject: {
 		Library: 'Library',
 		Package: 'Package',
-		Category: {default: {color: '', symbol: ''}},
+		Category: {default: false},
 	},
 	//mixins: [IdPackageId],
 	
@@ -343,7 +368,7 @@ export const Node = {
 		__ctor: {type: String, default: 'node'},
 		title: String,
 		subtitle: String,
-		keywords: {type: Array, default: function(){return []}},
+		keywords: String, //{type: Array, default: function(){return []}},
 		description: String,
 		//categories: {type: Array, default: function(){return []}},
 		flags: Number,
@@ -394,6 +419,16 @@ export const Datatype = {
 		description: String,
 		label: String,
 	},
+	
+	methods: {
+		Color: function(){
+			return this.color;
+		},
+		
+		Label: function(){
+			return this.label;
+		},
+	}
 }
 Extend(Package, Category, 'Datatype');
 Vue.config.ignoredElements.push('datatype');
@@ -439,8 +474,8 @@ export const Input = {
 		__ctor: {type: String, default: 'input'},
 	},
 }
-Extend(Node, 'Input');
-Vue.config.ignoredElements.push('input');
+Extend(Node, Function, 'Input');
+//Vue.config.ignoredElements.push('input');
 
 export const Output = {
 	extends: Pin,
@@ -450,8 +485,8 @@ export const Output = {
 		__ctor: {type: String, default: 'output'},
 	},
 }
-Extend(Node, 'Output');
-Vue.config.ignoredElements.push('output');
+Extend(Node, Function, 'Output');
+//Vue.config.ignoredElements.push('output');
 
 export const Entry = {
 	extends: Input,
