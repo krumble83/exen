@@ -44,8 +44,14 @@ function Extend(){
 		, name = args[args.length - 1];
 	var ret = {methods: {}};
 	var f = function(obj){
-		console.assert(obj.id, 'YOU MUST PROVIDE ID');
-		return this._create(name, obj);
+		if(!obj)
+			return this._create(name,{});
+		var id = (typeof obj == 'string') ? obj : obj.id;
+		obj = (typeof obj == 'string') ? {id: obj} : obj;
+		//console.log('----', obj, name);
+		//console.assert(obj.id, 'YOU MUST PROVIDE ID');
+		return this.$children.find(it => it.id == id) || this._create(name, obj);
+		//return this._create(name, obj);
 	}
 	ret.methods[name] = f;
 	tok.mixins.push(ret)
@@ -105,10 +111,26 @@ export const Base = {
 					ret[key] = this.$props[key];
 			}
 			
-			this.importedProperties.forEach(function(prop){
+			for (var key in this.$data) {
+				if (!this.$data.hasOwnProperty(key))
+					continue;
+
+				if(key.startsWith('__')) 
+					continue;
+				if(key.startsWith('_'))
+					ret[key.slice(1)] = this.$data[key];
+
+				ret[key] = this.$props[key];
+			}
+			/*
+			this.$data.forEach(function(prop){
+				if(prop.startsWith('__')
+					return;
+				if(prop.startsWith('_')
+					ret[prop
 				ret[prop.name] = prop.value;
 			});
-			
+			*/
 			return ret;
 		},
 		
@@ -225,7 +247,15 @@ export const Library = {
 		}
 	},
 	methods: {
+
+		select: function(selector){
+			return this.$el.querySelectorAll(selector);
+		},
 		
+		arePinCompatible: function(input, outpout){
+			
+		},
+
 		getPackage: function(id){
 			var ret = false;
 			return this.$children.find(it => it.id == id && it.$el.tagName == 'PACKAGE');
@@ -281,20 +311,11 @@ Vue.config.ignoredElements.push('package');
 export const Category = {
 	extends: Base,
 	mixins: [],
-	inject: ['Library', 'Package'],
 	
 	provide: function(){
 		const me = this;
 		return {
-			Category: function(){
-				var ret = '',
-					parent = this.$parent;
-				
-				while(parent){
-					
-				}
-				return me;
-			},
+			Category: me,
 		}
 	},
 	
@@ -314,11 +335,8 @@ export const Node = {
 	inject: {
 		Library: 'Library',
 		Package: 'Package',
-		Category: {
-			from: 'Category',
-			default: undefined
-		},
-	}, //['Library', 'Package', 'Category'],
+		Category: {default: {color: '', symbol: ''}},
+	},
 	//mixins: [IdPackageId],
 	
 	props: {
@@ -327,21 +345,19 @@ export const Node = {
 		subtitle: String,
 		keywords: {type: Array, default: function(){return []}},
 		description: String,
-		symbol: String,
-		categories: {type: Array, default: function(){return []}},
+		//categories: {type: Array, default: function(){return []}},
 		flags: Number,
 		pos: String,
-		color: String,
+		color: {type: String, default: function(){return this.Category.color}},
+		symbol: {type: String, default: function(){return this.Category.symbol}},
 	},
 	
-	data: function(){
-		return {
-			_color: this.color || ((this.Package) ? this.Package.color : ''),
-		}
-	},
+	methods: {
+		
+	}
 }
 Vue.config.ignoredElements.push('node');
-
+//Extend(Node, 'Category');
 
 export const Function = {
 	extends: Node,
@@ -369,8 +385,6 @@ export const Datatype = {
 	},
 	//mixins: [IdPackageId],
 	
-	//components: ['Package'],
-	
 	props: {
 		__ctor: {type: String, default: 'datatype'},
 		private: {type: Boolean, default: false},
@@ -381,19 +395,7 @@ export const Datatype = {
 		label: String,
 	},
 }
-Extend(Package, Category, 'Package');
-Vue.config.ignoredElements.push('datatype');
-
-export const Editor = {
-	extends: Base,
-	mixins: [],
-	inject: ['Library', 'Package'],
-	
-	props: {
-		__ctor: {type: String, default: 'editor'},
-		ctor: String,
-	}
-}
+Extend(Package, Category, 'Datatype');
 Vue.config.ignoredElements.push('datatype');
 
 
@@ -413,7 +415,20 @@ export const Pin = {
 		keywords: {type: Array, default: function(){return []}},
 		description: String,
 		group: Number,
+		required: {type: Boolean, default: false},
 	},
+	
+	data: function(){
+		return {
+			_required: this.required,
+		}
+	},
+	
+	methods: {
+		Required: function(req){
+			this.required = req;
+		}
+	}
 }
 
 export const Input = {
@@ -464,6 +479,33 @@ Vue.config.ignoredElements.push('exit');
 
 
 
+export const Editor = {
+	extends: Base,
+	mixins: [],
+	inject: ['Library', 'Package'],
+	
+	props: {
+		__ctor: {type: String, default: 'editor'},
+		ctor: String,
+	}
+}
+Extend(Pin, Datatype, 'Editor');
+Vue.config.ignoredElements.push('editor');
+
+export const Pattern = {
+	extends: Base,
+	mixins: [],
+	inject: ['Library', 'Package'],
+	
+	props: {
+		__ctor: {type: String, default: 'editor'},
+		flags: {type: String},
+	}
+}
+Extend(Package, Category, Editor, 'Pattern');
+Vue.config.ignoredElements.push('pattern');
+
+
 export const Enum = {
 	extends: Datatype,
 	mixins: [],
@@ -481,8 +523,7 @@ export const Value = {
 	mixins: [],
 	
 	props: {
-		__ctor: {type: String, default: 'enum'},
-		name: {type: String, required: true},
+		__ctor: {type: String, default: 'value'},
 		value: Number,
 	},
 }
@@ -509,13 +550,7 @@ export const Class = {
 		__ctor: {type: String, default: 'class'},
 		color: {type: String, default: '#00f'},
 	},
-	
-	methods: {
-		Member: function(id){
-			console.assert(id);
-			return this._create('Member', {id: id});
-		}
-	}
+
 }
 Extend(Package, Category, 'Class');
 Vue.config.ignoredElements.push('class');

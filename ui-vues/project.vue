@@ -1,38 +1,87 @@
 <template>
 	<div>Project
-		<library>
+		<library ref="lib">
 			<package id="core">
-				<datatype id="exec" :private="true" color="#fff" />
-			</package>
-			<package id="python.requests" :catagories="['Python/Requests']" color="#87663f" symbol="exlibs/python/requests.png" :childs="childss">
-				<class id="RequestsCookieJar" label="Python Requests RequestsCookieJar" :_import="[]">
-					<method id="get" label="Get Cookie">
-						<output id="name" datatype="core.type.string" />
-					</method>
-					<method id="set" label="Set Cookie">
-						<entry /><exit />
-						<input id="name" datatype="core.type.string" />
-						<input id="value" datatype="core.exec" />
-					</method>
-				</class>
-				<class id="response" label="Python Requests Response">
-					<member name="encoding" datatype="core.type.string" label="Response Encoding" />
-					<member name="url" datatype="core.type.string" label="Response Url" />
-					<member name="elapsed" datatype="core.type.int" label="Response Elapsed Time" />
+				<datatype id="core.object" label="object" color="#55f" />
+				<datatype id="core.device" label="Device" color="#00f" />
+				<datatype id="core.component" label="Component" color="#ff0" />
+				<datatype id="core.exec" label="Exec" ctor="PinExec" color="#fff" :private="true" />
+				<datatype id="core.wildcards" label="Wildcards" ctor="PinWildcards" color="#666" />
 
-					<member name="text" datatype="core.type.string" label="Response Text" />
-					<member name="content" datatype="core.type.byte" label="Response Content" :array="true" />
-					<member name="json" datatype="json.jsonobject" label="Response JSON" />
-					<member name="status_code" datatype="core.type.int" label="Response status_code" />
-					<member name="headers" datatype="python.type.stringpair" label="Response Headers" :array="true" />
-					<member name="cookies" datatype="RequestsCookieJar" label="Response Cookies" />
-					<member name="history" datatype="python.requests.response" label="Response History" :array="true" />
-				</class>
-				<datatype id="zozo" color="#456" :import="['RequestsCookieJar']" />
-				<enum id="enum">
-					<value name="kiki" />
+				<function id="core.operator" ctor="NodeOp" color="#555" />
+			</package>
+			
+			<package id="core.type">
+				<datatype id="scalar" color="#000" :private="true" />
+				<structure id="core.type.struct" ctor="PinStructure" color="#0057c8" :inherits="['core.type.struct']" label="Structure" :private="true" />
+
+				<datatype id="int" label="Integer " color="#1edfab" tooltip="Any non floating number" :inherits="['core.type.scalar']">
+					<editor id="input">
+						<value id="pattern">/^[+-]?\d+(\.\d+)?$/</value>
+						<value id="default">0</value>
+					</editor>
+				</datatype>
+				<datatype id="float" label="Float" color="#9FFF44" tooltip="Any floating number" :inherits="['core.type.scalar']">
+					<editor id="input">
+						<value id="pattern">/^[+-]?\d+$/</value>
+						<value id="default">0</value>
+					</editor>
+				</datatype>
+				<datatype id="bool" label="Boolean" color="#940000" tooltip="True or False" :inherits="['core.type.scalar']">
+					<editor id="bool" />
+				</datatype>
+				<datatype id="string" label="String" color="#f0f" tooltip="Any sequence of characters" :inherits="['core.type.scalar']">
+					<editor id="input" />
+				</datatype>
+				<datatype id="core.type.byte" color="#016e64" label="Byte" />
+				
+				<structure id="core.type.date" label="DateTime Structure" ctor="PinStructure" color="#0057c8" :inherits="['core.type.struct']">
+					<member id="year" datatype="core.type.int" label="Year" />
+					<member id="month" datatype="core.type.int" label="Month" />
+					<member id="day" datatype="core.type.int" label="Day" />
+					<member id="hour" datatype="core.type.int" label="Hour" />
+					<member id="minutes" datatype="core.type.int" label="Minute" />
+					<member id="seconds" datatype="core.type.int" label="Seconds" />
+				</structure>
+
+
+				<enum id="enum" color="#8000FF">
+					<editor id="select" />
 				</enum>
-				<function id="okay" />
+				<category id="Utilities/Enum">
+					<function id="intToEnum" title="Int To Enum" color="#aaeea0" symbol="lib/img/function.png">
+						<input id="int" datatype="core.type.int" />
+						<output id="value" datatype="core.type.enum" />
+					</function>				
+				</category>				
+				
+			</package>
+			<package id="python.requests" color="#87663f" symbol="exlibs/python/requests.png">
+				<category id="Python/Requests">
+					<class id="RequestsCookieJar" label="Python Requests RequestsCookieJar" :import="[]">
+						<method id="get" label="Get Cookie">
+							<output id="name" datatype="core.type.string" />
+						</method>
+						<method id="set" label="Set Cookie">
+							<entry /><exit />
+							<input id="name" datatype="core.type.string" />
+							<input id="value" datatype="core.exec" />
+						</method>
+					</class>
+					<class id="response" label="Python Requests Response">
+						<member id="encoding" datatype="core.type.string" label="Response Encoding" />
+						<member id="url" datatype="core.type.string" label="Response Url" />
+						<member id="elapsed" datatype="core.type.int" label="Response Elapsed Time" />
+
+						<member id="text" datatype="core.type.string" label="Response Text" />
+						<member id="content" datatype="core.type.byte" label="Response Content" :array="true" />
+						<member id="json" datatype="json.jsonobject" label="Response JSON" />
+						<member id="status_code" datatype="core.type.int" label="Response status_code" />
+						<member id="headers" datatype="python.type.stringpair" label="Response Headers" :array="true" />
+						<member id="cookies" datatype="RequestsCookieJar" label="Response Cookies" />
+						<member id="history" datatype="python.requests.response" label="Response History" :array="true" />
+					</class>
+				</catagory>
 			</package>
 		</library>
 	</div>
@@ -41,8 +90,8 @@
 <script>
 	import './blueprint.vue';
 
-	//import * as name from '../testlib.js';
-	import {Library,Package,Datatype,Class,Function,Input,Output,Method,Entry,Exit} from '../testlib.js';
+	//import * as name from '../exlibs/exlib.js';
+	import {Library,Package,Datatype,Class,Function,Input,Output,Method,Entry,Exit,Category,Editor,Enum,Value,Structure,Member} from '../exlibs/exlib.js';
 	console.log('-->', name);
 
 	import App from './app.vue';
@@ -97,7 +146,7 @@
 
 
 	const Project = {
-		components: {Library,Package,Datatype,Class,Function,Input,Output,Method,Entry,Exit},
+		components: {Library,Package,Datatype,Class,Function,Input,Output,Method,Entry,Exit,Category,Editor,Enum,Value,Structure,Member},
 		
 		data: function(){
 			return {
@@ -117,7 +166,15 @@
 		},
 		
 		mounted: function(){
-
+			return;
+			this.$refs.lib.Package('prog');
+			var pack = this.$refs.lib.Package('core')
+			pack.Datatype({id: 'bool', color: '#f00'});
+			pack.Function('test').Entry();
+			pack.Function('test').Exit();
+			
+			var cl = pack.Class('testclass');
+			cl.Member({id: 'inp1', datatype: 'core.integer'});
 		},
 	}
 
