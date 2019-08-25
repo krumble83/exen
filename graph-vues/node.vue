@@ -17,19 +17,19 @@
 		@mouseleave="$emit('mouse:leave', $event)" 
 		@contextmenu.prevent.stop="$emit('mouse:cmenu', $event)"
 	>
-		<rect width="100%" height="100%" rx="13" ry="13" class="exNodeBody" fill="url(#exBgGradient)" filter="url(#exBgFilter)" />
+		<rect width="100%" height="100%" rx="9" ry="9" class="exNodeBody" fill="url(#exBgGradient)" filter="url(#exBgFilter)" />
 		
 		<g class="exNodeHeader" ref="header">
-			<path v-if="title && subtitle" :d="'m2,12c0,-5 5,-10 10,-10l+' + (mWidth-24) + ',0c5,0 10,5 10,10l0,30l-' + (mWidth - 4) + ',0l0,-30z'" class="exHeader" :fill="'url(#nodeHeader_' + color.replace('#', '') + ')'" />
-			<path v-if="title && !subtitle" :d="'m2,11.5c0,-5 5,-10 10,-10l+' + (mWidth-24) + ',0c5,0 10,5 10,10l0,16-' + (mWidth - 4) + ',0l0,-13z'" class="exHeader" :fill="'url(#nodeHeader_' + color.replace('#', '') + ')'" />
-			<image v-if="img" :href="'img/' + img" x="10" y="6" width="16" height="16" />
+			<rect width="100%" height="100%" rx="9" ry="9" class="exHeader" :fill="'url(#nodeHeader_' + color.replace('#', '') + ')'" :clip-path="'url(#exNodeClipPath_' + ((subtitle) ? '2' : '1') + ')'" />
+			<image v-if="img" :href="img" x="10" y="6" width="16" height="16" />
 			<g>
-				<text v-if="title" class="exNodeTitle" :x="img ? '28' : 10" y="19">{{cTitle}}</text>
-				<text v-if="subtitle" class="exNodeSubtitle" :x="img ? '28' : 10" y="34">{{subtitle}}</text>
+				<text v-if="title" class="exNodeTitle" :x="img ? '28' : 10" y="20">{{cTitle}}</text>
+				<text v-if="subtitle" class="exNodeSubtitle" :x="img ? '28' : 10" y="38">{{subtitle}}</text>
 			</g>
 		</g>
+		<rect width="100%" height="100%" rx="9" ry="9" fill-opacity="0" stroke-width="0" />
 		
-		<g ref="inputs" class="exInputs" :transform="subtitle ? 'translate(0,50)' : title ? 'translate(0,34)' : ''">
+		<g ref="inputs" class="exInputs" :transform="subtitle ? 'translate(0,50)' : title ? 'translate(0,36)' : ''">
 			<slot name="inputs">
 				<component v-for="(pin, idx) in cInputs" :key="pin.id" 
 					class="input"
@@ -43,7 +43,7 @@
 			</slot>
 		</g>
 		
-		<g ref="outputs" class="exOutputs" :transform="'translate(' + outputsGroupPos.x + ',' + outputsGroupPos.y + ')'">
+		<g ref="outputs" class="exOutputs" :transform="'translate(' + outputsGroupPos.x + ',' + (subtitle ? 50 : 36) + ')'">
 			<slot name="outputs">	
 				<component v-for="(pin, idx) in cOutputs" :key="pin.id" 
 					class="output"
@@ -184,6 +184,14 @@
 			this.addSvgDef(def);
 			
 			def = {
+				props: {is: 'clipPath', id: 'exNodeClipPath_' + ((this.subtitle) ? '2' : '1')},
+				childs: [
+					{props: {is: 'rect', x:'0', y:'0', width:'100%', height: ((this.subtitle) ? '45' : '29')}}
+				]
+			}
+			this.addSvgDef(def);		
+			
+			def = {
 				props: {is: 'linearGradient', id: 'exBgGradient', x1: '0', y1: '0', x2:'0', y2:'1'},
 				childs: [
 					{props: {is: 'stop', 'stop-opacity': '0.8', 'stop-color': '#000000', offset:'0'}},
@@ -220,8 +228,8 @@
 			update: function(onNextTick){
 				//console.log('Node: Start resize ' + this.mTitle);
 				var oldSize = {w: this.mWidth, h: this.mHeight}
-				, maxWidth = 100
-				, maxHeigth = 100
+				, maxWidth = 80
+				, maxHeigth = 30
 				, headBox = this.$refs.header
 				, inputsBox = this.$refs.inputs.getBBox()
 				, outputsBox = this.$refs.outputs.getBBox()
@@ -232,18 +240,18 @@
 				//this.$forceUpdate();
 				
 				//compute header
-				headBox.querySelector('path').style.display = 'none';
+				headBox.querySelector('rect').style.display = 'none';
 				this.mWidth = 600;
 				var temp = headBox.getBBox();
 				this.mWidth = oldSize.w;
-				headBox.querySelector('path').style.display = 'block';
+				headBox.querySelector('rect').style.display = 'block';
 				headBox = temp;
 				
 				
-				maxWidth = Math.max(maxWidth, headBox.width + headBox.x + 14, inputsBox.x + inputsBox.width + 9 + outputsBox.width);
+				maxWidth = Math.max(maxWidth, headBox.width + headBox.x + 1, inputsBox.x + inputsBox.width + 19 + outputsBox.width);
 								
 				//outputs
-				this.outputsGroupPos.y = this.subtitle ? 50 : 34;
+				//this.outputsGroupPos.y = this.subtitle ? 50 : 37;
 				this.outputsGroupPos.x = maxWidth;
 				
 				//body
@@ -251,7 +259,7 @@
 					this.mWidth = maxWidth;
 				
 
-				maxHeigth = Math.max(maxHeigth, headBox.height + headBox.y + 30, headBox.height + headBox.y + 30 + inputsBox.height, headBox.height + headBox.y + 30 + outputsBox.height);
+				maxHeigth = Math.max(maxHeigth, headBox.height + 30, headBox.height + 30 + inputsBox.height, headBox.height + 30 + outputsBox.height);
 				
 				if(this.$refs.optional){
 					this.$refs.optional.setAttribute('width', maxWidth-5);
@@ -371,7 +379,7 @@
 		cursor: crosshair !important;
 	}
 	
-	.exWorksheet .exNode.selected > rect:first-child {
+	.exWorksheet .exNode.selected > rect {
 		stroke-width: 3px;
 		stroke: url(#selectionHandlerStroke);
 	}

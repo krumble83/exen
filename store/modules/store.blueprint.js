@@ -1,11 +1,23 @@
 
+import stateMerge from '../../cmon-js/statemerge.js'
+
 var module = {
 	mutations: {
 		addBlueprint: function(state, data){
-			data.panelCtor = 'blueprint';
-			data.flags = (data.flags || 0) | F_CLOSABLE;
-			data.store = new Vuex.Store(BlueprintStore);
-			this.commit('addComponent', data);
+			
+			//data.panelCtor = 'blueprint';
+			//data.flags = (data.flags || 0) | F_CLOSABLE;
+			
+			var store = new Vuex.Store(BlueprintStore);
+			store.commit('setData', data);
+			var d = store.getters.Data;
+
+			var cat = this.getters.Library.Category(d.name);
+			store.commit('setLibrary', cat);
+
+			d.store = store;			
+
+			this.commit('addComponent', d);
 		}
 	},
 	
@@ -16,12 +28,15 @@ var module = {
 			else
 				return rootState.components;
 		},
+		//getLibrary: (state, getters, rootState) => {return getters.getLibrary}
 	},
 }
 
 var BlueprintStore = {
 	state: function(){
 		return {
+			data: {panelCtor: 'blueprint', flags: F_CLOSABLE},
+			library: false,
 			files: [],
 			variables: [],
 			devices: [],
@@ -31,11 +46,30 @@ var BlueprintStore = {
 	
 	mutations: {
 		
+		setLibrary: function(state, data){
+			state.library = data;
+		},
+		
+		setData: function(state, data){
+			stateMerge(state.data, data);		
+		},
+		
 		addUndoRedo: function(state, data){
 			state.undoredo.push(data);
 		},
 		
 		addFile: function(state, data){
+
+			var d = {
+				tabOrder: 0, 
+			};
+			stateMerge(d, data);
+			//d.name = this.getters.getFreeName(data.name);
+			//data.name = d.name;
+			state.files.push(d);
+			return;
+
+
 			var me = this;
 			const undo = {
 				oldname: data.name,
@@ -58,6 +92,9 @@ var BlueprintStore = {
 			var n = this.getters.getFile(data.name);
 			console.assert(n);
 			console.log(data);
+			stateMerge(n, data.props);
+			return;
+			
 			
 			const undo = {
 				olddata: {},
@@ -195,6 +232,8 @@ var BlueprintStore = {
 		
 		getFile: state => name => state.files.find(item => item.name == name),
 		getVariable: state => name => state.variables.find(item => item.name == name),
+		Library: state => state.library,
+		Data: state => state.data,
 	}
 }
 

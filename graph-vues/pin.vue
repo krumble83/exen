@@ -10,7 +10,7 @@
 		@mouseup.right.stop="$emit('mouse:rightup', $event)" 
 		@contextmenu.prevent.stop="$emit('mouse:cmenu', $event)"
 		overflow="visible"
-		v-inline.vertical="5"
+		v-inline.vertical="7"
 	>
 		<rect 
 			:transform="type == $flag('F_OUTPUT') ? 'scale(-1,1)' : ''" 
@@ -20,7 +20,7 @@
 			:height="mHeight" 
 			:fill="'url(#pinFocus' + cColor.replace('#', '_') + ')'"
 		/>
-		<component :is="pinCtor" />
+		<component :is="cPinCtor" />
 		<text 
 			x="26" 
 			y="15" 
@@ -64,11 +64,11 @@
 			description: String,
 			type: Number,
 			flags: Number,
-			color: {type: String, required: true},
+			color: String,
 			datatype: {type: String, required: true},
 			'max-link': Number,
 			
-			pinCtor: {type: String, default: 'ExPinBase'},
+			pinCtor: String,
 			
 			optionnal: {type: Boolean, default: false},
 			isarray: Boolean,
@@ -95,8 +95,12 @@
 				return this.camelCaseToLabel(this.label) || this.camelCaseToLabel(this.name)
 			},
 			
+			cPinCtor: function(){
+				return this.pinCtor || this.Library.getDatatype(this.datatype).ctor || 'ExPinBase';
+			},
+			
 			cColor: function(){
-				return this.Library.getDatatype(this.datatype).Color();
+				return this.color || this.Library.getDatatype(this.datatype).Color();
 			},
 			/*
 			center: function(){

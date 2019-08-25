@@ -1,56 +1,46 @@
 
 
-import img from '../../ui-img/function.png';
-import {Observable} from '../../ui-js/utils.js';
 
-var module = {
+import {Observable} from '../../ui-js/utils.js';
+import stateMerge from '../../cmon-js/statemerge.js'
+
+var BluePrintFunctionModule = {
+	state: function(){
+		return {
+			library: false,
+		}
+	},
 	namespaced: true,
 	mutations: {
 		add: function(state, data){ 											// function/add
-			var node;
-			data = data || {};
+			var node
+				, store = new Vuex.Store(FunctionStore);
 			
+			data = data || {};
 			data.name = this.getters.getFreeName(data.name || 'newFunction');
 			
-			Observable(data, 'name', function(val){
-				if(node) node.title = val;
-			});
+			store.commit('setLibrary', this.getters.Library);
 			
-			
-			data.description = data.description || 'description';
-			data.flags = (data.flags || 0) | F_DRAGGABLE | F_CLOSABLE;
-			data.type = F_FUNCTION;
-			data.panelCtor = data.panelCtor || 'functionfile'
-			data.icon = data.icon || img;
+			var nd = store.getters.Datas;
+			console.log(nd);
+			stateMerge(nd, data);
+			console.log(nd);
+			this.commit('addFile', nd);
+			var file = this.getters['function/getFunction'](nd.name);
+			console.assert(file);
+			file.store = store;
+			store.commit('setData', file);
+			//store.commit('setData', data);
+			//var d = store.getters.Datas;
+			//d.name = 'zzzzz';
+			//console.assert(d);
+			//var d = this.getters['function/getFunction'](data.name);
+			//d.store = store;
 
-			this.commit('addFile', data);
-			data.store = new Vuex.Store(FunctionStore);
-						
-			data.store.commit('addNode', {name: 'entryPoint2', title: 'zzz', flags: F_READ_ONLY, x:400, y:400});
+			//d.store = new Vuex.Store(FunctionStore);
+			//var lib = this.getters.Library.Function(d.name);
 
-			data.store.commit('addNode', {name: 'entryPoint', title: data.name, flags: F_READ_ONLY});
-			node = data.store.getters.getNode('entryPoint');
-			
-			//this.commit('addOutput', {name: node.name});
-			console.assert(node);
-			Vue.set(data, 'datas', {});
-			Vue.set(data.datas, 'inputs', node.inputs);
-			Vue.set(data.datas, 'outputs', node.outputs);
-			
-			var pin = newPin();
-			pin.name = '@exit';
-			pin.pinCtor = 'PinExec';
-			pin.datatype = 'core.exec';
-			pin.type = F_OUTPUT;
-			data.datas.outputs.push(pin);
-
-			pin = newPin();
-			pin.name = 'entry';
-			//pin.pinCtor = 'core.type.bool';
-			pin.datatype = 'core.type.bool';
-			pin.type = F_INPUT;
-			pin.optional = true;
-			data.datas.inputs.push(pin);
+			store.commit('addNode', {name: 'entryPoint2', title: 'zzz', flags: F_READ_ONLY, x:400, y:400, subtitle: 'Target is me!!'});
 
 
 		},
@@ -59,76 +49,23 @@ var module = {
 			this.commit('deleteFile', data);
 		},
 		
-		
+		setLibrary: function(state, data){										//function/setLibrary
+			state.library = data;
+		},
 		
 		addInput: function(state, data){ 										//function/addInput
 			var func = this.getters['function/getFunction'](data.name);
-			console.assert(func, func.datas, func.datas.inputs);
-
-			var n = 'newInput'
-			, a = 1;
-			
-			if(func.datas.inputs.find(it => it.name == n)){
-				while(func.datas.inputs.find( it => it.name == n + a))
-					a++;
-				n += a;
-			}
-			
-			var undo = {
-				do: function(){
-					var pin = newPin();
-					pin.name = n
-					pin.type = F_INPUT;
-					pin.datatype = data.datatype;
-					if(data.editor)
-						pin.editor = data.editor
-					
-					func.datas.inputs.push(pin);
-					//item.datas.ios.push({name: n, type: F_INPUT});
-				},
-				
-				undo: function(){
-					func.datas.inputs.splice(func.datas.inputs.indexOf(func.datas.inputs.find(it => it.name == n)), 1);
-				}
-			}
-			
-			this.commit('addUndoRedo', undo);
-			undo.do();			
-			
+			console.assert(func);			
+			func.store.commit('addInput', data);
 		},
 		
 		addOutput: function(state, data){ 										//function/addOutput
 			var func = this.getters['function/getFunction'](data.name);
-			console.assert(func, func.datas, func.datas.outputs);
-
-			var n = 'newOutput'
-			, a = 1;
-			
-			if(func.datas.outputs.find(it => it.name == n)){
-				while(func.datas.outputs.find( it => it.name == n + a))
-					a++;
-				n += a;
-			}
-			
-			var undo = {
-				do: function(){
-					var pin = newPin();
-					pin.name = n
-					pin.type = F_OUTPUT;
-					pin.datatype = data.datatype;
-					
-					func.datas.outputs.push(pin);
-					//item.datas.ios.push({name: n, type: F_OUTPUT});
-				},
-				
-				undo: function(){
-					func.datas.outputs.splice(func.datas.outputs.indexOf(func.datas.outputs.find(it => it.name == n)), 1);
-				}
-			}
-			
-			this.commit('addUndoRedo', undo);
-			undo.do();			
-		},		
+			console.assert(func);
+			console.log(data);
+			func.store.commit('addOutput', data);
+		},
+		
 	},
 	
 	getters: {
@@ -151,7 +88,6 @@ var module = {
 			return getters.getFunction(item).datas.outputs.find(it => it.name == name);
 		},
 
-
 	},
 }
 
@@ -160,77 +96,167 @@ var newPin = function(){
 	return {
 		_linked: false,
 		name: 'default',
-		label: null,
 		type: F_INPUT, 
-		color: '#fff', 
 		datatype: 'core.test', 
 		optional: false,
-		description: null,
-		isarray: false,
 	}
 }
 
-var newNode = function(){
+
+
+function uid(prefix){
+	prefix = prefix || 'uid';
+	return prefix + 'xxxxxxxxxxxxxxxx'.replace(/./g, function(c) {
+		var r = Math.random() * 16 | 0;
+		return r.toString(16);
+	});
+}
+		
+function newNode(){
 	return {
+		uid: uid(),
 		name: '',
-		label: '',
-		pos: {x: 0, y: 0},
+		flags: 0,
+		x: 200,
+		y: 200,
 		inputs: [],
 		outputs: [],
 	}
 };
 
+import img from '../../ui-img/function.png';
+import {Category, Function, In, Out} from '../../exlibs/default.export.js';
 var FunctionStore = {
 	state: function(){
 		return {
+			uid: uid(),
+			datas: {
+				type: F_FUNCTION,
+				flags: F_DRAGGABLE | F_CLOSABLE,
+				panelCtor: 'functionfile',
+				icon: img,
+				inputs: [],
+				outputs: [],
+			},
+			watchers: [],
+			library: false,
 			nodes: [],
 			links: [],
 		};
 	},
 	
 	mutations: {
+		
+		setData: function(state, data){
+			//stateMerge(state.datas, data);
+			state.datas = data;
+			
+			var n = {
+				uid: state.uid + '_entryPoint',
+				name: 'entryPoint', 
+				title: state.datas.name, 
+				flags: F_READ_ONLY, 
+				img: 'graph-img/function.png', 
+				color: '#7f2197',
+			};
+			this.commit('addNode', n);
+			n = this.getters.EntryPointNode;
+			Vue.set(n, 'outputs', state.datas.outputs);
+			Vue.set(n, 'inputs', state.datas.inputs);
+
+			var i = {
+				name: '@exit',
+				type: F_OUTPUT,
+				datatype: 'core.exec',
+			};
+			this.commit('addOutput', i);
+			/*			
+			if(state.library)
+				state.library.Function(state.datas.name);
+			*/
+			var w = this.watch(
+				state => state.datas.name,
+				() => {
+					//console.log('Watcher works', arguments[1].name);
+					Vue.set(n, 'title', arguments[1].name);
+					//n.label = arguments[1].name;
+				}
+			);
+			state.watchers.push(w);	
+		},
+		
 		addNode: function(state, data){
-			data = data || {};
-			data.x = data.x || 200;
-			data.y = data.y || 200;
-			data.color = '#7f2197';
-			data.flags = data.flags | 0;
-			//data.subtitle = 'Target is me!';
-			data.inputs = data.inputs || [];
-			data.outputs = data.outputs || [];
-			state.nodes.push(data);
+			var d = newNode();
+			stateMerge(d, data);
+			data.uid = d.uid;
+			state.nodes.push(d);
 		},
 		
 		addInput: function(state, data){
-			
+			var i = newPin();
+			stateMerge(i, data);
+			state.datas.inputs.push(i);
 		},
 		
 		addOutput: function(state, data){
-			
+			var i = newPin();
+			stateMerge(i, data);
+			state.datas.outputs.push(i);
 		},
 
 		changeNodeProperty: function(state, data){
 			
 		},
+		
+		setLibrary: function(state, data){
+			state.library = data;
+		}
 	},
 	
 	getters: {
-		getNode: (state, getters, rootState) => (name) => {
-			if(name)
-				return rootState.nodes.find(it => it.name == name);
+		getNode: (state, getters, rootState) => (uid) => {
+			if(uid)
+				return state.nodes.find(it => it.uid == uid);
 			else
-				return rootState.nodes;
+				return state.nodes;
 		},
+		
+		Datas: (state, getters) => {
+			//console.log(state);
+			return state.datas;
+		},
+		
+		getOutput: (state, getters) => (name) => {
+			if(name)
+				return state.inputs.find(it => it.name == name);
+			return state.inputs;
+		},
+		
+		getOutput: (state, getters) => (name) => {
+			if(name)
+				return state.outputs.find(it => it.name == name);
+			return state.outputs;
+		},
+
+		EntryPointNode: (state, getters) => getters.getNode(state.uid + '_entryPoint'),
 		
 		getLink: (state, getters, rootState) => (pinIn, pinOut) => {
 			if(pinIn)
-				return rootState.nodes.find(it => it.name == name);
+				return state.nodes.find(it => it.name == name);
 			else
-				return rootState.links;
+				return state.links;
+		},
+
+		getLibraryMenu: (state, getters) => {
+			var el = document.createElement('div')
+				, ComponentClass = Vue.extend(Category);
+			var instance = new ComponentClass({propsData: {id: state.library.fullPath}});
+			var ret = instance.Function(state.datas.name);
+			return [ret];
 		},
 		
 	}
 }
 
 export {FunctionStore as default}
-export {module}
+export {BluePrintFunctionModule}

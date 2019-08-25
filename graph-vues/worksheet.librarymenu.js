@@ -33,6 +33,8 @@ export default {
 			});
 			
 			var q = this.Library.createQuery();
+			//console.log(this.store);
+			menu.setContextStore(this.store);
 			menu.update(q);
 			
 			if(arg1 instanceof Vue){
@@ -47,4 +49,3 @@ export default {
 		},
 	},
 }
-

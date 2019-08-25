@@ -3,6 +3,7 @@ function oState(){
 	return {
 		name: 'default',
 		components: [],
+		library: false,
 	}
 }
 
@@ -10,7 +11,23 @@ function oState(){
 export default {
 	state: oState,
 	
+	actions: {
+		create ({ state, commit }) {
+			return new Promise((resolve, reject) => {
+				setTimeout(() => {
+					commit('createComponent');
+					resolve();
+				}, 1000);
+			});
+		}
+	},
+	
 	mutations: {
+		
+		createComponent: function(state, name){
+			
+		},
+		
 		addComponent: function(state, data){
 			data.tabOrder = 1;
 			data.flags = data.flags || 0;
@@ -38,6 +55,10 @@ export default {
 				Vue.set(n, index, data.props[index]);
 			}
 		},
+		
+		setLibrary: function(state, data){
+			state.library = data.Category('[' + state.name + ']');
+		},
 	},
 	
 	getters: {
@@ -51,6 +72,8 @@ export default {
 			while(state.components.find(item => item.name == name + a))
 				a++;
 			return name + a;
-		}
+		},
+		
+		Library: (state) => state.library,
 	}
 }

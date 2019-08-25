@@ -52,7 +52,7 @@ export default {
 			minZoom: 0.05,
 			maxZoom: 1,
 			preventMouseEventsDefault: false, // set to false for dragging ui elements
-			useGlobalMove: true,
+			useGlobalMove: false,
 			restrictPanButton: 2,
 			endPan: function(pan, evt){
 				me.$emit('pan:end', pan, evt);

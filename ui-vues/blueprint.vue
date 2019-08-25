@@ -234,7 +234,7 @@
 		computed: {		
 			files: function(){
 				//return _.orderBy(this.store.state.files, 'tabOrder');
-				return this.store.state.files;
+				return this.store.state.files.filter(it => it.tabOrder > 0);
 			},
 		},
 		
@@ -314,6 +314,7 @@
 					else
 						me.store.commit('updateFile', {name: item.name, props: {name: value}});
 					editor.$off('change', check);
+					this.$forceUpdate();
 				});
 
 			},

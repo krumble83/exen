@@ -66,7 +66,7 @@
 	import ProjectStore from '../store/store.project.js'
 	var store = new Vuex.Store(ProjectStore);
 	
-	import {Library} from '../exlibs/exlib.js';
+	import {Library} from '../exlibs/default.export.js';
 	//import {Package,Datatype,Class,Function,Input,Output,Method,Entry,Exit,Category,Editor,Enum,Value,Structure,Member} from '../exlibs/exlib.js';
 	
 	//import libCoreType from '../exlibs/core/core.type.vue'
@@ -115,6 +115,15 @@
 			document.addEventListener('contextmenu', function(evt){
 				evt.preventDefault();
 			});
+			
+			var pack = this.$refs.library.Package('project');
+			this.$store.commit('setLibrary', pack);
+			/*
+			var t = (new DOMParser()).parseFromString("<library/>", 'text/xml');
+			var z = t.createElement('test');
+			t.documentElement.appendChild(z);
+			this.$el.appendChild(t.documentElement);
+			*/
 		},
 		
 		beforeDestroy: function(){

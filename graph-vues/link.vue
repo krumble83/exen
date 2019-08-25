@@ -230,7 +230,7 @@
 
 <style>
 	.exLink {
-		stroke-width: 3;
+		stroke-width: 2;
 		pointer-events: all;
 	}
 	
@@ -242,7 +242,7 @@
 
 	.exWorksheet.drawlinkevent .exLink:not(.draw){
 		pointer-events: none;
-		opacity: 0.5;
+		opacity: 0.3;
 	}
 
 	.exLink.draw {

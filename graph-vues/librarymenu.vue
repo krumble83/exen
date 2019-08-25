@@ -40,6 +40,7 @@ export default {
 				top: 0,
 			},
 			items: [],
+			mContextStore: false,
 		}
 	},
 	
@@ -97,15 +98,46 @@ export default {
 				var vu = it.__vue__
 					, cat = me.items;
 				if(vu.Category)
-					cat = findUl(vu.Category.id, me.items);
+					cat = findUl(vu.Category.fullPath, me.items);
 				cat.push({
-					name: vu.title, 
+					name: vu.title || vu.id, 
 					id: vu.fullpath,
 					symbol: vu.symbol,
+					tooltip: vu.tooltip,
 				});
 			});
+			
+			if(this.mContextStore){
+				console.log(this.mContextStore);
+				const me = this;
+				var items = this.mContextStore.getters.getLibraryMenu;
+				items.forEach(function(vu){
+					var cat = me.items;
+					if(vu.Category)
+						cat = findUl(vu.Category.fullPath, me.items);
+					cat.push({
+						name: vu.title || vu.id, 
+						id: vu.fullpath,
+						symbol: vu.symbol,
+						tooltip: vu.tooltip,
+					});
+				});
+
+				console.log(items);
+			}
+			
 			//console.log(this.items);
 			//console.log(nodes);
+		},
+		
+		setContextStore: function(store){
+			this.mContextStore = store;
+		},
+		
+		_show: function(vue){
+			if(vue.private)
+				return false;
+			return true;
 		},
 		
 		_sort: function(items){

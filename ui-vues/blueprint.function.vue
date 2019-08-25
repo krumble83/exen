@@ -64,7 +64,7 @@
 	};
 
 	import Blueprint from './blueprint.vue';
-	import {module} from '../store/modules/store.blueprint.function.js'
+	import {BluePrintFunctionModule} from '../store/modules/store.blueprint.function.js'
 	
 	import ExWorksheet from '../graph-vues/worksheet.vue'
 	//import ExWorksheetGrid from '../graph-vues/worksheet.grid.vue'
@@ -84,7 +84,7 @@
 		},
 		
 		created: function(){
-			this.store.registerModule('function', module);
+			this.store.registerModule('function', BluePrintFunctionModule);
 			this.functionPanel = FunctionPanel();
 		},
 		

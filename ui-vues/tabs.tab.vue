@@ -178,7 +178,7 @@
 
 <style>
 	.tabs > .tab {
-		float: left;
+		/*float: left;*/
 		display: inline-block;
 		outline: none;
 	}

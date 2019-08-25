@@ -17,7 +17,7 @@
 			<selecteditor
 				style="width:98%"
 				:values="[{value: 'core.type.bool', text:'Bool'}, {value: 'core.type.int', text: 'Integer'}]"
-			/>
+			/><a><img src="ui-img/del.png" /></a>
 		</div>
 	</li>
 </template>
@@ -89,5 +89,8 @@
 </script>
 
 <style>
-
+	.uiTree.properties li.child.editor div.editor img {
+		vertical-align: bottom;
+		border: 0;
+	}
 </style>

@@ -1,3 +1,4 @@
+import Vue from "vue";
 
 export const stateMerge = function(state, value, propName, ignoreNull) {
 	if (
@@ -10,7 +11,14 @@ export const stateMerge = function(state, value, propName, ignoreNull) {
 		}
 		return;
 	}
-	if (!ignoreNull || value !== null) Vue.set(state, propName, value);
+	if (!ignoreNull || value !== null){
+		if(propName == 'flags'){
+			//console.log(propName, state[propName], value);
+			Vue.set(state, propName, (state[propName]) ? (state[propName] + value) : value);
+		}
+		else
+			Vue.set(state, propName, value);
+	}
 };
 
 export default stateMerge;

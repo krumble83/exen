@@ -144,7 +144,7 @@ export const Base = {
 	data: function(){
 		return {
 			importedProperties: [],
-			_id: this.id,
+			//_id: this.id,
 			ignoreImports: ['id', 'childs', 'import'],
 		}
 	},
@@ -157,8 +157,7 @@ export const Base = {
 		
 		_create: function(type, data){
 			var test = document.createElement('component');
-			if(this.$el)
-				this.$el.appendChild(test);
+			this.$el.appendChild(test);
 			var ComponentClass = Vue.extend(eval(type));
 			var instance = new ComponentClass({propsData: data, parent: this, el: test});
 			instance.$mount(test);
@@ -180,9 +179,7 @@ export const Base = {
 			}			
 		},
 		
-		Id: function(id){
-			if(id)
-				this._id = id;
+		Id: function(){
 			return this.id;
 		},
 		
@@ -238,7 +235,7 @@ export const Base = {
 		}
 	},
 		
-	template: '<component :is="__ctor" v-bind="properties">{{value}}<component v-for="child in childs" :is="child.__ctor" v-bind="child" /><slot /></component>'
+	template: '<component :is="__ctor" v-bind="properties">{{value}}<slot /></component>'
 }
 
 function test(){
@@ -362,24 +359,8 @@ export const Category = {
 		symbol: String,
 		color: String,
 	},
-	
-	computed: {
-		fullPath: function(){
-			var ret = this.id
-				, parent = this.$parent;
-				
-			while(parent && parent.$el.tagName != 'PACKAGE'){
-				if(parent.$el.tagName == 'CATEGORY'){
-					ret = parent.fullPath + '/' + ret;
-					break;
-				}
-				parent = parent.$parent;
-			}
-			return ret;
-		},
-	}
 }
-Extend(Package, Category, 'Category');
+Extend(Package, 'Category');
 Vue.config.ignoredElements.push('category');
 
 
@@ -387,8 +368,8 @@ export const Node = {
 	extends: Base,
 	mixins: [],
 	inject: {
-		Library: {default: false},
-		Package: {default: false},
+		Library: 'Library',
+		Package: 'Package',
 		Category: {default: false},
 	},
 	//mixins: [IdPackageId],
@@ -408,7 +389,7 @@ export const Node = {
 	
 	methods: {
 		
-	},
+	}
 }
 Vue.config.ignoredElements.push('node');
 //Extend(Node, 'Category');
@@ -475,8 +456,6 @@ export const Pin = {
 		isio: {type: Boolean, default: true},
 		optional: {type: Boolean, default: false},
 		label: String,
-		ctor: String,
-		pinctor: String,
 		datatype: {type: String, required: true},
 		keywords: {type: Array, default: function(){return []}},
 		description: String,
@@ -525,7 +504,7 @@ export const Entry = {
 	mixins: [],
 	
 	props: {
-		id:{type: String, default:'@entry'},
+		id:{type: String, default:'entry'},
 		datatype: {type: String, default: 'core.exec'},
 	},
 }
@@ -537,7 +516,7 @@ export const Exit = {
 	mixins: [],
 	
 	props: {
-		id:{type: String, default:'@exit'},
+		id:{type: String, default:'exit'},
 		datatype: {type: String, default: 'core.exec'},
 	},
 }
