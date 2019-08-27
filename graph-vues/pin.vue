@@ -35,7 +35,7 @@
 		<component 
 			v-if="!$hasFlag('F_OUTPUT') && editor && classObject.linked==false" 
 			:is="editor.ctor" 
-			class="exEditor" 
+			class="editor" 
 			v-bind="editor"
 		/>
 	</svg>
@@ -56,6 +56,7 @@
 		inject: ['$worksheet', '$node', 'addSvgDef', 'camelCaseToLabel', 'Library'],
 		mixins: [SvgBase, PinDrawLink, PinContextMenu],
 		components: {ExPinBase, PinExec, PinEditorInput},
+		
 		props: {
 			name: {type: String, required: true},
 			height: {type: Number, default: 20},
@@ -83,7 +84,7 @@
 					linkable: true,
 					linked: false,
 				},
-				dEditor: this.editor,
+				//dEditor: this.editor,
 				mLinkCount: 0,
 			}
 		},
@@ -102,11 +103,6 @@
 			cColor: function(){
 				return this.color || this.Library.getDatatype(this.datatype).Color();
 			},
-			/*
-			center: function(){
-				var b = this.$refs.pin.getBoundingClientRect();
-				return {x: b.left-3, y: b.top-3};
-			},*/
 		},
 		
 		watch: {
@@ -120,9 +116,9 @@
 			
 			editor: function(){
 				var me = this;
-					Vue.nextTick(function () {
-						me.update();
-					})
+				Vue.nextTick(function () {
+					me.update();
+				});
 			},
 		},
 		
@@ -176,23 +172,6 @@
 				me.$parent.update();
 				me.$forceUpdate();
 				me.$emit('update');
-
-
-				/*
-				this.mWidth = 400;
-				textBox = text.getBBox();
-				
-				width = parseInt(text.getAttribute('x')) + textBox.width + 11;
-				
-				if( (width) != oldWidth){
-					this.mWidth = width;
-					this.$nextTick(function(){
-						me.$emit('pin-resize');
-					});
-				}
-				else
-					this.mWidth = oldWidth;
-				*/
 			},
 						
 			getCenter: function(){

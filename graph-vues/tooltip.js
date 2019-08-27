@@ -147,7 +147,7 @@ ExNode.mixins.push({
 			
 			var move = function(ev){
 				//console.log(ev);
-				if(!me.$el.querySelector('.exNodeHeader').contains(ev.srcElement) && !ev.buttons == 1)
+				if(!me.$el.querySelector('.header').contains(ev.srcElement) && !ev.buttons == 1)
 					hideTooltip();
 				else if(!ev.buttons == 1) // if not drawing link
 					showTooltip(ev, msg);

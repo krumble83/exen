@@ -17,19 +17,24 @@
 		@mouseleave="$emit('mouse:leave', $event)" 
 		@contextmenu.prevent.stop="$emit('mouse:cmenu', $event)"
 	>
-		<rect width="100%" height="100%" rx="9" ry="9" class="exNodeBody" fill="url(#exBgGradient)" filter="url(#exBgFilter)" />
-		
-		<g class="exNodeHeader" ref="header">
-			<rect width="100%" height="100%" rx="9" ry="9" class="exHeader" :fill="'url(#nodeHeader_' + color.replace('#', '') + ')'" :clip-path="'url(#exNodeClipPath_' + ((subtitle) ? '2' : '1') + ')'" />
+		<rect 
+			class="body" 
+			width="100%" 
+			height="100%" 
+			rx="9" 
+			ry="9" 
+			fill="url(#exBgGradient)" 
+			filter="url(#exBgFilter)" 
+		/>
+		<g class="header" ref="header">
+			<rect width="100%" height="100%" rx="9" ry="9" :fill="'url(#nodeHeader_' + color.replace('#', '') + ')'" :clip-path="'url(#exNodeClipPath_' + ((subtitle) ? '2' : '1') + ')'" />
 			<image v-if="img" :href="img" x="10" y="6" width="16" height="16" />
-			<g>
-				<text v-if="title" class="exNodeTitle" :x="img ? '28' : 10" y="20">{{cTitle}}</text>
-				<text v-if="subtitle" class="exNodeSubtitle" :x="img ? '28' : 10" y="38">{{subtitle}}</text>
-			</g>
+			<text v-if="title" class="title" :x="img ? '28' : 10" y="20">{{cTitle}}</text>
+			<text v-if="subtitle" class="subtitle" :x="img ? '28' : 10" y="38">{{subtitle}}</text>
 		</g>
 		<rect width="100%" height="100%" rx="9" ry="9" fill-opacity="0" stroke-width="0" />
 		
-		<g ref="inputs" class="exInputs" :transform="subtitle ? 'translate(0,50)' : title ? 'translate(0,36)' : ''">
+		<g ref="inputs" class="inputs" :transform="subtitle ? 'translate(0,50)' : title ? 'translate(0,36)' : ''">
 			<slot name="inputs">
 				<component v-for="(pin, idx) in cInputs" :key="pin.id" 
 					class="input"
@@ -43,7 +48,7 @@
 			</slot>
 		</g>
 		
-		<g ref="outputs" class="exOutputs" :transform="'translate(' + outputsGroupPos.x + ',' + (subtitle ? 50 : 36) + ')'">
+		<g ref="outputs" class="outputs" :transform="'translate(' + outputsGroupPos.x + ',' + (subtitle ? 50 : 36) + ')'">
 			<slot name="outputs">	
 				<component v-for="(pin, idx) in cOutputs" :key="pin.id" 
 					class="output"
@@ -279,15 +284,7 @@
 				this.$worksheet.$emit('node:remove');
 				this.$worksheet.removeNode(this.id);
 			},
-			/*
-			addInput: function(data){
-				this.inputs.push(data);
-			},
-			
-			addOutput: function(data){
-				this.outputs.push(data);
-			},
-			*/
+
 			getInput: function(name, asComponent){
 				if(asComponent)
 					return this.$refs['input_' + name][0];
@@ -305,7 +302,7 @@
 </script>
 
 <style>
-	.exNode{
+	.exWorksheet .exNode{
 		cursor: move;
 		stroke: none;
 		fill: none;
@@ -317,27 +314,8 @@
 		user-select: none; /* Standard */
 	}
 
-	.exNode .exExtend rect {
-		cursor: pointer;
-		pointer-events: all;
-		opacity: 0;
-	}
 
-	.exNode .exExtend {
-		pointer-events: all;
-	}
-	
-	.exNode .exExtend rect:hover {
-		cursor: pointer;
-		opacity: 1;
-	}
-
-	.exNode .exExtend polygon {
-		pointer-events: none;
-		fill: #eee;
-	}
-	
-	.exNode rect.exNodeBody{
+	.exWorksheet .exNode > rect.body{
 		stroke: #000;
 		stroke-width:  1px;
 		opacity: 0.9;
@@ -348,38 +326,60 @@
 		user-select: none; /* Standard */
 	}
 
-	.exNode text.exNodeTitle{
-		fill: #fff;
-	}
 
-	.exNode .exHeader{
+	.exWorksheet .exNode > .header{
 		font-family: Helvetica, Arial, sans-serif;
 		font-size: 12px;
 		stroke: none;
 	}
 	
-	.exNode text.exNodeSubtitle{
+	.exWorksheet .exNode > .header > text.subtitle{
 		fill: #999;
 	}
 	
+	.exWorksheet .exNode > .header > text.title{
+		fill: #fff;
+	}
+
+
+	.exWorksheet .exNode > .extend rect{
+		cursor: pointer;
+		pointer-events: all;
+		opacity: 0;
+	}
+
+	.exWorksheet .exNode > .extend{
+		pointer-events: all;
+	}
 	
-	.exWorksheet.selectEvent .exExtend,
-	.exWorksheet.selectEvent .exExtend rect:hover,
-	.exWorksheet.selectEvent .exExtend rect{
+	.exWorksheet .exNode > .extend rect:hover{
+		cursor: pointer;
+		opacity: 1;
+	}
+
+	.exWorksheet .exNode > .extend polygon{
+		pointer-events: none;
+		fill: #eee;
+	}
+	
+
+	.exWorksheet.selectEvent .exNode > .extend,
+	.exWorksheet.selectEvent .extend rect:hover,
+	.exWorksheet.selectEvent .extend rect{
 		pointer-events: none !important;		
 	}
 
 	
-	.exWorksheet.drawlinkevent .exNode .exExtend,
-	.exWorksheet.drawlinkevent .exNode .exExtend rect:hover,
-	.exWorksheet.drawlinkevent .exNode .exExtend rect,
+	.exWorksheet.drawlinkevent .exNode .extend,
+	.exWorksheet.drawlinkevent .exNode .extend rect:hover,
+	.exWorksheet.drawlinkevent .exNode .extend rect,
 	.exWorksheet.drawlinkevent .exNode,
-	.exWorksheet.selectEvent .exNode {
+	.exWorksheet.selectEvent .exNode{
 		pointer-events: none !important;
 		cursor: crosshair !important;
 	}
 	
-	.exWorksheet .exNode.selected > rect {
+	.exWorksheet .exNode.selected > rect{
 		stroke-width: 3px;
 		stroke: url(#selectionHandlerStroke);
 	}
