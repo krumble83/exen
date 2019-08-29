@@ -649,3 +649,58 @@ Extend(Class, Structure, 'Member');
 Vue.config.ignoredElements.push('member');
 
 
+
+export const Device = {
+	extends: Base,
+	mixins: [],
+	inject: ['Library', 'Package'],
+	
+	props: {
+		__ctor: {type: String, default: 'device'},
+	},
+}
+Extend(Package, Category, 'Device');
+Vue.config.ignoredElements.push('device');
+
+export const Component = {
+	extends: Base,
+	mixins: [],
+	inject: ['Library', 'Package'],
+	
+	props: {
+		__ctor: {type: String, default: 'component'},
+	},
+}
+Extend(Device, 'Component');
+Vue.config.ignoredElements.push('component');
+
+
+export const Provide = {
+	extends: Base,
+	mixins: [],
+	inject: ['Library', 'Package'],
+	
+	props: {
+		__ctor: {type: String, default: 'provide'},
+		platform: String,
+		type: String,
+		library: String,
+	},
+}
+Extend(Device, Component, 'Provide');
+Vue.config.ignoredElements.push('provide');
+
+export const Require = {
+	extends: Base,
+	mixins: [],
+	inject: ['Library', 'Package'],
+	
+	props: {
+		__ctor: {type: String, default: 'require'},
+		component: String,
+	},
+}
+Extend(Device, Component, 'Require');
+Vue.config.ignoredElements.push('require');
+
+
