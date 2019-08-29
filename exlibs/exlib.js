@@ -660,6 +660,7 @@ export const Device = {
 	},
 }
 Extend(Package, Category, 'Device');
+Extend(Device, 'Category');
 Vue.config.ignoredElements.push('device');
 
 export const Component = {
@@ -669,6 +670,7 @@ export const Component = {
 	
 	props: {
 		__ctor: {type: String, default: 'component'},
+		label: String,
 	},
 }
 Extend(Device, 'Component');
@@ -685,6 +687,7 @@ export const Provide = {
 		platform: String,
 		type: String,
 		library: String,
+		component: String,
 	},
 }
 Extend(Device, Component, 'Provide');

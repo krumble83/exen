@@ -13,15 +13,15 @@
 					<value id="WL_DISCONNECTED" />
 				</editor>
 			</enum>
-			<class id="connection" label="WiFi Network object" color="#55f" :inherits="['core.object']">
-				<method id="connection.begin" title="WiFi.begin()" color="#87663f" symbol="lib/img/esp8266.png" keywords="wifi connect,connect wifi">
+			<class id="Connection" label="WiFi Network object" color="#55f" :inherits="['core.object']">
+				<method id="begin" title="WiFi.begin()" color="#87663f" symbol="lib/img/esp8266.png" keywords="wifi connect,connect wifi">
 					<entry /><exit />
 					<in id="ssid" datatype="core.type.string" />
 					<in id="password" datatype="core.type.string" />
 					<out id="status" datatype="status" />
 				</method>
-				<method id="connection.localip" title="WiFi.localIP()" color="#87663f" symbol="lib/img/esp8266.png" keywords="wifi ip,ip wifi,local ip">
-					<out id="localip" datatype="ip" label="WiFi local IP" />
+				<method id="localip" title="WiFi.localIP()" color="#87663f" symbol="lib/img/esp8266.png" keywords="wifi ip,ip wifi,local ip">
+					<out id="localip" datatype="network.type.ip" label="WiFi local IP" />
 				</method>
 			</class>
 			<class id="WiFiClient" label="WiFi Client object" color="#55f" :inherits="['core.object']">
@@ -51,3 +51,15 @@
 		</category>
 	</package>
 </template>
+
+<script>
+	import * as comps from '../default.export.js';
+	
+	const exp = {
+		components: comps
+	}
+	export default exp;
+
+	import App from '../../ui-vues/project.vue';
+	App.components['libArduinoWifi'] = exp;
+</script>
