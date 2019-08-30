@@ -31,32 +31,32 @@
 				<td></td>
 			</tr>
 		</table>
-		<div class="dialog">
-			<div class="title">Client P.Elec</div>
-			<div class="content">
-				<table style="width:100%">
-					<th>
-						<td>Nom court</td>
-						<td>N° compte</td>
-						<td>Nom</td>
-						<td>Téléphone</td>
-						<td>Mobile</td>
-						<td>C.P</td>
-						<td>Ville</td>
-					</th>
-					<tbody>
-					
-					</tbody>
-				</table>
-			</div>
-		</div>
+		<Dialog>
+			<table style="width:100%">
+				<th>
+					<td>Nom court</td>
+					<td>N° compte</td>
+					<td>Nom</td>
+					<td>Téléphone</td>
+					<td>Mobile</td>
+					<td>C.P</td>
+					<td>Ville</td>
+				</th>
+				<tbody>
+				
+				</tbody>
+			</table>		
+		</Dialog>
 	</form>
+	
 </template>
 
 <script>
 
+	import Dialog from './dialog.vue';
+
 	const ProjectPanel = {
-		//components: {Library,Package,Datatype,Class,Function,Input,Output,Method,Entry,Exit,Category,Editor,Enum,Value,Structure,Member},
+		components: {Dialog},
 		
 		data: function(){
 			return {
@@ -88,49 +88,31 @@
 
 <style>
 
-.uid, 
-.date,
-.auteur {
-	width: 80px;
-	border-radius: 15px;
-	padding-left: 5px;
-}
+	.uid, 
+	.date,
+	.auteur {
+		width: 80px;
+		border-radius: 15px;
+		padding-left: 5px;
+	}
 
-.uid {
-	width: 100px;
-}
+	.uid {
+		width: 100px;
+	}
 
-.auteur {
-	width: 130px;
-}
+	.auteur {
+		width: 130px;
+	}
 
-.adresse {
-	height: 75px;
-	width: 210px;
-}
-
-.dialog {
-	margin: 0 auto;
-	width: 800px;
-	height: 400px;
-	background-color: #555;
-	border-radius: 5px;
-	border: 3px outset;
-}
-
-.dialog > .title {
-	border-top-left-radius: 5px;
-	border-top-right-radius: 5px;
-	padding: 2px;
-	padding-left: 10px;
-	background-color: #777;
-	border-bottom: 1px solid #000;
-	cursor: move;
-}
+	.adresse {
+		height: 75px;
+		width: 210px;
+	}
 
 
-table th td {
-	border: 1px solid;
-	padding: 1px 5px 1px 5px;
-}
+	table th td {
+		border: 1px solid;
+		padding: 1px 5px 1px 5px;
+	}
+	
 </style>
