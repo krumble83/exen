@@ -67,88 +67,18 @@ var BlueprintStore = {
 			//d.name = this.getters.getFreeName(data.name);
 			//data.name = d.name;
 			state.files.push(d);
-			return;
-
-
-			var me = this;
-			const undo = {
-				oldname: data.name,
-				do: function(){
-					data.tabOrder = 0;
-					data.name = me.getters.getFreeName(data.name);
-					state.files.push(data);
-				},
-				undo: function(){
-					delete data.tabOrder;
-					data.name = this.oldname;
-					state.files.splice(state.files.indexOf(data), 1);
-				}
-			}
-			this.commit('addUndoRedo', undo);
-			undo.do();
 		},
 		
 		updateFile: function(state, data){
 			var n = this.getters.getFile(data.name);
 			console.assert(n);
-			console.log(data);
 			stateMerge(n, data.props);
-			return;
-			
-			
-			const undo = {
-				olddata: {},
-				
-				do: function(){
-					//backup old values;
-					for(var index in data.props) { 
-						if (!data.props.hasOwnProperty(index))
-							continue;
-						this.olddata[index] = n[index];
-					}
-					
-					//set new values
-					for(var index in data.props) { 
-						if (!data.props.hasOwnProperty(index))
-							continue;
-						Vue.set(n, index, data.props[index]);
-					}
-					
-				},
-				
-				undo: function(){
-					for(var index in this.olddata) { 
-						if (!this.olddata.hasOwnProperty(index))
-							continue;
-						Vue.set(state.files.indexOf(n), index, this.olddata[index]);
-					}					
-				}
-			}
-			
-			this.commit('addUndoRedo', undo);
-			undo.do();
-			
 		},
 		
 		deleteFile: function(state, data){
 			var n = this.getters.getFile(data.name);
 			console.assert(n);
-			
-			var undo = {
-				olddata: n,
-				oldpos: state.files.indexOf(n),
-				
-				do: function(){
-					state.files.splice(state.files.indexOf(n), 1);
-				},
-				
-				undo: function(){
-					state.files.splice(this.oldpos, 0, this.olddata);
-				}
-			}
-			
-			this.commit('addUndoRedo', undo);
-			undo.do();
+			state.files.splice(state.files.indexOf(n), 1);
 		},
 		
 		duplicateFile: function(state, data){
@@ -156,7 +86,7 @@ var BlueprintStore = {
 			console.assert(n);
 		},
 		
-		
+		/*
 		addVariable: function(state, data){
 			var me = this;
 			const undo = {
@@ -212,7 +142,7 @@ var BlueprintStore = {
 			undo.do();
 			
 		},
-
+		*/
 	},
 	
 	getters: {

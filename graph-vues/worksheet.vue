@@ -164,11 +164,18 @@
 				this.$emit('edited', this);
 			},
 			
-			hasFeature: function(name){
-				return this.features.indexOf(name) != -1;
+			addNode: function(data){
+				if(data.id){
+					var lnode = this.Library.getNode(data.id);
+					var out = {title: '', subtitle: '', color: '', inputs: [], outputs: []};
+				}
 			},
 			
-			addNode: function(data){
+
+			
+			
+			hasFeature: function(name){
+				return this.features.indexOf(name) != -1;
 			},
 			
 			getNode: function(val){

@@ -15,6 +15,7 @@
 		>
 			{{item.text}}
 		</option>
+		<slot />
 	 </select>
 </template>
 
@@ -45,10 +46,12 @@
 			},
 			
 			blur: function(evt){
+				/*
 				const parent = this.$el.parentNode;
 				parent.removeChild(this.$el);
 				if(this.$el.checkValidity() && typeof this.success === 'function')
 					this.success(this.$el, this);
+				*/
 				//this.$destroy();
 			},
 			/*

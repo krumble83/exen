@@ -47,25 +47,15 @@
 			return {
 				uid: this.$uid(),
 				mEdited: false,
+				selected: false,
 			}
 		},
-		
-		computed: {
-			
-		},
-		
-		watch: {
-		},
-		
-		mounted: function(){
-		},
-		
+
 		methods: {
-			/*
-			getLabel: function (name) {
-				return name.split(/(?=[A-Z])/).join(' ');// + (this.edited ? '&nbsp;*' : '');
+
+			getSelected: function(){
+				return this.$el.querySelector('.child.selected').__vue__;
 			},
-			*/
 			
 			getItem: function(item){
 				if(typeof(item == 'string'))
@@ -88,6 +78,7 @@
 			},
 
 			onItemClick: function(item, evt){
+				this.selected = item;
 				this.$emit('item:select', item, evt);
 			},
 			

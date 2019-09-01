@@ -63,6 +63,7 @@ export default {
 					
 					const stopFn = (evt) => {
 						//console.log('stopdrag');
+						evt.stopPropagation();
 						me.classObject.dragging = false;
 						document.removeEventListener('mousemove', moveFn);
 						if(me.mX != startPos.x || me.mY != startPos.y){
@@ -71,7 +72,6 @@ export default {
 							me.$worksheet.$emit('node:drag:stop', me, evt);
 							//this.$worksheet.$emit('node:dragend', evt, this);
 						}
-						evt.stopPropagation();
 					}
 					
 					document.addEventListener('mouseup', stopFn, {once: true, useCapture: true});

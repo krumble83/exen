@@ -33,10 +33,10 @@
 		{{cLabel}}
 		</text>
 		<component 
-			v-if="!$hasFlag('F_OUTPUT') && editor && classObject.linked==false" 
-			:is="editor.ctor" 
+			v-if="!$hasFlag('F_OUTPUT') && mEditor && classObject.linked==false" 
+			:is="mEditor.ctor" 
 			class="editor" 
-			v-bind="editor"
+			v-bind="mEditor"
 		/>
 	</svg>
 </template>
@@ -53,7 +53,7 @@
 	import PinEditorInput from './pin.editor.input.vue';
 	
 	export default {
-		inject: ['$worksheet', '$node', 'addSvgDef', 'camelCaseToLabel', 'Library'],
+		inject: ['$worksheet', 'Node', 'addSvgDef', 'camelCaseToLabel', 'Library'],
 		mixins: [SvgBase, PinDrawLink, PinContextMenu],
 		components: {ExPinBase, PinExec, PinEditorInput},
 		
@@ -86,6 +86,7 @@
 				},
 				//dEditor: this.editor,
 				mLinkCount: 0,
+				mEditor: this.editor,
 			}
 		},
 
@@ -108,18 +109,25 @@
 		watch: {
 			label: function(){
 				var me = this;
-					Vue.nextTick(function () {
-						//me.$forceUpdate();
-						me.update();
-					})
+					me.update(true);
 			},
 			
 			editor: function(){
 				var me = this;
-				Vue.nextTick(function () {
-					me.update();
-				});
+				me.update(true);
 			},
+			
+			datatype: function(){
+				const me = this
+					, editor = this.Library.getDatatype(this.datatype).Editor();
+					
+				if(editor && editor.ctor)
+					me.mEditor = {ctor: 'PinEditor' + editor.ctor.charAt(0).toUpperCase() + editor.ctor.slice(1)};
+				else
+					me.mEditor = false;
+
+				me.update(true);
+			}
 		},
 		
 		created: function(){
@@ -169,7 +177,7 @@
 				me.mWidth = me.$el.getBBox().width;
 				me.mHeight = me.$el.getBBox().height;
 				me.$el.querySelector('rect').setAttribute('opacity', 1);
-				me.$parent.update();
+				me.Node.update();
 				me.$forceUpdate();
 				me.$emit('update');
 			},

@@ -44,6 +44,7 @@
 			flags: Number,
 			icon: String,
 			type: Number,
+			store: Object,
 			datas: Object,
 			tabOrder: Number,
 			validname: {type: String, default: '[a-zA-Z_$][0-9a-zA-Z_$]*'},

@@ -65,14 +65,14 @@
 						return;
 					//console.log('watch input ', val, old);
 					
-					this.mWatchers.input.push(val.$node.$watch('mX', this.update));
-					this.mWatchers.input.push(val.$node.$watch('mY', this.update));
-					val.$node.$once('remove', this.remove);
+					this.mWatchers.input.push(val.Node.$watch('mX', this.update));
+					this.mWatchers.input.push(val.Node.$watch('mY', this.update));
+					val.Node.$once('remove', this.remove);
 					if(old){
 						this.mWatchers.input.forEach(function(el){
 							el();
 						});
-						old.$node.$off('remove', this.remove);
+						old.Node.$off('remove', this.remove);
 					}
 				}
 			},
@@ -84,14 +84,14 @@
 						return;
 					//console.log('watch output', this.mOutputPin);
 					
-					this.mWatchers.output.push(val.$node.$watch('mX', this.update));
-					this.mWatchers.output.push(val.$node.$watch('mY', this.update));
-					val.$node.$once('remove', this.remove);
+					this.mWatchers.output.push(val.Node.$watch('mX', this.update));
+					this.mWatchers.output.push(val.Node.$watch('mY', this.update));
+					val.Node.$once('remove', this.remove);
 					if(old){
 						this.mWatchers.output.forEach(function(el){
 							el();
 						});
-						old.$node.$off('remove', this.remove);
+						old.Node.$off('remove', this.remove);
 					}
 				}
 			},
@@ -138,9 +138,9 @@
 			});
 
 			if(this.mInputPin)
-				this.mInputPin.$node.$off('remove', this.remove);
+				this.mInputPin.Node.$off('remove', this.remove);
 			if(this.mOutputPin)
-				this.mOutputPin.$node.$off('remove', this.remove);
+				this.mOutputPin.Node.$off('remove', this.remove);
 			//this.$worksheet.stopSequence();
 		},
 		
@@ -159,7 +159,7 @@
 				if(oPin.type == pin.type) // SAME PIN TYPE
 					ret = {code: ret.code + 8, label: '<div><img src="img/none.png"> Pins are same type (inputs or outputs)' + ' (' + (ret.code + 8) + ')'};
 				
-				if(oPin.$node == pin.$node) // SAME NODE
+				if(oPin.Node == pin.Node) // SAME NODE
 					ret = {code: ret.code + 4, label: '<div><img src="img/none.png"> Can\'t link pins on same node' + ' (' + (ret.code + 4) + ')'};
 				
 				if(oPin == pin) // SAME PIN

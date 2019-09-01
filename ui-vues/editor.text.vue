@@ -108,7 +108,7 @@
 			checkValue: function(){
 				this.$el.setCustomValidity('');
 				this.$el.title = '';
-				if(!this.$el.checkValidity()){
+				if(!this.$el.checkValidity() || ((typeof this.validatefn == 'function') && this.validatefn(this.$el.value, this) === false)){
 					this.$el.setCustomValidity(this.pattern[1]);
 					this.$el.title = this.pattern[1];
 					return false;

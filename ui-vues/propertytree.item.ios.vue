@@ -16,8 +16,17 @@
 		<div class="editor">
 			<selecteditor
 				style="width:98%"
-				:values="[{value: 'core.type.bool', text:'Bool'}, {value: 'core.type.int', text: 'Integer'}]"
-			/><a><img src="ui-img/del.png" /></a>
+				@change="onDatatypeChange"
+			>
+				<option 
+					v-for="it in cDatatypes"
+					:value="it.__vue__.fullpath"
+					:selected="it.__vue__.fullpath == datatype ? 'selected' : ''"
+				>
+				{{it.getAttribute('label')}}
+				</option>
+			</selecteditor>
+			<a><img src="ui-img/del.png" /></a>
 		</div>
 	</li>
 </template>
@@ -29,12 +38,15 @@
 	
 	export default {
 		components: {texteditor, selecteditor},
-		inject: ['Blueprint'],
+		inject: ['Blueprint', 'Library'],
 		
 		props: {
 			name: String,
 			flags: Number,
 			type: String,
+			datatype: String,
+			storeSetter: String,
+			storeGetter: String,
 			
 			obj: Object,
 			item: Object,
@@ -51,9 +63,15 @@
 		},
 		
 		computed: {
+			cDatatypes: function(){
+				console.log(this.Library.getDatatype());
+				return this.Library.getDatatype();
+			},
+			/*
 			itemdata: function(){
 				return this.item[this.dataid];
-			},			
+			},
+			*/
 		},
 
 		mounted: function(){
@@ -61,8 +79,13 @@
 		},
 		
 		methods: {
+			onDatatypeChange: function(val, editor){
+				//console.log('datatype change', val);
+				this.item.store.commit(this.storeSetter, {name: this.name, props: {datatype: val}});
+			},
+			
 			validate: function(evt, input){
-				console.log('******', this.Blueprint)
+				//console.log('******', this.Blueprint)
 				var exists = false;
 				if(this.type == 'inputs'){
 					const io = this.Blueprint.getStore().getters['function/getInput'](this.item.name, input.value);

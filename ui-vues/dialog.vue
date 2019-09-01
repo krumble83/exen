@@ -1,6 +1,9 @@
 <template>
-	<div class="dialog">
-		<div class="title" @mousedown="onMouseDown">Client P.Elec</div>
+	<div :class="classObject" :style="styleObject" tabindex="-1" @keyup="onKeyUp">
+		<div class="title" @mousedown="onMouseDown">
+			{{title}}
+			<img src="ui-img/close.png" class="close" @click="cancel" />
+		</div>		
 		<div class="content">
 			<slot />
 		</div>
@@ -12,7 +15,19 @@
 export default {
 	
 	props: {
-		
+		title: {type: String, default: 'Title'},
+	},
+	
+	data: function(){
+		return {
+			classObject : {
+				dialog: true,
+				visible: false,
+			},
+			styleObject: {
+				
+			}
+		}
 	},
 	
 	methods: {
@@ -31,7 +46,39 @@ export default {
 				document.removeEventListener('mousemove', move);
 			}, {once: true});
 
-		}
+		},
+		
+		onClose: function(evt){
+			this.$emit('close');
+			this.classObject.visible = false;
+		},
+		
+		onKeyUp: function(evt){
+			switch(evt.keyCode){				
+				case 27: // esc
+					this.cancel();
+			}			
+		},
+		
+		show: function(){
+			const me = this;
+			me.$emit('show');
+			me.classObject.visible = true;
+			setTimeout(function(){
+				me.$el.focus();
+			}, 10);
+			
+		},
+		
+		hide: function(){
+			this.onClose();			
+		},
+		
+		cancel: function(){
+			this.$emit('cancel');
+			this.classObject.visible = false;			
+		},
+		
 	}
 }
 
@@ -41,12 +88,18 @@ export default {
 
 
 	.dialog {
+		display: none;
 		margin: 0 auto;
 		width: 800px;
 		height: 400px;
-		background-color: #555;
+		background-color: #191919;
 		border-radius: 5px;
-		border: 3px outset;
+		border: 1px solid #595959;
+		outline: none;
+	}
+	
+	.dialog.visible {
+		display: block;
 	}
 
 	.dialog > .title {
@@ -58,6 +111,10 @@ export default {
 		border-bottom: 1px solid #000;
 		cursor: move;
 	}
-
+	
+	.close{
+		float: right;
+		cursor: default;
+	}
 
 </style>

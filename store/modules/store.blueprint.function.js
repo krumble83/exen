@@ -22,27 +22,16 @@ var BluePrintFunctionModule = {
 			store.commit('setLibrary', this.getters.Library);
 			
 			var nd = store.getters.Datas;
-			console.log(nd);
+			//console.log(nd);
 			stateMerge(nd, data);
-			console.log(nd);
+			//console.log(nd);
 			this.commit('addFile', nd);
+			
 			var file = this.getters['function/getFunction'](nd.name);
 			console.assert(file);
 			file.store = store;
 			store.commit('setData', file);
-			//store.commit('setData', data);
-			//var d = store.getters.Datas;
-			//d.name = 'zzzzz';
-			//console.assert(d);
-			//var d = this.getters['function/getFunction'](data.name);
-			//d.store = store;
-
-			//d.store = new Vuex.Store(FunctionStore);
-			//var lib = this.getters.Library.Function(d.name);
-
 			store.commit('addNode', {name: 'entryPoint2', title: 'zzz', flags: F_READ_ONLY, x:400, y:400, subtitle: 'Target is me!!'});
-
-
 		},
 		
 		delete: function(state, data){
@@ -54,17 +43,23 @@ var BluePrintFunctionModule = {
 		},
 		
 		addInput: function(state, data){ 										//function/addInput
-			var func = this.getters['function/getFunction'](data.name);
+			var func = this.getters['function/getFunction'](data.func);
 			console.assert(func);			
-			func.store.commit('addInput', data);
+			func.store.commit('addInput', data.props);
 		},
 		
 		addOutput: function(state, data){ 										//function/addOutput
-			var func = this.getters['function/getFunction'](data.name);
+			var func = this.getters['function/getFunction'](data.func);
 			console.assert(func);
-			console.log(data);
-			func.store.commit('addOutput', data);
+			func.store.commit('addOutput', data.props);
 		},
+		
+		update: function(state, data){ 											//function/update
+			console.log('store:function/update', data);
+			var func = this.getters['function/getFunction'](data.func);
+			console.assert(func);
+			this.commit('updateFile', {name: data.func, props: data.props});
+		}
 		
 	},
 	
@@ -76,16 +71,16 @@ var BluePrintFunctionModule = {
 				return rootState.files.filter(it => it.type == F_FUNCTION);
 		},
 		
-		getIo: (state, getters, rootState) => (item, name) => {
-			return getters.getFunction(item).datas.inputs.find(it => it.name == name);
+		getIo: (state, getters, rootState) => (func, name) => {
+			return getters.getFunction(func).datas.inputs.find(it => it.name == name);
 		},
 		
-		getInput: (state, getters, rootState) => (item, name) => {
-			return getters.getFunction(item).datas.inputs.find(it => it.name == name);
+		getInput: (state, getters, rootState) => (func, name) => {
+			return getters.getFunction(func).store.getters.getInput(name);
 		},
 
-		getOutput: (state, getters, rootState) => (item, name) => {
-			return getters.getFunction(item).datas.outputs.find(it => it.name == name);
+		getOutput: (state, getters, rootState) => (func, name) => {
+			return getters.getFunction(func).store.getters.getOutput(name);
 		},
 
 	},
@@ -96,13 +91,12 @@ var newPin = function(){
 	return {
 		_linked: false,
 		name: 'default',
-		type: F_INPUT, 
-		datatype: 'core.test', 
+		//type: F_INPUT, 
+		flags: 0,
+		datatype: 'core.type.bool', 
 		optional: false,
 	}
 }
-
-
 
 function uid(prefix){
 	prefix = prefix || 'uid';
@@ -126,6 +120,8 @@ function newNode(){
 
 import img from '../../ui-img/function.png';
 import {Category, Function, In, Out} from '../../exlibs/default.export.js';
+//import EventBus from '../../cmon-js/event-bus.js'
+
 var FunctionStore = {
 	state: function(){
 		return {
@@ -156,7 +152,7 @@ var FunctionStore = {
 				name: 'entryPoint', 
 				title: state.datas.name, 
 				flags: F_READ_ONLY, 
-				img: 'graph-img/function.png', 
+				img: 'exlibs/img/start.png', 
 				color: '#7f2197',
 			};
 			this.commit('addNode', n);
@@ -170,16 +166,18 @@ var FunctionStore = {
 				datatype: 'core.exec',
 			};
 			this.commit('addOutput', i);
-			/*			
-			if(state.library)
-				state.library.Function(state.datas.name);
+			
+			/*
+			EventBus.$on('librarymenu:get', function(data, query, context){
+				console.log('ok');
+			});
 			*/
+
 			var w = this.watch(
 				state => state.datas.name,
 				() => {
 					//console.log('Watcher works', arguments[1].name);
 					Vue.set(n, 'title', arguments[1].name);
-					//n.label = arguments[1].name;
 				}
 			);
 			state.watchers.push(w);	
@@ -194,14 +192,30 @@ var FunctionStore = {
 		
 		addInput: function(state, data){
 			var i = newPin();
+			data = data || {};
+			data.name = this.getters.getIoFreeName(data.name || 'newInput');
+			data.flags = (data.flags || 0) | F_INPUT;
+			data.type = F_INPUT;
 			stateMerge(i, data);
 			state.datas.inputs.push(i);
 		},
 		
 		addOutput: function(state, data){
 			var i = newPin();
+			data = data || {};
+			data.name = this.getters.getIoFreeName(data.name || 'newOutput');
+			data.flags = (data.flags || 0) | F_OUTPUT;
+			data.type = F_OUTPUT;
 			stateMerge(i, data);
 			state.datas.outputs.push(i);
+		},
+		
+		changeInputProperty: function(state, data){
+			stateMerge(state.datas.inputs.find(it => it.name == data.name), data.props);
+		},
+
+		changeOutputProperty: function(state, data){
+			stateMerge(state.datas.outputs.find(it => it.name == data.name), data.props);
 		},
 
 		changeNodeProperty: function(state, data){
@@ -209,7 +223,23 @@ var FunctionStore = {
 		},
 		
 		setLibrary: function(state, data){
+			const me = this;
 			state.library = data;
+			state.library.Library.$on('librarymenu:get', function(data, store){
+				var el = document.createElement('div')
+					, ComponentClass = Vue.extend(Category);
+				var instance = new ComponentClass({propsData: {id: state.library.fullPath}});
+				var ret = instance.Function(state.datas.name);
+				ret.Symbol('exlibs/img/function.png');
+				data.push(ret);
+
+				if(store == me){
+					ComponentClass = Vue.extend(Function);
+					instance = new ComponentClass({propsData: {id: 'exitPoint', title: 'Add Return Node...'}});
+					data.push(instance);
+				}
+				console.log(data);
+			});
 		}
 	},
 	
@@ -226,16 +256,16 @@ var FunctionStore = {
 			return state.datas;
 		},
 		
-		getOutput: (state, getters) => (name) => {
+		getInput: (state, getters) => (name) => {
 			if(name)
-				return state.inputs.find(it => it.name == name);
-			return state.inputs;
+				return state.datas.inputs.find(it => it.name == name);
+			return state.datas.inputs;
 		},
 		
 		getOutput: (state, getters) => (name) => {
 			if(name)
-				return state.outputs.find(it => it.name == name);
-			return state.outputs;
+				return state.datas.outputs.find(it => it.name == name);
+			return state.datas.outputs;
 		},
 
 		EntryPointNode: (state, getters) => getters.getNode(state.uid + '_entryPoint'),
@@ -246,7 +276,7 @@ var FunctionStore = {
 			else
 				return state.links;
 		},
-
+		/*
 		getLibraryMenu: (state, getters) => {
 			var el = document.createElement('div')
 				, ComponentClass = Vue.extend(Category);
@@ -254,7 +284,20 @@ var FunctionStore = {
 			var ret = instance.Function(state.datas.name);
 			return [ret];
 		},
-		
+		*/
+		getIoFreeName:  (state, getters) => (name) => {
+			if(!getters.IoNameExist(name))
+				return name;
+			
+			var a = 1;
+			while(getters.IoNameExist(name + a))
+				a++;
+			return name + a;
+		},		
+
+		IoNameExist:  (state, getters) => (name) => {
+			return getters.getInput(name) || getters.getOutput(name);
+		},
 	}
 }
 

@@ -5,7 +5,7 @@ import img from '../../ui-img/variable.png';
 var module = {
 	namespaced: true,
 	mutations: {
-		add: function(state, data){
+		add: function(state, data){			//varaible/ad
 			data = data || {};
 			data.type = F_VARIABLE;
 			data.datas = {

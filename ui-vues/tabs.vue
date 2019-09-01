@@ -11,7 +11,7 @@
 			v-bind="tab"
 			:ref="tab.name"
 		>
-		<slot name="end" />
+		<slot />
 		</component>
 	</div>
 </template>
@@ -41,32 +41,7 @@
 			}
 		},
 		
-		computed: {
-			/*
-			cTabs: function () {
-				return this.$parent[this.storeobject];
-			}
-			*/
-		},
-		
-		watch: {
-			/*
-			cTabs: function(){
-				return;
-				var me = this
-				, selected = this.getSelected();
-
-				this.$nextTick(function(){
-					if(selected && me.cTabs.find(item => item.name == selected.name))
-						me.selectTab(selected);
-					else if(me.$children[0]) {
-						me.selectTab(me.$children[0]);
-					}
-				});	
-			}
-			*/
-		},
-		
+	
 		methods: {
 			onTabClick: function(tab, evt){
 				this.selected = tab;

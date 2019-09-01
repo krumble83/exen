@@ -119,8 +119,8 @@ export const Base = {
 					continue;
 				if(key.startsWith('_'))
 					ret[key.slice(1)] = this.$data[key];
-
-				ret[key] = this.$props[key];
+				else
+					ret[key] = this.$props[key];
 			}
 			/*
 			this.$data.forEach(function(prop){
@@ -262,6 +262,7 @@ export const Library = {
 
 		createQuery: function(){
 			return {
+				id: false,
 				category: false,
 				searchString: '',
 				inputDatatype: '',
@@ -288,10 +289,16 @@ export const Library = {
 			var q = '[isfunction="true"]';
 			if(query && !query.private)
 				q += ':not([private="true"])'
+			if(query && query.id){
+				var name = this.splitPackageName(id);
+				return this.$el.querySelector('package[id="' + name[0] + '"] [isfunction="true"][id="' + name[1] + '"]');
+			}
 			return this.$el.querySelectorAll(q);			
 		},
 		
 		getDatatype: function(id){
+			if(!id)
+				return this.$el.querySelectorAll('datatype:not([private="true"])');
 			var name = this.splitPackageName(id);
 			//console.log(id, name, this.$el.querySelector('package[id="' + name[0] + '"] datatype[id="' + name[1] + '"]'));
 			return this.$el.querySelector('package[id="' + name[0] + '"] datatype[id="' + name[1] + '"]').__vue__;
@@ -302,7 +309,12 @@ export const Library = {
 				return this.getNodesByQuery(this.createQuery());
 			else if(typeof id == 'object')
 				return this.getNodesByQuery(id);
-
+			else if(typeof id == 'string'){
+				var q = this.createQuery();
+				q.id = id;
+				return this.getNodesByQuery(id);
+			}
+			console.assert(false, 'unknown query');
 			var name = this.splitPackageName(id);
 			return this.$el.querySelector('package[id="' + name[0] + '"] [isfunction="true"][id="' + name[1] + '"]');
 		},
@@ -348,6 +360,10 @@ Vue.config.ignoredElements.push('package');
 
 export const Category = {
 	extends: Base,
+	inject: {
+		Library: {default: false},
+		Package: {default: false},
+	},
 	mixins: [],
 	
 	provide: function(){
@@ -406,8 +422,16 @@ export const Node = {
 		symbol: {type: String, default: function(){return this.Category.symbol}},
 	},
 	
+	data: function(){
+		return {
+			_symbol: this.symbol,
+		}
+	},
+	
 	methods: {
-		
+		Symbol: function(str){
+			this._symbol = str;
+		}
 	},
 }
 Vue.config.ignoredElements.push('node');
@@ -449,6 +473,12 @@ export const Datatype = {
 		label: String,
 	},
 	
+	data: function(){
+		return {
+			//fullpath: this.Package.fullPath + '.' + this.id,
+		}
+	},
+	
 	methods: {
 		Color: function(){
 			return this.color;
@@ -457,6 +487,12 @@ export const Datatype = {
 		Label: function(){
 			return this.label;
 		},
+		
+		Editor: function(data){
+			if(!data)
+				return this.$children.find(it => it.__ctor == "editor");
+			return this._create('editor', data);
+		}
 	}
 }
 Extend(Package, Category, 'Datatype');
@@ -525,7 +561,7 @@ export const Entry = {
 	mixins: [],
 	
 	props: {
-		id:{type: String, default:'@entry'},
+		id:{type: String, default: '@entry'},
 		datatype: {type: String, default: 'core.exec'},
 	},
 }
@@ -537,7 +573,7 @@ export const Exit = {
 	mixins: [],
 	
 	props: {
-		id:{type: String, default:'@exit'},
+		id:{type: String, default: '@exit'},
 		datatype: {type: String, default: 'core.exec'},
 	},
 }

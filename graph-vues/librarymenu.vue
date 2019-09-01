@@ -24,6 +24,7 @@
 var menuEl = document.querySelector('#exMenu');
 
 import Item from './librarymenu.item.vue'
+//import EventBus from '../cmon-js/event-bus.js';
 
 export default {
 	inject: ['Library'],
@@ -106,7 +107,21 @@ export default {
 					tooltip: vu.tooltip,
 				});
 			});
+			var ret = [];
+			this.Library.$emit('librarymenu:get', ret, this.mContextStore);
+			ret.forEach(function(vu){
+				var cat = me.items;
+				if(vu.Category)
+					cat = findUl(vu.Category.fullPath, me.items);
+				cat.push({
+					name: vu.title || vu.id, 
+					id: vu.fullpath,
+					symbol: vu.symbol,
+					tooltip: vu.tooltip,
+				});
+			});
 			
+			/*
 			if(this.mContextStore){
 				console.log(this.mContextStore);
 				const me = this;
@@ -125,7 +140,7 @@ export default {
 
 				console.log(items);
 			}
-			
+			*/
 			//console.log(this.items);
 			//console.log(nodes);
 		},

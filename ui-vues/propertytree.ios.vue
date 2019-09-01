@@ -12,11 +12,14 @@
 			<label :for="'folder_' + uid">{{label}}</label>
 			<ul>
 				<component v-for="(it,id) in childs" :key="id"
-					:is="it.ctor ? it.ctor : 'treeitem'"
+					:is="it.ctor ? it.ctor : 'treeitemios'"
+					v-show="!it.name.startsWith('@')"
 					v-bind="it"
 					:item="item"
 					:type="dataid"
 					:obj="it"
+					:storeSetter="storeSetter"
+					:storeGetter="storeGetter"
 				>
 				</component>
 			</ul>
@@ -27,16 +30,18 @@
 
 <script>
 
-	import treeitem from './propertytree.item.ios.vue';
+	import treeitemios from './propertytree.item.ios.vue';
 
 	export default {
-		components: {treeitem},
+		components: {treeitemios},
 		props: {
 			label: String,
 			button: {},
 
 			item: Object,
 			dataid: String,
+			storeGetter: String,
+			storeSetter: String,
 		},
 		
 		data: function(){
@@ -47,11 +52,13 @@
 		
 		computed: {
 			childs: function(){
-				//console.log('*-*-', this.dataid, this.item.datas);
-				if(this.items)
-					return this.items;
-				else if(this.dataid && this.item.datas)
-					return this.item.datas[this.dataid].filter(it => !it.name.startsWith('@'));
+				//console.log('*-*-', this.dataid, this.item);
+				if(this.storeGetter && this.item.store)
+					return this.item.store.getters[this.storeGetter]();
+				if(this.dataid && this.item.store)
+					return this.item.store.getters.Datas[this.dataid];
+					//return this.item.datas[this.dataid].filter(it => !it.name.startsWith('@'));
+				return [];
 			},
 		},
 		

@@ -1,10 +1,10 @@
 <template>
 	<package id="core">
-		<datatype id="object" label="object" color="#55f" />
+		<datatype id="object" label="Object" color="#55f" />
 		<datatype id="device" label="Device" color="#00f" />
 		<datatype id="component" label="Component" color="#ff0" />
 		<datatype id="exec" label="Exec" ctor="PinExec" color="#fff" :private="true" />
-		<datatype id="wildcards" label="Wildcards" ctor="PinWildcards" color="#666" />
+		<datatype id="wildcards" :private="true" label="Wildcards" ctor="PinWildcards" color="#666" />
 
 		<function id="core.operator" ctor="NodeOp" color="#555" :private="true" />
 	</package>

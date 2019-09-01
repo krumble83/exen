@@ -7,7 +7,6 @@
 		:y="mY" 
 		:width="mWidth" 
 		:height="mHeight" 
-		:type="type"
 		overflow="visible"
 		@click.stop="$emit('mouse:click', $event)" 
 		@mousedown.left.stop="$emit('mouse:leftdown', $event)" 
@@ -96,13 +95,13 @@
 			var me = this;
 			return {
 				$node: me,
+				Node: me,
 			}
 		},
 			
 		props: {
 			title: String, 
 			subtitle: String,
-			type: String,
 			flags: Number,
 			color: {type: String, default: '#00f'},
 			img: String,
@@ -253,7 +252,7 @@
 				headBox = temp;
 				
 				
-				maxWidth = Math.max(maxWidth, headBox.width + headBox.x + 1, inputsBox.x + inputsBox.width + 19 + outputsBox.width);
+				maxWidth = Math.max(maxWidth, headBox.width + headBox.x + 19, inputsBox.x + inputsBox.width + 19 + outputsBox.width);
 								
 				//outputs
 				//this.outputsGroupPos.y = this.subtitle ? 50 : 37;

@@ -27,6 +27,33 @@
 		<!--<div style="position:absolute;top:0;left:0;background-color:#000;opacity:0.5;width:100%;height:100%"></div>-->
 		
 		<script type="boom!">
+
+
+const raw = {
+  item1: { key: 'sdfd', value:'sdfd' },
+  item2: { key: 'sdfd', value:'sdfd' },
+  item3: { key: 'sdfd', value:'sdfd' }
+};
+
+const allowedz = ['item1', 'item3'];
+
+
+function filterObject(object, allowed){
+	return Object.keys(object)
+		.filter(key => allowed.includes(key))
+		.reduce((obj, key) => {
+			obj[key] = object[key];
+			return obj;
+		}, {});
+}
+
+
+const filtered = filterObject(raw, allowedz);
+
+filtered.item1.value = 'zzzz'
+console.log(filtered, raw);
+
+
 		
 			Vue.config.performance = true;
 			

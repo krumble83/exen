@@ -13,6 +13,7 @@
 <script>
 
 	var FunctionPanel = function(){
+		var me = this;
 		return {
 			headerText: '',
 			footerText: '',
@@ -29,7 +30,17 @@
 							editor:{
 								ctor: 'texteditor', 
 								pattern: C_FUNCTION_NAME_PATTERN, 
-								required: true
+								required: true,
+								validatefn : function(val, editor){
+									//console.log('validate', me.store);
+									return (me.store.getters.nameExist(val) == undefined || val == me.$refs.functionsTree.selected.name);
+								},
+								successfn: function(val, editor){
+									me.store.commit('function/update', {func: me.$refs.functionsTree.selected.name, props: {name: val}});
+									this.$nextTick(function(){
+										editor.checkValue();
+									});
+								},
 							}
 						},
 						{
@@ -37,7 +48,10 @@
 							tooltip: 'Short description of the purpose of this function',
 							dataid: 'description', 
 							editor:{
-								ctor: 'texteditor'
+								ctor: 'texteditor',
+								successfn: function(val, editor){
+									me.store.commit('function/update', {func: me.$refs.functionsTree.selected.name, props: {description: val}});
+								},
 							}
 						},
 						{
@@ -49,15 +63,15 @@
 					label: 'Inputs', 
 					ctor: 'ios',
 					button: {text: 'Input', action: 'addFunctionInput', disabled: false},
-					getter: 'function/getInput',
-					dataid: 'inputs',
+					storeGetter: 'getInput',
+					storeSetter: 'changeInputProperty',
 				},
 				{
 					label: 'Outputs', 
 					ctor: 'ios',
 					button: {text: 'Output', action: 'addFunctionOutput', disabled: false},
-					getter: 'function/getOutput',
-					dataid: 'outputs',
+					storeGetter: 'getOutput',
+					storeSetter: 'changeOutputProperty',
 				},
 			]
 		};
@@ -85,7 +99,7 @@
 		
 		created: function(){
 			this.store.registerModule('function', BluePrintFunctionModule);
-			this.functionPanel = FunctionPanel();
+			this.functionPanel = FunctionPanel.call(this);
 		},
 		
 		mounted: function(){		
@@ -185,13 +199,13 @@
 			},
 
 			addInput: function(item){
-				console.log('addInput');
-				this.store.commit('function/addInput', {name: item.name, datatype: 'core.type.int', editor: {ctor: 'PinEditorInput'}});
+				//console.log('addInput');
+				this.store.commit('function/addInput', {func: item.name, props: {}});
 			},
 			
 			addOutput: function(item){
-				console.log('addOutput');
-				this.store.commit('function/addOutput', {name: item.name, datatype: 'core.type.string'});
+				//console.log('addOutput');
+				this.store.commit('function/addOutput', {func: item.name, props: {}});
 			},
 		}
 	});
