@@ -264,7 +264,7 @@ export const Library = {
 			return {
 				id: false,
 				category: false,
-				searchString: '',
+				searchString: false,
 				inputDatatype: '',
 				outputDatatype: '',
 				private: false,
@@ -286,14 +286,35 @@ export const Library = {
 		},
 		
 		getNodesByQuery: function(query){
-			var q = '[isfunction="true"]';
-			if(query && !query.private)
-				q += ':not([private="true"])'
+			var qs = ['[isfunction="true"]']
+				, ret = [];
+			
 			if(query && query.id){
 				var name = this.splitPackageName(id);
 				return this.$el.querySelector('package[id="' + name[0] + '"] [isfunction="true"][id="' + name[1] + '"]');
 			}
-			return this.$el.querySelectorAll(q);			
+
+			if(query && query.searchString){
+				qs.push(qs[0] + '[id*="' + query.searchString + '"]');
+				qs.push(qs[0] + '[keywords*="' + query.searchString + '"]');
+				qs[0] += '[title*="' + query.searchString + '"]';
+			}
+			
+			if(query && !query.private){
+				qs.forEach(function(it, id){
+					qs[id] += ':not([private="true"])';
+				});
+			}
+			//console.log(qs.join(','));
+			ret = this.$el.querySelectorAll(qs.join(','));
+			
+			if(query.inputDatatype)
+				return ret.filter(it => it.querySelector('out[datatype="' + query.inputDatatype + '"]'));
+
+			if(query.outputDatatype)
+				return ret.filter(it => it.querySelector('in[datatype="' + query.outputDatatype + '"]'));
+			
+			return ret;
 		},
 		
 		getDatatype: function(id){
