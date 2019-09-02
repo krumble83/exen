@@ -1,6 +1,6 @@
 <template>
 	<svg
-		:id="id"
+		:id="mId"
 		:style="styleObject" 
 		:class="classObject" 
 		tabindex="-1"
@@ -110,7 +110,7 @@
 		},
 		
 		props: {
-			id: {type: String, default: function(){return Vue.options.methods.$uid()}},
+			id: String,
 			store: Object,
 			//features: {type: Array, default: function(){return []}},
 		},
@@ -127,6 +127,7 @@
 				workspace: [],
 				drawlink: false,
 				mEdited: true,
+				mId : this.id || Vue.options.methods.$uid(),
 			}
 		},
 		
