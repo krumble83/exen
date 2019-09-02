@@ -62,10 +62,29 @@ console.log(filtered, raw);
 
 			import './exlibs/app.vue';
 			import './exlibs/core/core.vue';
+			import './exlibs/core/core.flow.vue';
+			import './exlibs/core/core.array.vue';
+			import './exlibs/core/core.date.vue';
+									
 			import './exlibs/core/core.type.vue';
 			import './exlibs/core/core.type.int.vue';
-			import './exlibs/core/core.flow.vue';
-									
+			import './exlibs/core/core.type.float.vue';
+			import './exlibs/core/core.type.bool.vue';
+			import './exlibs/core/core.type.string.vue';
+			import './exlibs/core/core.type.byte.vue';
+			
+			import './exlibs/web/web.vue';
+			import './exlibs/arduino/arduino.core.vue';
+			import './exlibs/arduino/arduino.eeprom.vue';
+			import './exlibs/arduino/arduino.serial.vue';
+			import './exlibs/arduino/arduino.spi.vue';
+			import './exlibs/arduino/arduino.spi.vue';
+			import './exlibs/arduino/arduino.sdcard.vue';
+			import './exlibs/arduino/arduino.io.analog.vue';
+			import './exlibs/arduino/arduino.io.digital.vue';
+
+			import './exlibs/os/os.file.vue';
+
 			import './ui-vues/blueprint.graph.vue';
 			import './ui-vues/blueprint.function.vue';
 			import './ui-vues/blueprint.variable.vue';
@@ -73,7 +92,10 @@ console.log(filtered, raw);
 			var test = new Vue(App);
 			test.createProject();
 			test.doTest();
-			test.packages.push('libCore', 'libCoreDatatype', 'App', 'libCoreTypeInt', 'libCoreFlow');
+			test.packages.push('libCore', 'libCoreDatatype', 'App', 
+				'libCoreTypeInt', 'libCoreFlow', 'libCoreTypeFloat', 'libCoreArray', 'libCoreTypeBool', 'libCoreTypeString'
+				, 'libCoreTypeByte', 'libCoreDate', 'libWeb', 'libArduinoCore','libArduinoEeprom', 'libArduinoSerial'
+				, 'libOsFile', 'libArduinoSpi', 'libArduinoIoDigital', 'libArduinoIoAnalog', 'libArduinoSdcard');
 
 		</script>
 	</body>
