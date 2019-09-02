@@ -7,54 +7,54 @@
 
 		<category id="String">
 			<function id="makeliteral" title="Make literal (String )" color="#aaeea0" symbol="exlibs/img/function.png" keywords="make String ">
-				<input id="in" datatype="core.type.string"></input>
-				<output id="value" datatype="core.type.string" label="String "></output>
+				<in id="in" datatype="core.type.string" />
+				<out id="value" datatype="core.type.string" label="String " />
 			</function>
 			<function id="split" title="Split string" color="#aaeea0" symbol="exlibs/img/function.png" keywords="break,explode">
-				<input id="source" datatype="core.type.string"></input>
-				<input id="separator" datatype="core.type.string" tooltip="The delimiter string"></input>
-				<output id="result" datatype="core.type.string[]"></output>
+				<in id="source" datatype="core.type.string" />
+				<in id="separator" datatype="core.type.string" tooltip="The delimiter string" />
+				<out id="result" datatype="core.type.string[]" />
 			</function>
 			<function id="join" title="Join strings" color="#aaeea0" symbol="exlibs/img/function.png" keywords="join,merge,combine">
-				<input id="source" datatype="core.type.string[]"></input>
-				<input id="separator" datatype="core.type.string" tooltip="The delimiter string"></input>
-				<output id="result" datatype="core.type.string"></output>
+				<in id="source" datatype="core.type.string[]" />
+				<in id="separator" datatype="core.type.string" tooltip="The delimiter string" />
+				<out id="result" datatype="core.type.string" />
 			</function>
 			<function id="replace" title="Replace in strings" color="#aaeea0" symbol="exlibs/img/function.png" keywords="replace">
-				<input id="source" datatype="core.type.string"></input>
-				<input id="search" datatype="core.type.string"></input>
-				<input id="replace" datatype="core.type.string"></input>
-				<input id="usecase" datatype="core.type.bool" label="Case Sensitive"></input>
-				<output id="result" datatype="core.type.string"></output>
+				<in id="source" datatype="core.type.string" />
+				<in id="search" datatype="core.type.string" />
+				<in id="replace" datatype="core.type.string" />
+				<in id="usecase" datatype="core.type.bool" label="Case Sensitive" />
+				<out id="result" datatype="core.type.string" />
 			</function>
 			<function id="contains" title="Contains" color="#aaeea0" symbol="exlibs/img/function.png">
-				<input id="source" datatype="core.type.string"></input>
-				<input id="search" datatype="core.type.string"></input>
-				<input id="usecase" datatype="core.type.bool" label="Case Sensitive"></input>
-				<input id="start" datatype="core.type.int" optional="true" tooltip="Start search from this position."></input>
-				<input id="end" datatype="core.type.int" optional="true" tooltip="Stop search at this position."></input>
-				<output id="result" datatype="core.type.bool"></output>
+				<in id="source" datatype="core.type.string" />
+				<in id="search" datatype="core.type.string" />
+				<in id="usecase" datatype="core.type.bool" label="Case Sensitive" />
+				<in id="start" datatype="core.type.int" optional="true" tooltip="Start search from this position." />
+				<in id="end" datatype="core.type.int" optional="true" tooltip="Stop search at this position." />
+				<out id="result" datatype="core.type.bool" />
 			</function>
 			<function id="length" title="String Length" color="#aaeea0" symbol="exlibs/img/function.png" keywords="size,count">
-				<input id="string" datatype="core.type.string"></input>
-				<output id="length" datatype="core.type.int"></output>
+				<in id="string" datatype="core.type.string" />
+				<out id="length" datatype="core.type.int" />
 			</function>
 			<function id="tolower" title="To Lower" color="#aaeea0" symbol="exlibs/img/function.png" keywords="lower,tolower">
-				<input id="input" datatype="core.type.string"></input>
-				<output id="output" datatype="core.type.string"></output>
+				<in id="input" datatype="core.type.string" />
+				<out id="output" datatype="core.type.string" />
 			</function>
 			<function id="toupper" title="To Upper" color="#aaeea0" symbol="exlibs/img/function.png" keywords="upper,toupper">
-				<input id="input" datatype="core.type.string"></input>
-				<output id="output" datatype="core.type.string"></output>
+				<in id="input" datatype="core.type.string" />
+				<out id="output" datatype="core.type.string" />
 			</function>
 			<function id="toint" title="To Int" color="#aaeea0" symbol="exlibs/img/function.png">
-				<input id="input" datatype="core.type.string"></input>
-				<output id="integer" datatype="core.type.int"></output>
+				<in id="input" datatype="core.type.string" />
+				<out id="integer" datatype="core.type.int" />
 			</function>
 			<function id="eq" ctor="NodeOp" color="#555" symbol="exlibs/core/img/op.eq.png" keywords="==,equal" subtitle="==" title="String == String (equal)">
-				<input id="a" datatype="core.type.string"></input>
-				<input id="b" datatype="core.type.string"></input>
-				<output id="output" datatype="core.type.bool" tooltip="True if a = b"></output>
+				<in id="a" datatype="core.type.string" />
+				<in id="b" datatype="core.type.string" />
+				<out id="output" datatype="core.type.bool" tooltip="True if a = b" />
 			</function>
 		</category>
 	</package>
