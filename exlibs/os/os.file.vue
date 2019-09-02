@@ -1,7 +1,7 @@
 <template>
 	<package id="os.file">
 		<category id="Operating System/Files">
-			<class id="fileObject" label="File Object" color="#55f" :inherits="['core.object']">
+			<class id="fileObject" label="File Object" color="#55f" inherits="core.object">
 				<method id="name" title="File.name()" color="#aaeea0" symbol="exlibs/img/function.png">
 					<in id="target" datatype="fileObject" flags="4194304" />
 					<out id="name" datatype="core.type.string" />

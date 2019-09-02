@@ -5,8 +5,6 @@
 		<datatype id="component" label="Component" color="#ff0" />
 		<datatype id="exec" label="Exec" ctor="PinExec" color="#fff" :private="true" />
 		<datatype id="wildcards" :private="true" label="Wildcards" ctor="PinWildcards" color="#666" />
-
-		<function id="core.operator" ctor="NodeOp" color="#555" :private="true" />
 	</package>
 </template>
 

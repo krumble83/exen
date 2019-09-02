@@ -136,7 +136,7 @@ export const Base = {
 		
 		fullpath: function(){
 			if(this.Package)
-				return this.Package.id + '.' + this.id;
+				return this.Package.fullpath + '.' + this.id;
 			return this.id;
 		},
 	},
@@ -265,8 +265,8 @@ export const Library = {
 				id: false,
 				category: false,
 				searchString: false,
-				inputDatatype: '',
-				outputDatatype: '',
+				inputDatatype: false,
+				outputDatatype: false,
 				private: false,
 			}
 		},
@@ -308,21 +308,45 @@ export const Library = {
 			ret = this.$el.querySelectorAll(qs.join(','));
 			//console.log(ret);
 			
-			if(query.inputDatatype)
-				return Array.from(ret).filter(it => it.querySelector('out[datatype="' + query.inputDatatype + '"]'));
+			if(query.inputDatatype){
+				var dtype = this.getDatatype(query.inputDatatype)
+					, pack = dtype.Package;
+				return Array.from(ret).filter(function(it){
+					if(it.querySelector('out[datatype="' + pack.id + '.' + dtype.id + '"]'))
+						return true;
+					var res = false;
+					it.querySelectorAll('out[datatype="' + dtype.id + '"]').forEach(function (it){
+						if(it.__vue__.Package.id == pack.id)
+							res = true;
+					});
+					return res;
+				});
+			}
 
-			if(query.outputDatatype)
-				return Array.from(ret).filter(it => it.querySelector('in[datatype="' + query.outputDatatype + '"]'));
+			if(query.outputDatatype){
+				var dtype = this.getDatatype(query.outputDatatype)
+					, pack = dtype.Package;
+				return Array.from(ret).filter(function(it){
+					if(it.querySelector('in[datatype="' + pack.id + '.' + dtype.id + '"]'))
+						return true;
+					var res = false;
+					it.querySelectorAll('in[datatype="' + dtype.id + '"]').forEach(function (it){
+						if(it.__vue__.Package.id == pack.id)
+							res = true;
+					});
+					return res;
+				});
+			}
 			
 			return ret;
 		},
 		
 		getDatatype: function(id){
 			if(!id)
-				return this.$el.querySelectorAll('datatype:not([private="true"])');
+				return this.$el.querySelectorAll('[isdatatype="true"]:not([private="true"])');
 			var name = this.splitPackageName(id);
 			//console.log(id, name, this.$el.querySelector('package[id="' + name[0] + '"] datatype[id="' + name[1] + '"]'));
-			return this.$el.querySelector('package[id="' + name[0] + '"] datatype[id="' + name[1] + '"]').__vue__;
+			return this.$el.querySelector('package[id="' + name[0] + '"] [isdatatype="true"][id="' + name[1] + '"]').__vue__;
 		},
 		
 		getNode: function(id){
@@ -489,9 +513,10 @@ export const Datatype = {
 		private: {type: Boolean, default: false},
 		ctor: String,
 		color: {type: String, required: true},
-		inherits: {type: Array, default: function(){return []}},
+		inherits: String,
 		description: String,
 		label: String,
+		isdatatype: {type: Boolean, default: true},
 	},
 	
 	data: function(){
@@ -636,7 +661,7 @@ export const Enum = {
 	
 	props: {
 		__ctor: {type: String, default: 'enum'},
-		color: {type: String, default: '#0ff'},
+		color: {type: String, default: '#8000FF'},
 	},
 }
 Extend(Package, Category, 'Enum');
@@ -654,20 +679,21 @@ export const Value = {
 Extend(Enum, Editor, 'Value');
 Vue.config.ignoredElements.push('value');
 
-export const Structure = {
+export const Struct = {
 	extends: Datatype,
 	mixins: [],
 	
 	props: {
 		__ctor: {type: String, default: 'class'},
-		color: {type: String, default: '#f0f'},
+		color: {type: String, default: '#0057c8'},
+		ctor: {type: String, default: "PinStructure"},
 	},
 }
-Extend(Package, Category, 'Structure');
-Vue.config.ignoredElements.push('structure');
+Extend(Package, Category, 'Struct');
+Vue.config.ignoredElements.push('struct');
 
 export const Class = {
-	extends: Structure,
+	extends: Struct,
 	mixins: [],
 	
 	props: {
@@ -678,6 +704,20 @@ export const Class = {
 }
 Extend(Package, Category, 'Class');
 Vue.config.ignoredElements.push('class');
+
+
+export const Interface = {
+	extends: Class,
+	mixins: [],
+	
+	props: {
+		__ctor: {type: String, default: 'interface'},
+	},
+
+}
+Extend(Package, Category, 'Interface');
+Vue.config.ignoredElements.push('interface');
+
 
 export const Method = {
 	extends: Function,
@@ -702,7 +742,7 @@ export const Member = {
 		static: {type: Boolean, default: false},
 	},
 }
-Extend(Class, Structure, 'Member');
+Extend(Class, Struct, 'Member');
 Vue.config.ignoredElements.push('member');
 
 

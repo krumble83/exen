@@ -31,7 +31,7 @@ var BluePrintFunctionModule = {
 			console.assert(file);
 			file.store = store;
 			store.commit('setData', file);
-			store.commit('addNode', {name: 'entryPoint2', title: 'zzz', flags: F_READ_ONLY, x:400, y:400, subtitle: 'Target is me!!'});
+			store.commit('addNode', {name: 'entryPoint2', flags: F_READ_ONLY, x:400, y: 400});
 		},
 		
 		delete: function(state, data){

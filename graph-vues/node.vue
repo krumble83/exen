@@ -26,10 +26,10 @@
 			filter="url(#exBgFilter)" 
 		/>
 		<g class="header" ref="header">
-			<rect width="100%" height="100%" rx="9" ry="9" :fill="'url(#nodeHeader_' + color.replace('#', '') + ')'" :clip-path="'url(#exNodeClipPath_' + ((subtitle) ? '2' : '1') + ')'" />
-			<image v-if="img" :href="img" x="10" y="6" width="16" height="16" />
+			<rect v-if="title" width="100%" height="100%" rx="9" ry="9" :fill="'url(#nodeHeader_' + color.replace('#', '') + ')'" :clip-path="'url(#exNodeClipPath_' + ((subtitle) ? '2' : '1') + ')'" />
+			<image v-if="title && img" :href="img" x="10" y="6" width="16" height="16" />
 			<text v-if="title" class="title" :x="img ? '28' : 10" y="20">{{cTitle}}</text>
-			<text v-if="subtitle" class="subtitle" :x="img ? '28' : 10" y="38">{{subtitle}}</text>
+			<text v-if="title && subtitle" class="subtitle" :x="img ? '28' : 10" y="38">{{subtitle}}</text>
 		</g>
 		<rect width="100%" height="100%" rx="9" ry="9" fill-opacity="0" stroke-width="0" />
 		
@@ -231,6 +231,7 @@
 				, maxWidth = 80
 				, maxHeigth = 30
 				, headBox = this.$refs.header
+				, headRect = headBox.querySelector('rect')
 				, inputsBox = this.$refs.inputs.getBBox()
 				, outputsBox = this.$refs.outputs.getBBox()
 
@@ -240,11 +241,13 @@
 				//this.$forceUpdate();
 				
 				//compute header
-				headBox.querySelector('rect').style.display = 'none';
+				if(headRect)
+					headRect.style.display = 'none';
 				this.mWidth = 600;
 				var temp = headBox.getBBox();
 				this.mWidth = oldSize.w;
-				headBox.querySelector('rect').style.display = 'block';
+				if(headRect)
+					headRect.style.display = 'block';
 				headBox = temp;
 				
 				

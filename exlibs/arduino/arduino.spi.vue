@@ -1,12 +1,12 @@
 <template>
 	<package id="arduino.spi">
-		<enum id="dataorder" color="#8000FF" :inherits="['core.type.enum']" tooltip="Enum" label="Data Order Enum">
+		<enum id="dataorder" color="#8000FF" tooltip="Enum" label="Arduino SPI Data Order Enum">
 			<editor id="select">
 				<value id="MSBFIRST" />
 				<value id="LSBFIRST" />
 			</editor>
 		</enum>
-		<enum id="datamode" color="#8000FF" :inherits="['core.type.enum']" tooltip="Enum" label="Data Mode Enum">
+		<enum id="datamode" color="#8000FF" tooltip="Enum" label="Arduino SPI Data Mode Enum">
 			<editor id="select">
 				<value id="SPI_MODE0" />
 				<value id="SPI_MODE1" />
@@ -14,7 +14,7 @@
 				<value id="SPI_MODE3" />
 			</editor>
 		</enum>
-		<enum id="interruptmode" color="#8000FF" :inherits="['core.type.enum']" tooltip="Enum" label="Interrupt Mode Enum">
+		<enum id="interruptmode" color="#8000FF" tooltip="Enum" label="Arduino SPI Interrupt Mode Enum">
 			<editor id="select">
 				<value id="LOW" />
 				<value id="CHANGE" />
@@ -23,11 +23,11 @@
 				<value id="HIGH" />
 			</editor>
 		</enum>
-		<structure id="setting" label="SPI Setting Structure" color="#0057c8" :inherits="['core.type.struct']">
+		<struct id="setting" label="Arduino SPI Setting Structure" color="#0057c8">
 			<member id="speedMaximum" datatype="core.type.int" label="BUS Max Speed" />
 			<member id="dataOrder" datatype="arduino.spi.dataorder" label="DataOrder" />
 			<member id="dataMode" datatype="arduino.spi.datamode" label="SPI DataMode" />
-		</structure>
+		</struct>
 
 		<category id="Arduino/SPI">
 			<function id="begintransaction" title="SPI.Begin()" color="#87663f" symbol="exlibs/img/arduino.png" keywords="spi begin transaction">

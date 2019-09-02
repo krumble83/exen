@@ -1,7 +1,7 @@
 <template>
 	<package id="json">
 		<category id="Json">
-			<datatype id="json.jsonobject" label="JSON Object object" datatype="scalar" ctor="Pin" color="#55f" :inherits="['core.object']" />
+			<datatype id="json.jsonobject" label="JSON Object object" datatype="scalar" ctor="Pin" color="#55f" inherits="core.object" />
 			
 			<function id="fromstring" title="JSON Parse String" color="#78c8fe" symbol="lib/img/function.png">
 				<out id="exit" datatype="core.exec" />

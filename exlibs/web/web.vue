@@ -2,15 +2,239 @@
 	<package id="web.dom">
 	
 		<datatype id="window" label="HTML Window Element" color="#55f" />
-		<datatype id="eventTarget" label="HTML Dom EventTarget" color="#55f" />
-		<datatype id="node" label="HTML Dom Node" color="#55f" :inherits="['eventTarget']" />
-		<datatype id="element" label="HTML Dom Element" color="#55f" :inherits="['node','eventTarget','core.object']" />
-		<datatype id="htmlelement" label="HTML Dom Html Element" color="#55f" :inherits="['element','node','eventTarget','core.object']" />
-		<datatype id="document" label="HTML Dom Document" color="#55f" :inherits="['element','node,','eventTarget','core.object']" />
-		<datatype id="body" label="HTML Body Element" color="#55f" :inherits="['element','node','eventTarget','core.object']" />
+		<datatype id="node" label="HTML Dom Node" color="#55f" inherits="eventTarget" />
+		<datatype id="element" label="HTML Dom Element" color="#55f" inherits="node eventTarget core.object" />
+		<datatype id="htmlelement" label="HTML Dom Html Element" color="#55f" inherits=" element node eventTarget core.object" />
+		<datatype id="document" label="HTML Dom Document" color="#55f" inherits="element node eventTarget core.object" />
+		<datatype id="body" label="HTML Body Element" color="#55f" inherits="element node eventTarget core.object" />
 		<datatype id="attribute" label="HTML Dom Element Attribute" color="#fff" />
 		
+
+		
 		<category id="Web/Dom">
+		
+		
+		
+		
+			<datatype id="DOMstring" label="HTML DOMString" color="#fff" inherits="core.type.string" />
+			
+			<class id="event">
+			
+			</class>
+			
+
+			<class id="nodeList">
+			
+			</class>
+			
+
+
+			<interface id="EventTarget" inherits="HTMLObject" label="HTML EventTarget Interface">
+				<method id="addEventListener">
+					<entry /><exit />
+					<in id="name" datatype="core.type.string" />
+					<in id="useCapture" datatype="core.type.bool" :optional="true" />
+					<in id="once" datatype="core.type.bool" :optional="true" />
+					<in id="passive" datatype="core.type.bool" :optional="true" />
+					<out id="callback" datatype="core.exec" />
+				</method>
+
+				<method id="removeEventListener">
+					<entry /><exit />
+					<in id="name" datatype="core.type.string" />
+					<in id="useCapture" datatype="core.type.bool" :optional="true" />
+					<in id="once" datatype="core.type.bool" :optional="true" />
+					<in id="passive" datatype="core.type.bool" :optional="true" />			
+				</method>
+
+				<method id="dispatchEvent">
+					<entry /><exit />
+					<in id="event" datatype="event" />
+				</method>
+			</interface>
+			
+			
+			<enum id="nodeTypeEnum" label="HTML nodeType Enum">
+				<value id="ELEMENT_NODE">1</value>
+				<value id="ATTRIBUTE_NODE">2</value>
+				<value id="TEXT_NODE">3</value>
+				<value id="CDATA_SECTION_NODE">4</value>
+				<value id="ENTITY_REFERENCE_NODE">5</value>
+				<value id="ENTITY_NODE">6</value>
+				<value id="PROCESSING_INSTRUCTION_NODE">7</value>
+				<value id="COMMENT_NODE">8</value>
+				<value id="DOCUMENT_NODE">9</value>
+				<value id="DOCUMENT_TYPE_NODE">10</value>
+				<value id="DOCUMENT_FRAGMENT_NODE">11</value>
+				<value id="NOTATION_NODE">12</value>
+			</enum>
+			
+			<enum id="documentPosition" label="HTML Node position">
+				<value id="DOCUMENT_POSITION_DISCONNECTED">1</value>
+				<value id="DOCUMENT_POSITION_PRECEDING">2</value>
+				<value id="DOCUMENT_POSITION_FOLLOWING">4</value>
+				<value id="DOCUMENT_POSITION_CONTAINS">8</value>
+				<value id="DOCUMENT_POSITION_CONTAINED_BY">16</value>
+				<value id="DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC">32</value>
+			</enum>
+			
+			<interface id="Node" implements="EventTarget" label="HTML Node">
+				<member id="baseURI" datatype="DOMstring" />
+				<member id="childNodes" datatype="nodeList" />
+				<member id="firstChild" datatype="Node" />
+				<member id="lastChild" datatype="Node" />
+				<member id="nextSibling" datatype="Node" />
+				<member id="nodeName" datatype="DOMstring" />
+				<member id="nodeType" datatype="nodeTypeEnum" />
+				<member id="nodeValue" datatype="DOMstring" />
+				<member id="ownerDocument" datatype="document" />
+				<member id="parentNode" datatype="Node" />
+				<member id="parentElement" datatype="element" />
+				<member id="previousSibling" datatype="Node" /> 
+				<member id="textContent" datatype="DOMstring" />
+					
+				<method id="appendChild">
+					<entry /><exit />
+					<in id="target" datatype="Node" />
+					<in id="child" datatype="Node" />
+				</method>
+				
+				<method id="cloneNode">
+					<entry /><exit />
+					<in id="target" datatype="Node" />
+					<in id="deep" datatype="core.type.bool" :optional="true" :default="true" />
+					<out id="dupNode" datatype="Node" />
+				</method>
+				
+				<method id="compareDocumentPosition">
+					<in id="target" datatype="Node" />
+					<out id="position" datatype="documentPosition" />
+				</method>			
+				
+				<method id="contains">
+					<in id="target" datatype="Node" />
+					<in id="otherNode" datatype="Node" />
+					<out id="result" datatype="core.type.bool" />
+				</method>
+				
+				<method id="getRootNode">
+					<entry /><exit />
+					<in id="target" datatype="Node" />
+					<in id="composed" datatype="core.type.bool" :optional="true" />
+					<out id="rootNode" datatype="Node" />
+				</method>
+
+				<method id="hasChildNodes">
+					<in id="target" datatype="Node" />
+					<out id="result" datatype="core.type.bool" />
+				</method>
+
+				<method id="insertBefore">
+					<entry /><exit />
+					<in id="target" datatype="Node" />
+					<in id="newNode" datatype="Node" />
+					<in id="referenceNode" datatype="Node" />
+				</method>
+
+				<method id="isDefaultNamespace">
+					<in id="target" datatype="Node" />
+					<in id="namespaceURI" datatype="core.type.string" />
+					<out id="result" datatype="core.type.bool" />
+				</method>
+
+				<method id="isEqualNode">
+					<in id="target" datatype="Node" />
+					<in id="otherNode" datatype="Node" />
+					<out id="result" datatype="core.type.bool" />
+				</method>
+
+				<method id="isSameNode">
+					<in id="target" datatype="Node" />
+					<in id="otherNode" datatype="Node" />
+					<out id="result" datatype="core.type.bool" />
+				</method>
+
+				<method id="lookupPrefix">
+					<in id="target" datatype="Node" />
+					<out id="result" datatype="DOMstring" />
+				</method>
+
+				<method id="normalize">
+					<entry /><exit />
+					<in id="target" datatype="Node" />
+				</method>
+
+				<method id="removeChild">
+					<entry /><exit />
+					<in id="target" datatype="Node" />
+					<in id="child" datatype="Node" />
+					<out id="oldChild" datatype="Node" />
+				</method>
+
+				<method id="replaceChild">
+					<entry /><exit />
+					<in id="target" datatype="Node" />
+					<in id="newChild" datatype="Node" />
+					<in id="oldChild" datatype="Node" />
+					<out id="replacedNode" datatype="Node" />
+				</method>
+			</interface>
+			
+
+			<interface id="ParentNode" label="HTML ParentNode Interface">
+			
+			</interface>
+			
+			<interface id="HTMLDocument" label="HTML HTMLDocument Interface">
+			
+			</interface>
+
+			
+			<class id="Document" implements="Node ParentNode HTMLDocument" label="HTML Document Interface">
+				<member id="doctype" datatype="DocumentType" />
+				<member id="documentElement" datatype="element" />
+				<member id="documentURI" datatype="core.type.string" />
+				<member id="hidden" datatype="core.type.bool" />
+				<member id="implementation" datatype="DOMImplementation" />
+				<member id="lastStyleSheetSet" datatype="core.type.string" />
+				<member id="preferredStyleSheetSet" datatype="core.type.string" />
+				<member id="selectedStyleSheetSet" datatype="core.type.string" />
+				<member id="styleSheets" datatype="StyleSheetList" />
+				<member id="visibilityState" datatype="core.type.string" />
+				
+				
+				
+				
+				
+				
+			</class>
+			
+			<class id="StyleSheetList">
+			
+			</class>
+			
+			<struct id="StyleSheet">
+			
+			</struct>
+			
+			<class id="DOMImplementation">
+			
+			</class>
+
+			<class id="documentType" inherits="node">
+			
+			</class>
+			
+			<class id="element" inherits="node">
+			
+			</class>
+			
+					
+		
+		
+		
+		
+		
 			<function id="getDocument" title="document" color="#aaeea0" symbol="exlibs/img/function.png" keywords="get document,document">
 				<out id="document" datatype="document" />
 			</function>
@@ -151,9 +375,9 @@
 		
 		<category id="Web/Dom/Events">
 			<datatype id="event" label="Dom Event" color="#fff" />
-			<datatype id="mouseevent" label="Dom Mouse Event Dom Event" color="#fff" :inherits="['web.dom.event']" />
+			<datatype id="mouseevent" label="Dom Mouse Event Dom Event" color="#fff" inherits="event" />
 			
-			<enum color="#8000FF" :inherits="['core.type.enum']" tooltip="Enum" label="Enum Enum" id="mouseeventenum" values="[&quot;mouseover&quot;,&quot;mousemove&quot;,&quot;mouseleave&quot;,&quot;click&quot;,&quot;wheel&quot;]">
+			<enum color="#8000FF" inherits="core.type.enum" tooltip="Enum" label="Enum Enum" id="mouseeventenum" values="[&quot;mouseover&quot;,&quot;mousemove&quot;,&quot;mouseleave&quot;,&quot;click&quot;,&quot;wheel&quot;]">
 				<editor id="select">
 					<value id="mouseenter" />
 					<value id="mousemouse" />
@@ -161,9 +385,9 @@
 				</editor>
 			</enum>
 			
-			<datatype id="keyevent" label="Dom Key Event Dom Event" color="#fff" :inherits="['web.dom.event']" />
+			<datatype id="keyevent" label="Dom Key Event Dom Event" color="#fff" inherits="event" />
 			
-			<enum id="keyeventenum" color="#8000FF" :inherits="['core.type.enum']" tooltip="Enum" label="Enum Enum">
+			<enum id="keyeventenum" color="#8000FF" inherits="core.type.enum" tooltip="Enum" label="Enum Enum">
 				<editor id="select">
 					<value id="keyup" />
 					<value id="keydown" />
@@ -171,7 +395,7 @@
 				</editor>
 			</enum>
 
-			<datatype id="touchevent" label="Dom Mouse Event Dom Event" color="#fff" :inherits="['web.dom.event']" />
+			<datatype id="touchevent" label="Dom Mouse Event Dom Event" color="#fff" inherits="event" />
 		
 			<function id="eventoof" title="Off Event" color="#78c8fe" symbol="exlibs/img/function.png" keywords="event">
 				<entry /><exit />

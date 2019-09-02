@@ -1,7 +1,7 @@
 <template>
 	<package id="arduino.serial">
-		<datatype id="connection" label="Arduino Serial Connection object" color="#55f" :inherits="['core.object']" />
-		<datatype id="port" label="Arduino Serial Port Component Component" color="#ff0" :inherits="['core.component']" />
+		<datatype id="connection" label="Arduino Serial Connection object" color="#55f" inherits="core.object" />
+		<datatype id="port" label="Arduino Serial Port Component Component" color="#ff0" inherits="core.component" />
 
 		<category id="Arduino/Serial">
 			<function id="available" title="Serial.available()" color="#aaeea0" symbol="exlibs/img/arduino.png" keywords="serial available">

@@ -1,7 +1,7 @@
 <template>
 	<package id="arduino.wifi">
 		<category id="Arduino/WiFi">
-			<enum id="status" color="#8000FF" :inherits="['core.type.enum']" label="Wifi Status Enum">
+			<enum id="status" color="#8000FF" inherits="core.type.enum" label="Arduino Wifi Status Enum">
 				<editor id="select">
 					<value id="WL_CONNECTED" />
 					<value id="WL_NO_SHIELD" />
@@ -13,7 +13,7 @@
 					<value id="WL_DISCONNECTED" />
 				</editor>
 			</enum>
-			<class id="Connection" label="WiFi Network object" color="#55f" :inherits="['core.object']">
+			<class id="Connection" label="Arduino WiFi Network Object" color="#55f" inherits="core.object">
 				<method id="begin" title="WiFi.begin()" color="#87663f" symbol="lib/img/esp8266.png" keywords="wifi connect,connect wifi">
 					<entry /><exit />
 					<in id="ssid" datatype="core.type.string" />
@@ -24,7 +24,7 @@
 					<out id="localip" datatype="network.type.ip" label="WiFi local IP" />
 				</method>
 			</class>
-			<class id="WiFiClient" label="WiFi Client object" color="#55f" :inherits="['core.object']">
+			<class id="WiFiClient" label="Arduino WiFi Client Object" color="#55f" inherits="core.object">
 				<method id="connect" title="WiFiClient.connect() (url)" color="#87663f" symbol="lib/img/esp8266.png" keywords="wifi,connect">
 					<entry /><exit />
 					<in id="target" datatype="WiFiClient" flags="4194304" />

@@ -22,36 +22,36 @@
 		</category>
 		
 		<category id="Boolean/Bitwise Operators">
-			<function id="not" ctor="NodeOp" color="#555" symbol="exlibs/core/img/op.not.png" keywords="not,!" subtitle="NOT" title="Bool NOT Bool">
+			<function id="not" ctor="NodeOp" color="#555" symbol="exlibs/core/img/op.not.png" keywords="!" subtitle="NOT" title="NOT (Bool)">
 				<in id="a" datatype="core.type.bool" label=" " />
 				<out id="output" datatype="core.type.bool" />
 			</function>
-			<function id="and" ctor="NodeOp" color="#555" symbol="exlibs/core/img/op.and.png" keywords="and,&amp;" subtitle="AND" title="Bool AND Bool">
-				<in id="a" datatype="core.type.bool" label=" " />
-				<in id="b" datatype="core.type.bool" label=" " />
-				<out id="output" datatype="core.type.bool" />
-			</function>
-			<function id="nand" ctor="NodeOp" color="#555" symbol="exlibs/core/img/op.nand.png" keywords="nand" subtitle="NAND" title="Bool NAND Bool">
+			<function id="and" ctor="NodeOp" color="#555" symbol="exlibs/core/img/op.and.png" keywords="&amp;" subtitle="AND" title="AND (Bool)">
 				<in id="a" datatype="core.type.bool" label=" " />
 				<in id="b" datatype="core.type.bool" label=" " />
 				<out id="output" datatype="core.type.bool" />
 			</function>
-			<function id="or" ctor="NodeOp" color="#555" symbol="exlibs/core/img/op.or.png" keywords="or,|" subtitle="OR" title="Bool OR Bool">
+			<function id="nand" ctor="NodeOp" color="#555" symbol="exlibs/core/img/op.nand.png" subtitle="NAND" title="NAND (Bool)">
 				<in id="a" datatype="core.type.bool" label=" " />
 				<in id="b" datatype="core.type.bool" label=" " />
 				<out id="output" datatype="core.type.bool" />
 			</function>
-			<function id="nor" ctor="NodeOp" color="#555" symbol="exlibs/core/img/op.nor.png" subtitle="NOR" title="Bool NOR Bool">
+			<function id="or" ctor="NodeOp" color="#555" symbol="exlibs/core/img/op.or.png" keywords="|" subtitle="OR" title="OR (Bool)">
 				<in id="a" datatype="core.type.bool" label=" " />
 				<in id="b" datatype="core.type.bool" label=" " />
 				<out id="output" datatype="core.type.bool" />
 			</function>
-			<function id="xor" ctor="NodeOp" color="#555" symbol="exlibs/core/img/op.xor.png" subtitle="XOR" title="Bool XOR Bool">
+			<function id="nor" ctor="NodeOp" color="#555" symbol="exlibs/core/img/op.nor.png" subtitle="NOR" title="NOR (Bool)">
 				<in id="a" datatype="core.type.bool" label=" " />
 				<in id="b" datatype="core.type.bool" label=" " />
 				<out id="output" datatype="core.type.bool" />
 			</function>
-			<function id="xnor" ctor="NodeOp" color="#555" symbol="exlibs/core/img/op.xnor.png" subtitle="XNOR" title="Bool XNOR Bool">
+			<function id="xor" ctor="NodeOp" color="#555" symbol="exlibs/core/img/op.xor.png" subtitle="XOR" title="XOR (Bool)">
+				<in id="a" datatype="core.type.bool" label=" " />
+				<in id="b" datatype="core.type.bool" label=" " />
+				<out id="output" datatype="core.type.bool" />
+			</function>
+			<function id="xnor" ctor="NodeOp" color="#555" symbol="exlibs/core/img/op.xnor.png" subtitle="XNOR" title="XNOR (Bool)">
 				<in id="a" datatype="core.type.bool" label=" " />
 				<in id="b" datatype="core.type.bool" label=" " />
 				<out id="output" datatype="core.type.bool" />
@@ -59,12 +59,12 @@
 		</category>
 		
 		<category id="Boolean/Comparators">
-			<function id="eq" ctor="NodeOp" color="#555" symbol="exlibs/core/img/op.eq.png" keywords="==,equal" subtitle="==" title="Boolean == Boolean (equal)">
+			<function id="eq" ctor="NodeOp" color="#555" title="Boolean == Boolean (equal)" symbol="exlibs/core/img/op.eq.png" keywords="==,equal" subtitle="==">
 				<in id="a" datatype="core.type.bool" />
 				<in id="b" datatype="core.type.bool" />
 				<out id="output" datatype="core.type.bool" tooltip="True if a = b" />
 			</function>
-			<function id="neq" ctor="NodeOp" color="#555" symbol="exlibs/core/img/op.neq.png" keywords="!=,<>,not equal,different" subtitle="!=" title="Boolean != Boolean (not equal)">
+			<function id="neq" ctor="NodeOp" color="#555" title="Boolean != Boolean (not equal)" symbol="exlibs/core/img/op.neq.png" keywords="!=,<>,not equal,different" subtitle="!=">
 				<in id="a" datatype="core.type.bool" />
 				<in id="b" datatype="core.type.bool" />
 				<out id="output" datatype="core.type.bool" tooltip="True if a != b" />

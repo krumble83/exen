@@ -64,7 +64,7 @@
 		
 		computed: {
 			cDatatypes: function(){
-				console.log(this.Library.getDatatype());
+				//console.log(this.Library.getDatatype());
 				return this.Library.getDatatype();
 			},
 			/*

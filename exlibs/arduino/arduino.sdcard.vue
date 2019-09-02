@@ -1,13 +1,13 @@
 <template>
 	<package id="arduino.sdcard">
 		<category id="Arduino/SD Card">
-			<enum id="openmode" color="#8000FF" :inherits="['core.type.enum']" tooltip="Enum" label="OpenMode">
+			<enum id="openmode" color="#8000FF" inherits="core.type.enum" tooltip="Enum" label="Arduino SDCard OpenMode">
 				<editor id="select">
 					<value id="FILE_READ" />
 					<value id="FILE_WRITE" />
 				</editor>
 			</enum>
-			<class id="sdcard" label="Arduino SD Card object" color="#55f" :inherits="['core.object']">
+			<class id="sdcard" label="Arduino SDCard object" color="#55f" inherits="core.object">
 				<method id="begin" title="SD.Begin()" color="#87663f" symbol="exlibs/img/arduino.png" keywords="sd card begin,sd begin">
 					<entry /><exit />
 					<in id="csPin" datatype="arduino.io.digital.dpin" tooltip="SPI Chip Select Pin" />

@@ -1,7 +1,7 @@
 <template>
 	<package id="arduino.io.digital">
-		<datatype id="dpin" label="Arduino Digital Pin Component" color="#ff0" :inherits="['core.component']" />
-		<enum id="pinmode" color="#8000FF" :inherits="['core.type.enum']" tooltip="Enum" label="Pin Mode Enum">
+		<datatype id="dpin" label="Arduino Digital Pin Component" color="#ff0" inherits="core.component" />
+		<enum id="pinmode" color="#8000FF" inherits="core.type.enum" tooltip="Enum" label="Arduino Digital Pin Mode Enum">
 			<editor id="select">
 				<value id="INPUT" />
 				<value id="OUTPUT" />

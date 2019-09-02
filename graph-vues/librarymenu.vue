@@ -80,13 +80,13 @@ export default {
 				var el
 					, path = id.split('/')
 					, tid = path.shift()
-					, ul = parent.find(it => it.id == tid)
+					, ul = parent.find(it => it.name == tid)
 					, li;
 				
 				if(!parent.childs)
 					parent.childs = [];
 				if(!ul){
-					li = {id: tid, childs: []}
+					li = {name: tid, childs: []}
 					parent.push(li);
 					ul = li;
 
