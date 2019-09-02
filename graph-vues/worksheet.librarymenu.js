@@ -24,7 +24,7 @@ export default {
 	
 	methods: {
 		showLibraryMenu: function(arg1, arg2){
-			console.log('zzz', arg1 instanceof Vue);
+			//console.log('zzz', arg1 instanceof Vue);
 			const me = this
 				, ComponentClass = Vue.extend(LibraryMenu)
 				, menu = new ComponentClass({parent: me.App});
@@ -34,6 +34,12 @@ export default {
 			
 			var q = this.Library.createQuery();
 			//console.log(this.store);
+			
+			if(arg1.getInput && arg1.getInput())
+				q.inputDatatype = arg1.getInput().datatype;
+			else if(arg1.getOutput)
+				q.outputDatatype = arg1.getOutput().datatype;
+			
 			menu.setContextStore(this.store);
 			menu.update(q);
 			
