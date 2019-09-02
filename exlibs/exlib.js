@@ -305,14 +305,14 @@ export const Library = {
 					qs[id] += ':not([private="true"])';
 				});
 			}
-			//console.log(qs.join(','));
 			ret = this.$el.querySelectorAll(qs.join(','));
+			//console.log(ret);
 			
 			if(query.inputDatatype)
-				return ret.filter(it => it.querySelector('out[datatype="' + query.inputDatatype + '"]'));
+				return Array.from(ret).filter(it => it.querySelector('out[datatype="' + query.inputDatatype + '"]'));
 
 			if(query.outputDatatype)
-				return ret.filter(it => it.querySelector('in[datatype="' + query.outputDatatype + '"]'));
+				return Array.from(ret).filter(it => it.querySelector('in[datatype="' + query.outputDatatype + '"]'));
 			
 			return ret;
 		},
