@@ -1,15 +1,14 @@
 <template>
 	<package id="web.dom">
 	
-		<datatype id="window" label="Window Element object" color="#55f" />
-		<datatype id="eventTarget" color="#55f" label="object" />
-		<datatype id="eventTarget" label="Dom EventTarget object" color="#55f" />
-		<datatype id="node" label="Dom Node Dom EventTarget object" color="#55f" :inherits="['eventTarget']" />
-		<datatype id="element" label="Dom Element Dom Node Dom EventTarget object" color="#55f" :inherits="['node','eventTarget','core.object']" />
-		<datatype id="htmlelement" label="Dom Html Element Dom Element Dom Node Dom EventTarget object" color="#55f" :inherits="['element','node','eventTarget','core.object']" />
-		<datatype id="document" label="Dom Document Dom Element Dom Node Dom EventTarget object" color="#55f" :inherits="['element','node,','eventTarget','core.object']" />
-		<datatype id="body" label="Dom Document Dom Element Dom Node Dom EventTarget object" color="#55f" :inherits="['element','node','eventTarget','core.object']" />
-		<datatype id="attribute" label="Dom Element Attribute" color="#fff" />
+		<datatype id="window" label="HTML Window Element" color="#55f" />
+		<datatype id="eventTarget" label="HTML Dom EventTarget" color="#55f" />
+		<datatype id="node" label="HTML Dom Node" color="#55f" :inherits="['eventTarget']" />
+		<datatype id="element" label="HTML Dom Element" color="#55f" :inherits="['node','eventTarget','core.object']" />
+		<datatype id="htmlelement" label="HTML Dom Html Element" color="#55f" :inherits="['element','node','eventTarget','core.object']" />
+		<datatype id="document" label="HTML Dom Document" color="#55f" :inherits="['element','node,','eventTarget','core.object']" />
+		<datatype id="body" label="HTML Body Element" color="#55f" :inherits="['element','node','eventTarget','core.object']" />
+		<datatype id="attribute" label="HTML Dom Element Attribute" color="#fff" />
 		
 		<category id="Web/Dom">
 			<function id="getDocument" title="document" color="#aaeea0" symbol="exlibs/img/function.png" keywords="get document,document">
@@ -73,7 +72,7 @@
 				<in id="attribute" datatype="core.type.string" />
 				<out id="value" datatype="core.wildcards" />
 			</function>
-			<function id="attributes" title="attributes" color="#aaeea0" symbol="exlibs/img/function.png" keywords="get attributes">
+			<function id="attributes" title="attributes" color="#aaeea0" symbol="exlibs/img/function.png" keywords="attributes">
 				<in id="parent" datatype="element" />
 				<out id="attributes" datatype="core.type.pair[]" />
 			</function>
