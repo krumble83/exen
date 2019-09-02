@@ -41,8 +41,8 @@
 		</enum>
 		<category id="Utilities/Enum">
 			<function id="intToEnum" title="Int To Enum" color="#aaeea0" symbol="exlibs/img/function.png">
-				<input id="int" datatype="core.type.int" />
-				<output id="value" datatype="core.type.enum" />
+				<in id="int" datatype="core.type.int" />
+				<out id="value" datatype="core.type.enum" />
 			</function>				
 		</category>
 	</package>
