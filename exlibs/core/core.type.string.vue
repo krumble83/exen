@@ -31,8 +31,8 @@
 				<in id="source" datatype="core.type.string" />
 				<in id="search" datatype="core.type.string" />
 				<in id="usecase" datatype="core.type.bool" label="Case Sensitive" />
-				<in id="start" datatype="core.type.int" optional="true" tooltip="Start search from this position." />
-				<in id="end" datatype="core.type.int" optional="true" tooltip="Stop search at this position." />
+				<in id="start" datatype="core.type.int" :optional="true" tooltip="Start search from this position." />
+				<in id="end" datatype="core.type.int" :optional="true" tooltip="Stop search at this position." />
 				<out id="result" datatype="core.type.bool" />
 			</function>
 			<function id="length" title="String Length" color="#aaeea0" symbol="exlibs/img/function.png" keywords="size,count">
