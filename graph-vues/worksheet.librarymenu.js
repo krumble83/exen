@@ -30,6 +30,12 @@ export default {
 				, menu = new ComponentClass({parent: me.App});
 
 			menu.$once('close', function(){
+				if(arg1 instanceof Vue)
+					arg1.$destroy();
+			});
+			
+			menu.$once('click', function(item){
+				
 			});
 			
 			var q = this.Library.createQuery();

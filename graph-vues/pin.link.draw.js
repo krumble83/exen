@@ -124,7 +124,7 @@ export default {
 			
 			instance.$mount();
 			me.$worksheet.$el.querySelector('.exLinks').appendChild(instance.$el);
-			instance.$parent = this.$worksheet;
+			//instance.$parent = this.$worksheet;
 			instance.startDraw();
 			/*
 			me.getMousePoint(evt, point);

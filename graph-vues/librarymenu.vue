@@ -202,13 +202,14 @@ export default {
 		},
 		
 		onClick: function(evt){
-			//console.log(evt.srcElement.tagName != 'LI',!evt.srcElement.hasAttribute('child'));
+			console.log(evt.srcElement.tagName != 'LI',!evt.srcElement.hasAttribute('child'));
 			//return;
-			var me = this;
+			const me = this;
 			if(evt.srcElement.tagName != 'LI' || !evt.srcElement.hasAttribute('child'))
 				return;
 			me.$emit('click', evt.srcElement);
-			this.close();
+			me.classObject.visible = false;
+			me.$destroy();
 		},
 		
 		getCategories: function(path){
@@ -250,7 +251,7 @@ export default {
 			this.classObject.visible = false;
 			this.$emit('close');
 			//this.$el.parentNode.removeChild(this.$el);
-			this.$destroy();			
+			this.$destroy();
 		},		
 	},
 }
