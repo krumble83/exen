@@ -4,6 +4,8 @@
 		style="position:absolute"
 		:store="store"
 		@edited="onEdited"
+		@node:focus="onNodeFocus"
+		@node:blur="onNodeBlur"
 	>
 		<ExTitleBar :title="name" slot="front" :toolbuttons="[]" :doToolbarAction="[]" />
 	</component>
@@ -102,41 +104,55 @@
 			this.functionPanel = FunctionPanel.call(this);
 		},
 		
-		mounted: function(){		
-			this.$refs.functionsTree.$on('button:addFunction', this.addFunction);
-			this.$refs.properties.$on('button:addFunctionInput', this.addInput);
-			this.$refs.properties.$on('button:addFunctionOutput', this.addOutput);
-			this.$refs.properties.addPanel(this.functionPanel);
+		mounted: function(){
+			const me = this;
+			
+			me.$refs.functionsTree.$on('button:addFunction', me.addFunction);
+			me.$refs.properties.$on('button:addFunctionInput', me.addInput);
+			me.$refs.properties.$on('button:addFunctionOutput', me.addOutput);
+			me.$refs.properties.addPanel(me.functionPanel);
+			
+			me.$on('node:focus', function(node){
+				console.log('focuuuuuuuuus', node);
+				//me.functionsShowPanel();
+			});
+			
+			me.$on('node:blur', function(node){
+				//me.$refs.properties.hidePanels();
+			});
 		},
 		
 		beforeDestroy: function(){
-			this.$refs.functionsTree.$off('button:addFunction', this.addFunction);
-			this.$refs.properties.$off('button:addFunctionInput', this.addInput);
-			this.$refs.properties.$off('button:addFunctionOutput', this.addOutput);
+			const me = this;
+			
+			me.$refs.functionsTree.$off('button:addFunction', me.addFunction);
+			me.$refs.properties.$off('button:addFunctionInput', me.addInput);
+			me.$refs.properties.$off('button:addFunctionOutput', me.addOutput);
 		},
 		
 		methods: {
 			addFunction: function(data, callback){
-				
+				const me = this;
+							
 				//data.ctor = 'fileTab';
 				data = data || {};				
-				this.store.commit('function/add', data);
+				me.store.commit('function/add', data);
 
 				if(typeof callback == 'function'){
-					this.$nextTick(function(){
-						//console.dir(this);
-						var n = this.$refs.functionsTree.getItem(data.name);
+					me.$nextTick(function(){
+						//console.dir(me);
+						var n = me.$refs.functionsTree.getItem(data.name);
 						console.assert(n);
 						callback(n);
-					}, this);
+					}, me);
 				}
 				else if(callback != false){
-					this.$nextTick(function(){
-						//console.dir(this);
-						var n = this.$refs.functionsTree.getItem(data.name);
+					me.$nextTick(function(){
+						//console.dir(me);
+						var n = me.$refs.functionsTree.getItem(data.name);
 						console.assert(n);
 						n.rename();
-					}, this);
+					}, me);
 				}
 			},
 			
@@ -145,12 +161,22 @@
 			},
 			
 			functionsTreeSelect: function(item){
-				this.fileSelect(item);
+				const me = this;				
+				me.fileSelect(item);
+				me.functionsShowPanel(item);
+			},
+			
+			functionsShowPanel: function(item){
+				const me = this;
 				
-				this.functionPanel.items.find(it => it.button && it.button.action == 'addFunctionInput').button.disabled = item.$hasFlag(F_LOCK_INPUTS);
-				this.functionPanel.items.find(it => it.button && it.button.action == 'addFunctionOutput').button.disabled = item.$hasFlag(F_LOCK_OUTPUTS);
-				this.functionPanel.currentItem = item;
-				this.$refs.properties.showPanel(this.functionPanel, item);
+				if(!item)
+					item = me.$refs.functionsTree.selected;
+				
+				me.functionPanel.items.find(it => it.button && it.button.action == 'addFunctionInput').button.disabled = item.$hasFlag(F_LOCK_INPUTS);
+				me.functionPanel.items.find(it => it.button && it.button.action == 'addFunctionOutput').button.disabled = item.$hasFlag(F_LOCK_OUTPUTS);
+				me.functionPanel.currentItem = item;
+				me.$refs.properties.showPanel(me.functionPanel, item);
+				
 			},
 			
 			functionsTreeContextMenu: function(item, menu, evt){
@@ -214,7 +240,8 @@
 	var ex = {
 		components: {ExWorksheet, ExTitleBar},
 		mixins: [],
-		
+		inject: ['Blueprint'],
+			
 		props: {
 			name: String,
 			flags: Number,
@@ -237,6 +264,17 @@
 			onEdited: function(worksheet){
 				this.$emit('edited', worksheet);
 			},
+			
+			onNodeFocus: function(node){
+				//console.log('node focus', node, this);
+				this.Blueprint.$emit('node:focus', node);
+			},
+			
+			onNodeBlur: function(node){
+				//console.log('node blur', node, this);
+				this.Blueprint.$emit('node:blur', node);
+			},
+			
 		}
 	}
 
