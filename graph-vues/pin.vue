@@ -13,7 +13,7 @@
 		v-inline.vertical="7"
 	>
 		<rect 
-			:transform="type == $flag('F_OUTPUT') ? 'scale(-1,1)' : ''" 
+			:transform="$hasFlag('F_OUTPUT') ? 'scale(-1,1)' : ''" 
 			x="0" 
 			y="0" 
 			:width="mWidth" 
@@ -24,8 +24,8 @@
 		<text 
 			x="26" 
 			y="15" 
-			:transform="type == $flag('F_OUTPUT') ? 'translate(-52)': ''" 
-			:text-anchor="type == $flag('F_OUTPUT') ? 'end': 'start'" 
+			:transform="$hasFlag('F_OUTPUT') ? 'translate(-52)': ''" 
+			:text-anchor="$hasFlag('F_OUTPUT') ? 'end': 'start'" 
 			class="label" 
 			:stroke-color="cColor"
 			ref="label"
@@ -63,7 +63,7 @@
 			width: {type: Number, default: 30},
 			label: String, 
 			description: String,
-			type: Number,
+			//type: Number,
 			flags: Number,
 			color: String,
 			datatype: {type: String, required: true},
@@ -192,11 +192,11 @@
 			},
 			
 			isInput: function(){
-				return this.type == F_INPUT;
+				return this.$hasFlag(F_INPUT);
 			},
 			
 			isOutput: function(){
-				return this.type == F_OUTPUT;
+				return this.$hasFlag(F_OUTPUT);
 			},
 			
 			addLink: function(link){

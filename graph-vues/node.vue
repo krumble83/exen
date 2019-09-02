@@ -39,9 +39,7 @@
 					class="input"
 					:is="pin.ctor ? pin.ctor : 'ExPin'"
 					:max-link="pin.maxlink ? pin.maxlink : 1"
-					:ref="'input_' + pin.name"
-					:type="$flag('F_INPUT')"
-					@pin-resize="$emit('pin-resize', $event)"
+					@resize="$emit('pin:resize', $event)"
 					v-bind="pin"
 				/>
 			</slot>
@@ -53,9 +51,7 @@
 					class="output"
 					:is="pin.ctor ? pin.ctor : 'ExPin'" 
 					:max-link="pin.maxlink ? pin.maxlink : 99"
-					:ref="'output_' + pin.name"
-					:type="$flag('F_OUTPUT')"
-					@pin-resize="$emit('pin-resize', $event)"
+					@resize="$emit('pin:resize', $event)"
 					v-bind="pin"
 				/>
 			</slot>
@@ -283,7 +279,7 @@
 				this.$worksheet.$emit('node:remove');
 				this.$worksheet.removeNode(this.id);
 			},
-
+			/*
 			getInput: function(name, asComponent){
 				if(asComponent)
 					return this.$refs['input_' + name][0];
@@ -295,7 +291,7 @@
 					return this.$refs['output_' + name][0];
 				return this.outputs.find(pin => pin.name === name);
 			},
-
+			*/
 		},
 	};
 </script>

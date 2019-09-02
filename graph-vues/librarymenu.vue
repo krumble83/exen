@@ -10,7 +10,7 @@
 				ref="input"
 			>
 		</div>
-		<div class="body">
+		<div class="body" ref="body">
 			<ul @click="onClick">
 				<component is="Item" v-for="(item, id) in orderedItems" v-bind="item" />
 			</ul> 
@@ -42,6 +42,7 @@ export default {
 			},
 			items: [],
 			mContextStore: false,
+			mQuery: false,
 		}
 	},
 	
@@ -69,8 +70,10 @@ export default {
 		
 		update: function(query){
 			const me = this;
-			var nodes = this.Library.getNode(query);
+			var nodes = this.Library.getNode(query || me.mQuery);
 			
+			if(query)
+				me.mQuery = query;
 
 			function findUl(id, parent){
 				//console.log('findUl()', id, parent)
@@ -93,6 +96,8 @@ export default {
 				
 				return ul.childs;
 			}
+			
+			me.items.splice(0, me.items.length);
 			
 			
 			nodes.forEach(function(it){
@@ -120,29 +125,7 @@ export default {
 					tooltip: vu.tooltip,
 				});
 			});
-			
-			/*
-			if(this.mContextStore){
-				console.log(this.mContextStore);
-				const me = this;
-				var items = this.mContextStore.getters.getLibraryMenu;
-				items.forEach(function(vu){
-					var cat = me.items;
-					if(vu.Category)
-						cat = findUl(vu.Category.fullPath, me.items);
-					cat.push({
-						name: vu.title || vu.id, 
-						id: vu.fullpath,
-						symbol: vu.symbol,
-						tooltip: vu.tooltip,
-					});
-				});
 
-				console.log(items);
-			}
-			*/
-			//console.log(this.items);
-			//console.log(nodes);
 		},
 		
 		setContextStore: function(store){
@@ -180,6 +163,10 @@ export default {
 				case 38: // up
 					me.selectPrevious();
 					break;
+					
+				default:
+					this.mQuery.searchString = this.$refs.input.value;
+					this.update();
 			}
 		},
 		
@@ -310,11 +297,6 @@ export default {
 }
 
 
-#exMenu .highlight{
-	background-color: yellow;
-	color: red;
-} 
-
 
 
 #exMenu .head input[type=text] {
@@ -360,6 +342,12 @@ export default {
 	line-height: 20px;
     padding-left: 15px;
 	
+}
+
+#exMenu li[child="1"] > span.highlight
+{
+	background-color: yellow;
+	color: red;
 }
 
 

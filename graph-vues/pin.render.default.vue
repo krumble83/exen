@@ -9,7 +9,7 @@
 		ref="pin" 
 		:stroke="parent.cColor" 
 		stroke-width="4" 
-		:transform="parent.type == parent.$flag('F_OUTPUT') ? 'translate(-11)' : ''" 
+		:transform="parent.$hasFlag('F_OUTPUT') ? 'translate(-11)' : ''" 
 		:fill="'url(#pinArrayPattern' + parent.cColor.replace('#', '_') + ')'"
 	/>
 	<circle 
@@ -21,6 +21,6 @@
 		:fill="parent.cColor" 
 		class="pin" 
 		ref="pin" 
-		:transform="parent.type == parent.$flag('F_OUTPUT') ? 'translate(-26)' : ''"
+		:transform="parent.$hasFlag('F_OUTPUT') ? 'translate(-26)' : ''"
 	/>	
 </template>
