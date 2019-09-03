@@ -4,7 +4,6 @@
 		<function id="reroutenode" title="Add reroute Node..." ctor="RereouteNode">
 			<in id="in" datatype="core.wildcards" group="1" />
 			<out id="out" datatype="core.wildcards" group="1" />
-			<in id="inout" datatype="core.wildcards" group="1" ctor="PinReroute" />
 		</function>
 	</package>
 </template>

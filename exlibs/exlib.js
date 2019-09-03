@@ -272,14 +272,6 @@ export const Library = {
 			}
 		},
 		
-		select: function(selector){
-			return this.$el.querySelectorAll(selector).__vue__ || false;
-		},
-		
-		arePinCompatible: function(input, outpout){
-			
-		},
-
 		getPackage: function(id){
 			var ret = false;
 			return this.$children.find(it => it.id == id && it.$el.tagName == 'PACKAGE');
@@ -287,12 +279,15 @@ export const Library = {
 		},
 		
 		getNodesByQuery: function(query){
+			//console.log(query);
+			const me = this;
 			var qs = ['[isfunction="true"]']
 				, ret = [];
 			
 			if(query && query.id){
-				var name = this.splitPackageName(id);
-				return this.$el.querySelector('package[id="' + name[0] + '"] [isfunction="true"][id="' + name[1] + '"]');
+				//console.log('queryyyyy', query);
+				var name = me.splitPackageName(query.id);
+				return me.$el.querySelector('package[id="' + name[0] + '"] [isfunction="true"][id="' + name[1] + '"]').__vue__;
 			}
 
 			if(query && query.searchString){
@@ -306,17 +301,18 @@ export const Library = {
 					qs[id] += ':not([private="true"])';
 				});
 			}
-			ret = Array.from(this.$el.querySelectorAll(qs.join(',')));
+			ret = Array.from(me.$el.querySelectorAll(qs.join(',')));
 			//console.log(ret);
 			
 			if(query.inputDatatype){
-				var dtype = this.getDatatype(query.inputDatatype)
+				var dtype = me.getDatatype(query.inputDatatype)
+					, dtypeid = me.isArrayDatatype(query.inputDatatype) ? dtype.id + '[]' : dtype.id
 					, pack = dtype.Package;
 				ret = Array.from(ret).filter(function(it){
-					if(it.querySelector('out[datatype="' + pack.id + '.' + dtype.id + '"]'))
+					if(it.querySelector('out[datatype="' + pack.id + '.' + dtypeid + '"], out[datatype="' + me.getWildcardsDatatype(me.isArrayDatatype(query.inputDatatype)) + '"]'))
 						return true;
 					var res = false;
-					it.querySelectorAll('out[datatype="' + dtype.id + '"]').forEach(function (it){
+					it.querySelectorAll('out[datatype="' + dtypeid + '"]').forEach(function (it){
 						if(it.__vue__.Package.id == pack.id)
 							res = true;
 					});
@@ -324,27 +320,30 @@ export const Library = {
 				});
 			}
 
-			if(query.outputDatatype){
-				var dtype = this.getDatatype(query.outputDatatype)
+			else if(query.outputDatatype){
+				var dtype = me.getDatatype(query.outputDatatype)
+					, dtypeid = me.isArrayDatatype(query.outputDatatype) ? dtype.id + '[]' : dtype.id
 					, pack = dtype.Package;
+					
 				ret = Array.from(ret).filter(function(it){
-					if(it.querySelector('in[datatype="' + pack.id + '.' + dtype.id + '"]'))
+					if(it.querySelector('in[datatype="' + pack.id + '.' + dtypeid + '"], in[datatype="' + me.getWildcardsDatatype(me.isArrayDatatype(query.outputDatatype)) + '"]'))
 						return true;
 					var res = false;
-					it.querySelectorAll('in[datatype="' + dtype.id + '"]').forEach(function (it){
+					it.querySelectorAll('in[datatype="' + dtypeid + '"]').forEach(function (it){
 						if(it.__vue__.Package.id == pack.id)
 							res = true;
 					});
 					return res;
 				});
 			}
-			this.$emit('getNodes', ret, query);
+			me.$emit('getNodesByQuery', ret, query);
 			return ret;
 		},
 		
 		getDatatype: function(id){
 			if(!id)
 				return this.$el.querySelectorAll('[isdatatype="true"]:not([private="true"])');
+			id = id.replace('[]', '');
 			var name = this.splitPackageName(id);
 			//console.log(id, name, this.$el.querySelector('package[id="' + name[0] + '"] datatype[id="' + name[1] + '"]'));
 			return this.$el.querySelector('package[id="' + name[0] + '"] [isdatatype="true"][id="' + name[1] + '"]').__vue__;
@@ -358,16 +357,22 @@ export const Library = {
 			else if(typeof id == 'string'){
 				var q = this.createQuery();
 				q.id = id;
-				return this.getNodesByQuery(id);
+				return this.getNodesByQuery(q);
 			}
 			console.assert(false, 'unknown query');
-			var name = this.splitPackageName(id);
-			return this.$el.querySelector('package[id="' + name[0] + '"] [isfunction="true"][id="' + name[1] + '"]');
 		},
 		
 		getCategory: function(id){
 			return this.$el.querySelector('category[id="' + id + '"]');
-		}
+		},	
+
+		getWildcardsDatatype: function(asArray){
+			return asArray ? 'core.wildcards[]' : 'core.wildcards';
+		},
+
+		isArrayDatatype: function(datatype){
+			return datatype.endsWith('[]');
+		},
 			
 	},
 	
@@ -464,9 +469,10 @@ export const Node = {
 		description: String,
 		//categories: {type: Array, default: function(){return []}},
 		flags: Number,
-		pos: String,
 		color: {type: String, default: function(){return this.Category.color}},
 		symbol: {type: String, default: function(){return this.Category.symbol}},
+		x: Number,
+		y: Number,
 	},
 	
 	data: function(){
@@ -478,7 +484,8 @@ export const Node = {
 	methods: {
 		Symbol: function(str){
 			this._symbol = str;
-		}
+		},
+
 	},
 }
 Vue.config.ignoredElements.push('node');
@@ -492,7 +499,7 @@ export const Function = {
 		__ctor: {type: String, default: 'function'},
 		isfunction: {type: Boolean, default: true},
 		private:  {type: Boolean, default: false},
-	},
+	}
 }
 Extend(Package, Category, 'Function');
 Vue.config.ignoredElements.push('function');
@@ -558,7 +565,8 @@ export const Pin = {
 	props: {
 		__ctor: {type: String, default: 'pin'},
 		isio: {type: Boolean, default: true},
-		optional: {type: Boolean, default: false},
+		isarray: {type: Boolean, default: false},
+		optional: Boolean,
 		label: String,
 		ctor: String,
 		pinctor: String,
@@ -589,7 +597,8 @@ export const In = {
 	
 	props: {
 		__ctor: {type: String, default: 'in'},
-	},
+		flags: {type: Number, default: F_INPUT},
+	}
 }
 Extend(Node, Function, 'In');
 Vue.config.ignoredElements.push('in');
@@ -600,6 +609,7 @@ export const Out = {
 	
 	props: {
 		__ctor: {type: String, default: 'out'},
+		flags: {type: Number, default: F_OUTPUT},
 	},
 }
 Extend(Node, Function, 'Out');

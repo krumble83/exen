@@ -1,15 +1,15 @@
 <template functional>
 	<rect 
-		v-if="parent.isarray" 
-		x="20" 
+		v-if="parent.cIsArray" 
+		x="9" 
 		y="4" 
-		width="10" 
+		width="11" 
 		height="11" 
 		class="pinBase array" 
 		ref="pin" 
 		:stroke="parent.cColor" 
 		stroke-width="4" 
-		:transform="parent.$hasFlag('F_OUTPUT') ? 'translate(-11)' : ''" 
+		:transform="parent.$hasFlag('F_OUTPUT') ? 'translate(-28)' : ''" 
 		:fill="'url(#pinArrayPattern' + parent.cColor.replace('#', '_') + ')'"
 	/>
 	<circle 

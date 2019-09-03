@@ -27,9 +27,9 @@
 		/>
 		<g class="header" ref="header">
 			<rect v-if="title" width="100%" height="100%" rx="9" ry="9" :fill="'url(#nodeHeader_' + color.replace('#', '') + ')'" :clip-path="'url(#exNodeClipPath_' + ((subtitle) ? '2' : '1') + ')'" />
-			<image v-if="title && img" :href="img" x="10" y="6" width="16" height="16" />
-			<text v-if="title" class="title" :x="img ? '28' : 10" y="20">{{cTitle}}</text>
-			<text v-if="title && subtitle" class="subtitle" :x="img ? '28' : 10" y="38">{{subtitle}}</text>
+			<image v-if="title && symbol" :href="symbol" x="10" y="6" width="16" height="16" />
+			<text v-if="title" class="title" :x="symbol ? '31' : 10" y="18">{{cTitle}}</text>
+			<text v-if="title && subtitle" class="subtitle" :x="symbol ? '28' : 10" y="38">{{subtitle}}</text>
 		</g>
 		<rect width="100%" height="100%" rx="9" ry="9" fill-opacity="0" stroke-width="0" />
 		
@@ -37,7 +37,7 @@
 			<slot name="inputs">
 				<component v-for="(pin, idx) in cInputs" :key="pin.id" 
 					class="input"
-					:is="pin.ctor ? pin.ctor : 'ExPin'"
+					:is="pin.ctor ? pin.ctor : getCtor(pin.datatype) || 'ExPin'" 
 					:max-link="pin.maxlink ? pin.maxlink : 1"
 					@resize="$emit('pin:resize', $event)"
 					v-bind="pin"
@@ -49,7 +49,7 @@
 			<slot name="outputs">	
 				<component v-for="(pin, idx) in cOutputs" :key="pin.id" 
 					class="output"
-					:is="pin.ctor ? pin.ctor : 'ExPin'" 
+					:is="pin.ctor ? pin.ctor : getCtor(pin.datatype) || 'ExPin'" 
 					:max-link="pin.maxlink ? pin.maxlink : 99"
 					@resize="$emit('pin:resize', $event)"
 					v-bind="pin"
@@ -101,14 +101,13 @@
 			subtitle: String,
 			flags: Number,
 			color: {type: String, default: '#00f'},
-			img: String,
-			inputs: {type: Array},
-			outputs: {type: Array},
-			expendable: Boolean,
+			symbol: String,
+			inputs: {type: Array, default: function(){return []}},
+			outputs: {type: Array, default: function(){return []}},
 		},
 		
 		computed: {
-			cTitle: function(){return this.camelCaseToLabel(this.title)},
+			cTitle: function(){return this.camelCaseToLabel(this.title || this.name)},
 			cInputs: function(){
 				if(this.mExpanded)
 					return this.inputs;
@@ -133,6 +132,7 @@
 				mExpanded: false,
 				outputsGroupPos: {x: 0, y:0},
 				mEdited: false,
+				mCtorsCache : {},
 			}
 		},
 		
@@ -282,6 +282,12 @@
 				this.$emit('remove');
 				this.Worksheet.$emit('node:remove');
 				this.Worksheet.removeNode(this.id);
+			},
+			
+			getCtor: function(id){
+				if(!id in this.mCtorsCache)
+					this.mCtorsCache[id] = this.Library.getDatatype(id).ctor;
+				return this.mCtorsCache[id];
 			},
 			/*
 			getInput: function(name, asComponent){

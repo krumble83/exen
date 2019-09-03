@@ -27,7 +27,7 @@
 				<in id="usecase" datatype="core.type.bool" label="Case Sensitive" />
 				<out id="result" datatype="core.type.string" />
 			</function>
-			<function id="contains" title="Contains" color="#aaeea0" symbol="exlibs/img/function.png">
+			<function id="contains" title="Contains string" color="#aaeea0" symbol="exlibs/img/function.png">
 				<in id="source" datatype="core.type.string" />
 				<in id="search" datatype="core.type.string" />
 				<in id="usecase" datatype="core.type.bool" label="Case Sensitive" />

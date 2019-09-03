@@ -42,6 +42,7 @@ export default {
 			
 			menu.$once('click', function(item){
 				console.log('cliiiiick', item);
+				me.addLibraryNode(item.getAttribute('data-id'), evt);
 			});
 						
 			if(link && link.getInput())
@@ -56,5 +57,16 @@ export default {
 			menu.showAt(evt);
 
 		},
+		
+		addLibraryNode: function(id, evt){
+			//console.log('iddddd', id);
+			var lnode = this.Library.getNode(id)
+				, newNode = lnode ? lnode.toObject() : false;
+			if(newNode){
+				newNode.x = evt.clientX;
+				newNode.y = evt.clientY;
+				this.store.commit('addNode', lnode.toObject());
+			}
+		}
 	},
 }

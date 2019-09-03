@@ -41,16 +41,11 @@ export default {
 				top: 0,
 			},
 			items: [],
-			//mContextStore: false,
+			mInputTimer: false,
 			mQuery: false,
 		}
 	},
-	
-	// return _.orderBy(this.$store.state.components, 'tabOrder')
-	
-	//_.uniqBy([{ 'x': 1 }, { 'x': 2 }, { 'x': 1 }], 'x');
-	// => [{ 'x': 1 }, { 'x': 2 }]
-	
+
 	computed: {
 		orderedItems: function(){return this.items.slice().sort((a, b) => (a.name > b.name) ? 1 : -1)},
 		categories: function(){
@@ -127,17 +122,7 @@ export default {
 			});
 
 		},
-		/*
-		setContextStore: function(store){
-			this.mContextStore = store;
-		},
-		
-		_show: function(vue){
-			if(vue.private)
-				return false;
-			return true;
-		},
-		*/
+
 		_sort: function(items){
 			return items.slice().sort((a, b) => (a.name > b.name) ? 1 : -1);
 		},
@@ -165,8 +150,11 @@ export default {
 					break;
 					
 				default:
-					this.mQuery.searchString = this.$refs.input.value;
-					this.update();
+					clearTimeout(this.mInputTimer);
+					this.mInputTimer = setTimeout(function(){
+						me.mQuery.searchString = me.$refs.input.value;
+						me.update();
+					}, 200);
 			}
 		},
 		

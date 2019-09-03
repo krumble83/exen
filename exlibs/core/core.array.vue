@@ -13,7 +13,7 @@
 			<function id="set" title="Set Array Item" color="#C3C3C3" symbol="exlibs/img/array.png" keywords="array set item,set item array,item set array">
 				<entry /><exit />
 				<in id="entry" datatype="core.exec" />
-				<in id="array" datatype="core.wildcards[]" group="1" flags="4194304" tooltip="The array to perform the operation on" />
+				<in id="array" datatype="core.wildcards[]" group="1" :flags="4194304" tooltip="The array to perform the operation on" />
 				<in id="index" datatype="core.type.int" tooltip="The index to assign the item to" />
 				<in id="item" datatype="core.wildcards" group="1" tooltip="The item to assign to the index of the array." />
 				<in id="sizetoFit" datatype="core.type.bool" tooltip="If true, the array will expend if index gretter than the current size of the array." :optional="true" />

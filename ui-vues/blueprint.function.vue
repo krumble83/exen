@@ -113,7 +113,7 @@
 			me.$refs.properties.addPanel(me.functionPanel);
 			
 			me.$on('node:focus', function(node){
-				console.log('focuuuuuuuuus', node);
+				//console.log('focuuuuuuuuus', node);
 				//me.functionsShowPanel();
 			});
 			

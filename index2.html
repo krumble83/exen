@@ -53,12 +53,17 @@ const filtered = filterObject(raw, allowedz);
 filtered.item1.value = 'zzzz'
 console.log(filtered, raw);
 
-
+function test(){
+	const zz = Math.random();
+	console.log(zz);
+}
 		
 			Vue.config.performance = true;
 			
 			import App from './ui-vues/project.vue';
 			console.log(App);
+
+			import './exlibs/export.object.js';
 
 			import './exlibs/app.vue';
 			

@@ -65,7 +65,7 @@
 			width: {type: Number, default: 30},
 			label: String, 
 			description: String,
-			//type: Number,
+
 			flags: Number,
 			color: String,
 			datatype: {type: String, required: true},
@@ -105,6 +105,10 @@
 			cColor: function(){
 				return this.color || this.Library.getDatatype(this.datatype).Color();
 			},
+			
+			cIsArray: function(){
+				return this.datatype.endsWith('[]');
+			}
 		},
 		
 		watch: {
@@ -132,8 +136,8 @@
 		},
 		
 		created: function(){
-			const me = this
-			, def = {
+			const me = this;
+			var def = {
 				props: {is: 'linearGradient',id: 'pinFocus_' + me.cColor.replace('#', '')},
 				childs: [{props : {is: 'stop','stop-color': me.cColor,'stop-opacity': '0.05',offset: '0.1'}},
 					{props: {is: 'stop','stop-color': me.cColor,'stop-opacity': '0.6',offset: '0.3'}},
@@ -142,9 +146,9 @@
 			};
 			me.addSvgDef(def);
 			
-			if(me.isarray){
+			if(me.cIsArray){
 				def = {
-					props: {is: 'pattern', id: 'pinArrayPattern_' + me.cColor.replace('#', ''), x: 0, y: 0, width: 11, height: 11, patternUnits: 'userSpaceOnUse'},
+					props: {is: 'pattern', id: 'pinArrayPattern_' + me.cColor.replace('#', ''), x: 0, y: 0, width: 12, height: 13, patternUnits: 'userSpaceOnUse'},
 					childs: [
 						{props: {is: 'rect', width: 2, height: 2, x: 1, y: 1, fill: me.cColor}}
 					]
@@ -204,7 +208,9 @@
 				return this.$hasFlag(F_OUTPUT) && this.$hasFlag(F_INPUT);
 			},
 
-			
+			isArray: function(){
+				return this.cIsArray;
+			},
 		},
 	};
 

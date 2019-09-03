@@ -23,7 +23,7 @@
 			class="label" 
 			ref="label"
 		>
-		{{cLabel}}
+		zzz
 		</text>
 		<component 
 			v-if="!$hasFlag('F_OUTPUT') && editor && classObject.linked==false" 

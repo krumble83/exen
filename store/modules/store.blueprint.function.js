@@ -130,7 +130,7 @@ var FunctionStore = {
 				type: F_FUNCTION,
 				flags: F_DRAGGABLE | F_CLOSABLE,
 				panelCtor: 'functionfile',
-				icon: img,
+				symbol: img,
 				inputs: [],
 				outputs: [],
 			},
@@ -152,7 +152,7 @@ var FunctionStore = {
 				name: 'entryPoint', 
 				title: state.datas.name, 
 				flags: F_READ_ONLY, 
-				img: 'exlibs/img/start.png', 
+				symbol: 'exlibs/img/start.png', 
 				color: '#7f2197',
 			};
 			this.commit('addNode', n);
@@ -223,27 +223,8 @@ var FunctionStore = {
 		},
 		
 		setLibrary: function(state, lib){
-			const me = this;
 			state.library = lib;
-			state.library.Library.$on('getNodes', function(data, query){
-				//console.log(data);
-				var el = document.createElement('div')
-					, ComponentClass = Vue.extend(Category)
-					, instance = new ComponentClass({propsData: {id: state.library.fullPath}})
-					, ret = instance.Function(state.datas.name);
-					
-				ret.Symbol('exlibs/img/function.png');
-				data.push(ret.$el);
-				
-				return;
-				
-				if(query.context == me){
-					ComponentClass = Vue.extend(Function);
-					instance = new ComponentClass({propsData: {id: 'exitPoint', title: 'Add Return Node...'}});
-					data.push(instance.$el);
-				}
-				//console.log(data);
-			});
+			lib.$on('getNodesByQuery', this.getters.getLibraryNodes);
 		}
 	},
 	
@@ -280,15 +261,26 @@ var FunctionStore = {
 			else
 				return state.links;
 		},
-		/*
-		getLibraryMenu: (state, getters) => {
+
+		getLibraryNodes: (state, getters) => (data, query) => {
+			//TODO : remove event listener on Library
 			var el = document.createElement('div')
-				, ComponentClass = Vue.extend(Category);
-			var instance = new ComponentClass({propsData: {id: state.library.fullPath}});
-			var ret = instance.Function(state.datas.name);
-			return [ret];
+				, ComponentClass = Vue.extend(Category)
+				, instance = new ComponentClass({propsData: {id: state.library.fullPath}})
+				, ret = instance.Function(state.datas.name);
+				
+			ret.Symbol('exlibs/img/function.png');
+			data.push(ret.$el);
+			
+			return;
+			
+			if(query.context == me){
+				ComponentClass = Vue.extend(Function);
+				instance = new ComponentClass({propsData: {id: 'exitPoint', title: 'Add Return Node...'}});
+				data.push(instance.$el);
+			}			
 		},
-		*/
+		
 		getIoFreeName:  (state, getters) => (name) => {
 			if(!getters.IoNameExist(name))
 				return name;
