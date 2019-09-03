@@ -42,7 +42,7 @@
 	import PinDrawLink from './pin.link.draw.js';
 	
 	export default {
-		inject: ['$worksheet', '$node', 'addSvgDef', 'camelCaseToLabel'],
+		inject: ['Worksheet', '$node', 'addSvgDef', 'camelCaseToLabel'],
 		mixins: [SvgBase, PinDrawLink, PinContextMenu],
 		components: {ExPinBase},
 		props: {
@@ -78,7 +78,7 @@
 		},
 
 		computed: {
-			//$worksheet: function(){return this.$parent.$parent},
+			//Worksheet: function(){return this.$parent.$parent},
 			//$node: function(){return this.$parent},
 			
 			cLabel: function(){ return this.camelCaseToLabel(this.label) || this.camelCaseToLabel(this.name)},

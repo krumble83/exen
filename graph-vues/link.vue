@@ -3,6 +3,7 @@
 		:id="gid" 
 		:stroke="cColor" 
 		:class="classObject"
+		ref="links"
 		:d="'M' + dc1.x + ',' + dc1.y + ' C' + (dp1.x) + ',' + dp1.y + ' ' + (dp2.x) + ',' + dp2.y + ' ' + dc2.x + ',' + dc2.y" 
 		fill="none" 
 		@contextmenu.prevent.stop="$emit('mouse:context', $event)"
@@ -69,14 +70,17 @@
 					
 					this.mWatchers.input.push(val.$watch('datatype', this._datatypeChange));
 					
+					val.mLinkCount++;
+					
 					this.mWatchers.input.push(val.Node.$watch('mX', this.update));
 					this.mWatchers.input.push(val.Node.$watch('mY', this.update));
-					val.Node.$once('remove', this.remove);
+					val.Node.$once('remove', this.$destroy);
 					if(old){
 						this.mWatchers.input.forEach(function(el){
 							el();
 						});
-						old.Node.$off('remove', this.remove);
+						old.Node.$off('remove', this.$destroy);
+						old.mLinkCount--;
 					}
 				}
 			},
@@ -90,14 +94,17 @@
 
 					this.mWatchers.output.push(val.$watch('datatype', this._datatypeChange));
 					
+					val.mLinkCount++;
+
 					this.mWatchers.output.push(val.Node.$watch('mX', this.update));
 					this.mWatchers.output.push(val.Node.$watch('mY', this.update));
-					val.Node.$once('remove', this.remove);
+					val.Node.$once('remove', this.$destroy);
 					if(old){
 						this.mWatchers.output.forEach(function(el){
 							el();
 						});
-						old.Node.$off('remove', this.remove);
+						old.Node.$off('remove', this.$destroy);
+						old.mLinkCount--;
 					}
 				}
 			},
@@ -111,20 +118,20 @@
 					{props: {is: 'feGaussianBlur', in:'SourceGraphic', stdDeviation:0.7}}
 				]
 			}
-			this.$worksheet.addDef(def);
+			this.Worksheet.addDef(def);
 			
 		},
 		
 		mounted: function(){
 			if(this.input){
-				var n = this.$worksheet.getNode(this.input.node);
+				var n = this.Worksheet.getNode(this.input.node);
 				console.assert(n);
 				var p = n.getInput(this.input.pin, true);
 				console.assert(p);
 				this.mInputPin = p;
 			}
 			if(this.output){
-				var n = this.$worksheet.getNode(this.output.node);
+				var n = this.Worksheet.getNode(this.output.node);
 				console.assert(n);
 				var p = n.getOutput(this.output.pin, true);
 				console.assert(p);
@@ -133,21 +140,27 @@
 		},
 		
 		beforeDestroy: function(){
-			//this.$worksheet.startSequence();
-			this.$emit('remove');
-			//this.$worksheet.$emit('link:remove', this);
-			this.mWatchers.input.forEach(function(el){
+			const me = this;
+			
+			me.$emit('remove');
+
+			me.mWatchers.input.forEach(function(el){
 				el();
 			});
-			this.mWatchers.output.forEach(function(el){
+			me.mWatchers.output.forEach(function(el){
 				el();
 			});
 
-			if(this.mInputPin)
-				this.mInputPin.Node.$off('remove', this.remove);
-			if(this.mOutputPin)
-				this.mOutputPin.Node.$off('remove', this.remove);
-			//this.$worksheet.stopSequence();
+			if(me.mInputPin){
+				me.mInputPin.mLinkCount--;
+				me.mInputPin.Node.$off('remove', me.$destroy);
+			}
+			if(me.mOutputPin){
+				me.mOutputPin.mLinkCount--;
+				me.mOutputPin.Node.$off('remove', me.$destroy);
+			}
+			//if(me.$parent)
+			//	me.$parent.$el.removeChild(me.$el);
 		},
 		
 		methods: {
@@ -243,7 +256,7 @@
 			*/
 			remove: function(){
 				//console.log('remove');
-				this.$worksheet.removeLink(this.id);
+				this.Worksheet.removeLink(this.id);
 			}
 		},
 	}

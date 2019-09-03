@@ -17,8 +17,8 @@ export default {
 		me.$on('mouse:click', me.select);
 		me.$on('mouse:cmenu', me.select);
 		me.$on('drag:start', me.onStartDrag);
-		me.$worksheet.$on('mouse:leftup', me.unselect);
-		me.$worksheet.$on('mouse:rightup', me.unselect);
+		me.Worksheet.$on('mouse:leftup', me.unselect);
+		me.Worksheet.$on('mouse:rightup', me.unselect);
 	},
 	
 	mounted: function(){
@@ -31,8 +31,8 @@ export default {
 		me.$off('mouse:click', me.select);	
 		me.$off('mouse:rightup', me.select);
 		me.$off('drag:start', me.onStartDrag);
-		me.$worksheet.$off('mouse:leftup', me.unselect);
-		me.$worksheet.$off('mouse:rightup', me.unselect);
+		me.Worksheet.$off('mouse:leftup', me.unselect);
+		me.Worksheet.$off('mouse:rightup', me.unselect);
 	},
 	
 	methods: {
@@ -64,7 +64,7 @@ export default {
 			const me = this;
 			if(!me.classObject.selected){
 				//unselect all other nodes
-				me.$worksheet.$refs.nodes.forEach(function(it){
+				me.Worksheet.$refs.nodes.forEach(function(it){
 					it.unselect();
 				});
 			}

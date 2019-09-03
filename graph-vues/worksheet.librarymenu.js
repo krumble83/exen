@@ -35,6 +35,7 @@ export default {
 				, q = this.Library.createQuery();
 
 			menu.$once('close', function(){
+				//return;
 				if(link)
 					link.$destroy();
 			});

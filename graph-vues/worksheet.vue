@@ -39,12 +39,6 @@
 					class="exLink"
 					v-bind="link"
 				/>
-				<component v-if="drawlink" 
-					:is="drawlink.ctor ? drawlink.ctor : 'ex-link'"
-					:id="drawlink.id"
-					class="exLink"
-					v-bind="drawlink"
-				/>
 				<slot name="links" />
 			</g>
 
@@ -95,7 +89,7 @@
 			var me = this;
 			return {
 				addSvgDef: function(data){me.addDef(data)},
-				$worksheet: me,
+				Worksheet: me,
 				//Library: exLIB,
 				camelCaseToLabel: function(str){
 					if(!str)
@@ -127,7 +121,6 @@
 				},
 				defs: [],
 				workspace: [],
-				drawlink: false,
 				mEdited: true,
 				mId : this.id || Vue.options.methods.$uid(),
 			}
@@ -191,10 +184,6 @@
 			
 			removeNode: function(id){
 				this.$store.commit('deleteNode', id);
-			},
-			
-			drawLink: function(data){
-				Vue.set(this, 'drawlink', data);
 			},
 			
 			addLink: function(data){

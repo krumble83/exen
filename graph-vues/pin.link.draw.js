@@ -120,10 +120,10 @@ export default {
 				return console.assert(false, 'unknown pin type');
 			
 			var ComponentClass = Vue.extend(LinkDraw);
-			var instance = new ComponentClass({propsData: d, parent: me.$worksheet});
+			var instance = new ComponentClass({propsData: d, parent: me.Worksheet});
 			
 			instance.$mount();
-			me.$worksheet.$el.querySelector('.exLinks').appendChild(instance.$el);
+			me.Worksheet.$el.querySelector('.exLinks').appendChild(instance.$el);
 			//instance.$parent = this.$worksheet;
 			instance.startDraw();
 			/*
@@ -133,14 +133,14 @@ export default {
 			});
 			instance.start(startPos, point, me);			
 			*/
-			me.$worksheet.$emit('pin:drawlink', evt, d);
+			me.Worksheet.$emit('pin:drawlink', evt, d);
 		},
 		
 		finishLink: function(evt){
-			console.log('finish link', this.$worksheet.$refs.drawlink);
+			console.log('finish link', this.Worksheet.$refs.drawlink);
 			//evt.stopPropagation();
-			var link = this.$worksheet.$refs.drawlink;
-			if(!link || !link)
+			var link = this.Worksheet.$refs.drawlink;
+			if(!link)
 				return;
 			link.finishLink(this);
 		},

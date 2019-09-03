@@ -67,9 +67,9 @@ export default {
 						me.classObject.dragging = false;
 						document.removeEventListener('mousemove', moveFn);
 						if(me.mX != startPos.x || me.mY != startPos.y){
-							me.$worksheet.store.commit('changeNodeProperty', {node: me.id, props: {x: me.mX, y: me.mY}});
+							me.Worksheet.store.commit('changeNodeProperty', {node: me.id, props: {x: me.mX, y: me.mY}});
 							me.$emit('drag:end', evt, me);
-							me.$worksheet.$emit('node:drag:stop', me, evt);
+							me.Worksheet.$emit('node:drag:stop', me, evt);
 							//this.$worksheet.$emit('node:dragend', evt, this);
 						}
 					}
@@ -80,7 +80,7 @@ export default {
 
 					me.classObject.dragging = true;
 					me.$emit('drag:start', evt);
-					me.$worksheet.$emit('node:dragstart', me, evt);
+					me.Worksheet.$emit('node:dragstart', me, evt);
 					
 					requestAnimationFrame(updateFn);
 					moveFn(evt);					

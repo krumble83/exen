@@ -82,7 +82,7 @@
 	import ExPin from './pin.vue';
 	
 	export default {
-		inject: ['$worksheet', 'addSvgDef', 'camelCaseToLabel'],
+		inject: ['Worksheet', 'addSvgDef', 'camelCaseToLabel'],
 		mixins: [SvgBase, NodeSelectable, NodeDraggable, NodeContextMenu],
 		//mixins: [SvgBase, NodeSelectable, NodeDraggable, NodeGrid, ContextMenu],
 		components: {ExPin},
@@ -90,7 +90,6 @@
 		provide: function(){
 			var me = this;
 			return {
-				$node: me,
 				Node: me,
 			}
 		},
@@ -279,8 +278,8 @@
 			
 			remove: function(){
 				this.$emit('remove');
-				this.$worksheet.$emit('node:remove');
-				this.$worksheet.removeNode(this.id);
+				this.Worksheet.$emit('node:remove');
+				this.Worksheet.removeNode(this.id);
 			},
 			/*
 			getInput: function(name, asComponent){

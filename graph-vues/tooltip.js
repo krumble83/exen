@@ -86,7 +86,7 @@ ExPin.mixins.push({
 	methods: {
 		tooltipMouseEnter: function(evt){				
 			var me = this
-			, link = this.$worksheet.$el.querySelector('.exLink.draw')
+			, link = this.Worksheet.$el.querySelector('.exLink.draw')
 			, valid
 			, msg;
 			
@@ -97,7 +97,7 @@ ExPin.mixins.push({
 			}
 			
 			if(link){
-				link = this.$worksheet.$el.querySelector('.exLink.draw').__vue__;
+				link = this.Worksheet.$el.querySelector('.exLink.draw').__vue__;
 				var accept = me.acceptLink(link);
 				if(accept == 1)
 					return hideTooltip();

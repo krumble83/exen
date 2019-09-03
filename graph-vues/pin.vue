@@ -11,6 +11,7 @@
 		@contextmenu.prevent.stop="$emit('mouse:cmenu', $event)"
 		overflow="visible"
 		v-inline.vertical="7"
+		:data-link-count="mLinkCount"
 	>
 		<rect 
 			:transform="$hasFlag('F_OUTPUT') ? 'scale(-1,1)' : ''" 
@@ -33,7 +34,7 @@
 		{{cLabel}}
 		</text>
 		<component 
-			v-if="!$hasFlag('F_OUTPUT') && mEditor && classObject.linked==false" 
+			v-if="!$hasFlag('F_OUTPUT') && mEditor && mLinkCount < 1" 
 			:is="mEditor.ctor" 
 			class="editor" 
 			v-bind="mEditor"
@@ -53,7 +54,7 @@
 	import PinEditorInput from './pin.editor.input.vue';
 	
 	export default {
-		inject: ['$worksheet', 'Node', 'addSvgDef', 'camelCaseToLabel', 'Library'],
+		inject: ['Worksheet', 'Node', 'addSvgDef', 'camelCaseToLabel', 'Library'],
 		mixins: [SvgBase, PinDrawLink, PinContextMenu],
 		components: {ExPinBase, PinExec, PinEditorInput},
 		
@@ -82,7 +83,6 @@
 				classObject: {
 					exPin: true,
 					linkable: true,
-					linked: false,
 				},
 				//dEditor: this.editor,
 				mLinkCount: 0,
@@ -202,17 +202,7 @@
 			isIO: function(){
 				return this.$hasFlag(F_OUTPUT) && this.$hasFlag(F_INPUT);
 			},
-			
-			addLink: function(link){
-				var me = this;
-				me.classObject.linked = true;
-				me.mLinkCount++;
-				link.$once('remove', function(){
-					me.mLinkCount--;
-					if(me.mLinkCount == 0)
-						me.classObject.linked = false;
-				});
-			},
+
 			
 		},
 	};
@@ -255,7 +245,7 @@
 		fill-opacity: 0;
 	}
 
-	.exWorksheet .exNode .exPin.linked circle.pin{
+	.exWorksheet .exNode .exPin:not([data-link-count="0"]) circle.pin{
 		fill-opacity: 1;
 	}
 	

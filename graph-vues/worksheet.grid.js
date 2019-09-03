@@ -5,8 +5,8 @@ ExNode.mixins.push({
 	inject: ['snapToGrid'],
 	
 	mounted: function(){
-		this.mX = this.snapToGrid(this.x)+this.$worksheet.gridsize;
-		this.mY = this.snapToGrid(this.y)+this.$worksheet.gridsize;
+		this.mX = this.snapToGrid(this.x)+this.Worksheet.gridsize;
+		this.mY = this.snapToGrid(this.y)+this.Worksheet.gridsize;
 	},
 	
 	watch: {
