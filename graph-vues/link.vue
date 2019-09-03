@@ -3,12 +3,9 @@
 		:id="gid" 
 		:stroke="cColor" 
 		:class="classObject"
-		ref="links"
 		:d="'M' + dc1.x + ',' + dc1.y + ' C' + (dp1.x) + ',' + dp1.y + ' ' + (dp2.x) + ',' + dp2.y + ' ' + dc2.x + ',' + dc2.y" 
-		fill="none" 
 		@contextmenu.prevent.stop="$emit('mouse:context', $event)"
 	/>
-	<!--<line :id="id" :x1="dc1.x" :y1="dc1.y" :x2="dc2.x" :y2="dc2.y" :stroke="color" :class="classObject" :datatype="mDatatype" />-->
 </template>
 
 <script>
@@ -47,6 +44,7 @@
 					exLink: true,
 					invalid: false,
 				},
+				
 				mInputPin: this.inputPin,
 				mOutputPin: this.outputPin,
 				mWatchers: {input: [], output: []},
@@ -74,6 +72,7 @@
 					
 					this.mWatchers.input.push(val.Node.$watch('mX', this.update));
 					this.mWatchers.input.push(val.Node.$watch('mY', this.update));
+					//val.Node.$on('resize', this.update);
 					val.Node.$once('remove', this.$destroy);
 					if(old){
 						this.mWatchers.input.forEach(function(el){
@@ -98,6 +97,7 @@
 
 					this.mWatchers.output.push(val.Node.$watch('mX', this.update));
 					this.mWatchers.output.push(val.Node.$watch('mY', this.update));
+					//val.Node.$on('resize', this.update);
 					val.Node.$once('remove', this.$destroy);
 					if(old){
 						this.mWatchers.output.forEach(function(el){
@@ -118,24 +118,25 @@
 					{props: {is: 'feGaussianBlur', in:'SourceGraphic', stdDeviation:0.7}}
 				]
 			}
-			this.Worksheet.addDef(def);
-			
+			this.Worksheet.addDef(def);		
 		},
 		
 		mounted: function(){
-			if(this.input){
-				var n = this.Worksheet.getNode(this.input.node);
+			const me = this;
+			
+			if(me.input){
+				var n = me.Worksheet.getNode(me.input.node);
 				console.assert(n);
-				var p = n.getInput(this.input.pin, true);
+				var p = n.getInput(me.input.pin, true);
 				console.assert(p);
-				this.mInputPin = p;
+				me.mInputPin = p;
 			}
-			if(this.output){
-				var n = this.Worksheet.getNode(this.output.node);
+			if(me.output){
+				var n = me.Worksheet.getNode(me.output.node);
 				console.assert(n);
-				var p = n.getOutput(this.output.pin, true);
+				var p = n.getOutput(me.output.pin, true);
 				console.assert(p);
-				this.mOutputPin = p;
+				me.mOutputPin = p;
 			}
 		},
 		
@@ -223,16 +224,7 @@
 				}
 				//me.updateIntermediatePoints();
 			},
-			
-			addPin: function(pin){
-				if(pin.isInput())
-					this.mInputPin = pin;
-				else if(pin.isOutput())
-					this.mOutputPin = pin;
-				else
-					console.assert(false, 'unknown pin type');
-			},
-			
+
 			getInput: function(){
 				return this.mInputPin;
 			},
@@ -240,24 +232,6 @@
 			getOutput: function(){
 				return this.mOutputPin;
 			},
-			/*
-			updateIntermediatePoints: function(){
-				var me = this;
-				if(this.mInputPin){
-					this.dp1.x = this.dc1.x - 200;
-					this.dp1.y = this.dc1.y;
-				}
-				if(this.mOutputPin){
-					this.dp2.x = this.dc2.x + 200;
-					this.dp2.y = this.dc2.y;
-				}
-			
-			},
-			*/
-			remove: function(){
-				//console.log('remove');
-				this.Worksheet.removeLink(this.id);
-			}
 		},
 	}
 	
@@ -267,18 +241,18 @@
 	.exLink {
 		stroke-width: 2;
 		pointer-events: all;
+		fill: none;
 	}
-	
+
 	.exLink.invalid {
 		stroke-dasharray: 5;
 		stroke-width: 4;
 	}
-	
+
 	.exLink:hover {
 		stroke-width: 4;
 		pointer-events: all;
 	}
-
 
 	.exWorksheet.drawlinkevent .exLink:not(.draw){
 		pointer-events: none;

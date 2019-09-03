@@ -95,6 +95,7 @@
 		},
 			
 		props: {
+			name: String,
 			title: String, 
 			subtitle: String,
 			flags: Number,

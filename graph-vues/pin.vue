@@ -21,14 +21,15 @@
 			:height="mHeight" 
 			:fill="'url(#pinFocus' + cColor.replace('#', '_') + ')'"
 		/>
+		
 		<component :is="cPinCtor" />
+
 		<text 
 			x="26" 
 			y="15" 
 			:transform="$hasFlag('F_OUTPUT') ? 'translate(-52)': ''" 
 			:text-anchor="$hasFlag('F_OUTPUT') ? 'end': 'start'" 
 			class="label" 
-			:stroke-color="cColor"
 			ref="label"
 		>
 		{{cLabel}}
@@ -167,7 +168,7 @@
 				var text = this.$refs.label
 				, oldWidth = this.mWidth
 				, textBox
-				, width
+				, width;
 				
 				if(onNextTick)
 					return me.$nextTick(function(){me.update()});
@@ -212,7 +213,7 @@
 
 <style>
 	.exWorksheet .exNode .exPin{
-		cursor: crosshair;
+		
 	}
 
 	.exWorksheet .exNode .exPin.hidden{
@@ -229,36 +230,14 @@
 		pointer-events : none;
 	}
 
-
 	.exWorksheet .exNode .exPin > rect:first-child{
 		stroke-width: 0;
 		fill-opacity: 0;
 	}
 
-	.exWorksheet .exNode .exPin > rect:hover{
+	.exWorksheet .exNode .exPin > rect:first-child:hover{
 		fill-opacity: 1;
 	}
-
-	.exWorksheet .exNode .exPin circle.pin{
-		stroke-width: 3;
-		pointer-events : none;
-		fill-opacity: 0;
-	}
-
-	.exWorksheet .exNode .exPin:not([data-link-count="0"]) circle.pin{
-		fill-opacity: 1;
-	}
-	
-	.exWorksheet .exNode .exPin > rect.pin.exArray{
-		stroke-width: 3;
-		stroke-dasharray: 3,2.1;
-		pointer-events : none;
-	}
-
-	.exWorksheet .exNode .exPin.linked rect.pin.exArray{
-		fill-opacity: 1;
-	}
-
 	
 	.exWorksheet .exNode .exPin text.label{
 		stroke-width: 0;

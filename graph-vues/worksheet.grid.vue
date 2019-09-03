@@ -49,14 +49,14 @@
 		},
 		
 		created: function(){
-			var me = this
-			, smallId = this.$uid()
+			const me = this
+			, smallId = me.$uid()
 			, data = [
-				{props: {is: 'pattern', id: smallId, x: 0, y:0, width: this.snap, height: this.snap, patternUnits: 'userSpaceOnUse', class: 'smallGrid'},
-					childs: [{props:{is: 'path',d: 'M ' + this.snap + ' 0 L 0 0 0 ' + this.snap, fill: 'none'}}]
+				{props: {is: 'pattern', id: smallId, x: 0, y:0, width: me.snap, height: me.snap, patternUnits: 'userSpaceOnUse', class: 'smallGrid'},
+					childs: [{props:{is: 'path',d: 'M ' + me.snap + ' 0 L 0 0 0 ' + me.snap, fill: 'none'}}]
 				},
-				{props: {is: 'pattern', id: 'grid_' + this.id, x: 0, y:0, width: (this.snap*8), height: (this.snap*8), patternUnits: 'userSpaceOnUse', class: 'medGrid'},
-					childs: [{props:{is: 'rect', width: (this.snap*8), height: (this.snap*8), fill: 'url(#' + smallId + ')'}}]
+				{props: {is: 'pattern', id: 'grid_' + me.id, x: 0, y:0, width: (me.snap*8), height: (me.snap*8), patternUnits: 'userSpaceOnUse', class: 'medGrid'},
+					childs: [{props:{is: 'rect', width: (me.snap*8), height: (me.snap*8), fill: 'url(#' + smallId + ')'}}]
 				}
 			];
 				
@@ -71,28 +71,28 @@
 		},
 				
 		mounted: function(){
-			const me = this;
-			var panzoom = svgPanZoom(this.$el, {
-				viewportSelector: '.exViewport', 
-				fit: false, 
-				center: false,
-				zoomScaleSensitivity: 0.4,
-				minZoom: 0.05,
-				maxZoom: 1,
-				preventMouseEventsDefault: false, // set to false for dragging ui elements
-				useGlobalMove: true,
-				restrictPanButton: 2,
-				endPan: function(pan, evt){
-					me.$emit('pan:end', pan, evt);
-					me.classObject.panEvent = false;
-				},
-				startPan: function(evt){
-					me.$emit('pan:start', evt);
-					me.classObject.panEvent = true;
-				},
-			});
-			this.$el._panzoom = panzoom;
-			this.$emit('panzoom', panzoom);
+			const me = this
+				, panzoom = svgPanZoom(this.$el, {
+					viewportSelector: '.exViewport', 
+					fit: false, 
+					center: false,
+					zoomScaleSensitivity: 0.4,
+					minZoom: 0.05,
+					maxZoom: 1,
+					preventMouseEventsDefault: false, // set to false for dragging ui elements
+					useGlobalMove: true,
+					restrictPanButton: 2,
+					endPan: function(pan, evt){
+						me.$emit('pan:end', pan, evt);
+						me.classObject.panEvent = false;
+					},
+					startPan: function(evt){
+						me.$emit('pan:start', evt);
+						me.classObject.panEvent = true;
+					},
+				});
+			me.$el._panzoom = panzoom;
+			me.$emit('panzoom', panzoom);
 		},
 		
 		methods: {

@@ -15,13 +15,13 @@ const LinkDraw = {
 	},
 	
 	created: function(){
-		var me = this;
-		this.$once('draw:start', function(){
+		const me = this;
+		me.$once('draw:start', function(){
 			me.classObject.draw = true;
 			me.$parent.$el.classList.add('drawlinkevent');
 		});
 		
-		this.$once('draw:stop', function(){
+		me.$once('draw:stop', function(){
 			me.classObject.draw = false;
 			me.$parent.$el.classList.remove('drawlinkevent');
 		});
@@ -34,15 +34,15 @@ const LinkDraw = {
 	
 	methods: {
 		startDraw: function(){
-			var me = this;
+			const me = this;
 			document.addEventListener('mousemove', me.drawUpdate);
 			document.addEventListener('mouseup', me.stopDraw, {useCapture: true, once: true});
 			me.$emit('draw:start');
-			me.$parent.$emit('link:draw:start', this);
+			me.$parent.$emit('link:draw:start', me);
 		},
 		
 		stopDraw: function(evt){
-			var me = this;
+			const me = this;
 			document.removeEventListener('mousemove', me.drawUpdate);
 			me.$emit('draw:stop', evt);
 			me.$parent.$emit('link:draw:stop', evt, me);
@@ -63,13 +63,13 @@ const LinkDraw = {
 			if(evt && !me.mInputPin){
 				me.dc1.x = point.x;
 				me.dc1.y = point.y;
-				me.dp1.x = me.dc1.x - this.intermediateRange;
+				me.dp1.x = me.dc1.x - me.intermediateRange;
 				me.dp1.y = me.dc1.y;
 			}
 			else if(evt && !me.mOutputPin){
 				me.dc2.x = point.x;
 				me.dc2.y = point.y;
-				me.dp2.x = me.dc2.x + this.intermediateRange;
+				me.dp2.x = me.dc2.x + me.intermediateRange;
 				me.dp2.y = me.dc2.y;
 			}
 			else
@@ -85,37 +85,26 @@ export default {
 	mixins: [WorksheetHelpers],
 	
 	created: function(){
-		var me = this;
-		this.$on('mouse:leftdown', this.startDrawLink);
-		this.$on('mouse:leftup', this.finishLink);
-		//this.$on('mouse:enter', this.mouseLinkEnter);
+		const me = this;
+		me.$on('mouse:leftdown', me.startDrawLink);
+		me.$on('mouse:leftup', me.finishLink);
 		
 	},
 	
 	beforeDestroy: function(){
-		this.$off('mouse:leftdown', this.startDrawLink);
-		this.$off('mouse:leftup', this.finishLink);
-		//this.$off('mouse:enter', this.mouseLinkEnter);
+		const me = this;
+		me.$off('mouse:leftdown', me.startDrawLink);
+		me.$off('mouse:leftup', me.finishLink);
 	},
 	
 	methods: {
 
-		/*
-		mouseLinkEnter: function(evt){				
-			var me = this
-			, link = null
-			, valid
-			
-			link = this.$worksheet.$el.querySelector('.exLink.draw');
-			}
-		},
-		*/
 		startDrawLink: function(evt){
-			var me = this;
+			const me = this;
 			if(me.isInput())
-				var d = {inputPin: me, color: this.Library.getDatatype(this.datatype).Color(), datatype: me.datatype}
+				var d = {inputPin: me, color: me.Library.getDatatype(me.datatype).Color(), datatype: me.datatype}
 			else if(me.isOutput())
-				var d = {outputPin: me, color: this.Library.getDatatype(this.datatype).Color(), datatype: me.datatype}
+				var d = {outputPin: me, color: me.Library.getDatatype(me.datatype).Color(), datatype: me.datatype}
 			else
 				return console.assert(false, 'unknown pin type');
 			
@@ -124,15 +113,7 @@ export default {
 			
 			instance.$mount();
 			me.Worksheet.$el.querySelector('.exLinks').appendChild(instance.$el);
-			//instance.$parent = this.$worksheet;
 			instance.startDraw();
-			/*
-			me.getMousePoint(evt, point);
-			instance.$once('stop', function(){
-				me.classObject.selectEvent = false;
-			});
-			instance.start(startPos, point, me);			
-			*/
 			me.Worksheet.$emit('pin:drawlink', evt, d);
 		},
 		

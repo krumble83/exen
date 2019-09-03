@@ -33,10 +33,8 @@
 			<rect width="100000" height="100000" transform="translate(-50000,-50000)" :fill="'url(#grid_' + id + ')'" />
 			<g class="exLinks" ref="linksEl">
 				<component v-for="link in links" :key="link.id" 
-					:is="link.ctor ? link.ctor : 'ex-link'"
-					:id="link.id"
+					:is="link.ctor ? link.ctor : 'ExLink'"
 					ref="links"
-					class="exLink"
 					v-bind="link"
 				/>
 				<slot name="links" />
@@ -73,7 +71,7 @@
 	import ExNode from './node.vue';
 	import ExLink from './link.vue';
 
-	import {EventBus} from '../cmon-js/event-bus.js';
+	import EventBus from '../cmon-js/event-bus.js';
 	import WorksheetSelection from './worksheet.selection.js'
 	import {worksheetKeyboardEvents} from './keyboardevents.js'
 	import WorksheetGrid from './worksheet.grid.js'

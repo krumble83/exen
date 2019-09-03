@@ -126,6 +126,8 @@ ExPin.mixins.push({
 
 
 ExNode.mixins.push({
+	inject: ['Library'],
+	
 	created: function(){
 		this.$on('mouse:enter', this.tooltipMouseEnter);		
 		this.$on('mouse:cmenu', hideTooltip);		
@@ -152,7 +154,7 @@ ExNode.mixins.push({
 				else if(!ev.buttons == 1) // if not drawing link
 					showTooltip(ev, msg);
 			}
-			
+			//console.log(this.Library.getNode(this.name))
 			msg = 'node desc';			
 			me.$el.addEventListener('mousemove', move, false);
 			me.$once('mouse:leave', function(){
