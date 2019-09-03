@@ -514,6 +514,7 @@ export const Datatype = {
 		__ctor: {type: String, default: 'datatype'},
 		private: {type: Boolean, default: false},
 		ctor: String,
+		pinctor: String,
 		color: {type: String, required: true},
 		inherits: String,
 		description: String,
