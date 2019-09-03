@@ -22,41 +22,36 @@ export default {
 		*/
 	},
 	
+	beforeDestroy: function(){
+		me.$off(['link:draw:stop', 'mouse:cmenu'], me.showLibraryMenu);
+	},
+	
 	methods: {
-		showLibraryMenu: function(arg1, arg2){
+		showLibraryMenu: function(evt, link){
 			//console.log('zzz', arg1 instanceof Vue);
 			const me = this
 				, ComponentClass = Vue.extend(LibraryMenu)
-				, menu = new ComponentClass({parent: me.App});
+				, menu = new ComponentClass({parent: me.App})
+				, q = this.Library.createQuery();
 
 			menu.$once('close', function(){
-				if(arg1 instanceof Vue)
-					arg1.$destroy();
+				if(link)
+					link.$destroy();
 			});
 			
 			menu.$once('click', function(item){
-				
+				console.log('cliiiiick', item);
 			});
+						
+			if(link && link.getInput())
+				q.inputDatatype = link.getInput().datatype;
+			else if(link && link.getOutput())
+				q.outputDatatype = link.getOutput().datatype;
 			
-			var q = this.Library.createQuery();
-			//console.log(this.store);
-			
-			if(arg1.getInput && arg1.getInput())
-				q.inputDatatype = arg1.getInput().datatype;
-			else if(arg1.getOutput)
-				q.outputDatatype = arg1.getOutput().datatype;
-			
+			evt.preventDefault();
 			menu.setContextStore(this.store);
 			menu.update(q);
-			
-			if(arg1 instanceof Vue){
-				arg2.preventDefault();
-				menu.showAt(arg2);
-			}
-			else {
-				arg1.preventDefault();
-				menu.showAt(arg1);
-			}
+			menu.showAt(evt);
 
 		},
 	},

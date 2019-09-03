@@ -54,8 +54,8 @@
 					ref="nodes"
 					class="exNode"
 					@edited="onEdited"
-					@focus="onNodeFocus"
-					@blur="onNodeBlur"
+					@focus="$emit('node:focus', $event)"
+					@blur="$emit('node:blur', $event)"
 					v-bind="node"
 				/>
 				<slot name="nodes" />
@@ -150,14 +150,6 @@
 		},
 	  
 		methods: {
-			
-			onNodeFocus: function(node){
-				this.$emit('node:focus', node);				
-			},
-			
-			onNodeBlur: function(node){
-				this.$emit('node:blur', node);
-			},
 			
 			allowDrop: function(evt){
 				evt.preventDefault();

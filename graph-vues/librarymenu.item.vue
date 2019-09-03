@@ -7,6 +7,6 @@
 		</ul>
 	</li>	
 	<li v-else :data-id="props.id" :child="1" :title="props.tooltip" >
-		<img :src="props.symbol" />&nbsp;{{parent.mQuery && parent.mQuery.searchString.length ? props.name.replace(parent.mQuery.searchString, '-' + parent.mQuery.searchString + '-') : props.name}}
+		<img :src="props.symbol" />&nbsp;<span v-html="parent._formatText(props.name)"></span>
 	</li>
 </template>

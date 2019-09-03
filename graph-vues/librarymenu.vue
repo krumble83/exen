@@ -5,13 +5,13 @@
 			<input 
 				type="text" 
 				placeholder="search..."
-				@keyup="onSearch"
-				@blur="onBlur"
+				@keyup="_onSearch"
+				@blur="_onBlur"
 				ref="input"
 			>
 		</div>
 		<div class="body" ref="body">
-			<ul @click="onClick">
+			<ul @click="_onClick">
 				<component is="Item" v-for="(item, id) in orderedItems" v-bind="item" />
 			</ul> 
 		</div>
@@ -131,18 +131,18 @@ export default {
 		setContextStore: function(store){
 			this.mContextStore = store;
 		},
-		
+		/*
 		_show: function(vue){
 			if(vue.private)
 				return false;
 			return true;
 		},
-		
+		*/
 		_sort: function(items){
 			return items.slice().sort((a, b) => (a.name > b.name) ? 1 : -1);
 		},
 		
-		onSearch: function(evt){
+		_onSearch: function(evt){
 			//console.log(this.$refs.input);
 			const me = this;
 			var s = me.$el.querySelector('li[child="1"].selected');
@@ -157,11 +157,11 @@ export default {
 					break;
 					
 				case 40: // down
-					me.selectNext()
+					me._selectNext()
 					break;
 
 				case 38: // up
-					me.selectPrevious();
+					me._selectPrevious();
 					break;
 					
 				default:
@@ -170,7 +170,7 @@ export default {
 			}
 		},
 		
-		selectNext: function(){
+		_selectNext: function(){
 			var s = this.$el.querySelector('li[child="1"].selected');
 			if(s.nextElementSibling)
 				s.nextElementSibling.classList.add('selected');
@@ -185,7 +185,7 @@ export default {
 			s.classList.remove('selected');			
 		},
 		
-		selectPrevious: function(){
+		_selectPrevious: function(){
 			var s = this.$el.querySelector('li[child="1"].selected');
 			if(s.previousElementSibling)
 				s.previousElementSibling.classList.add('selected');
@@ -196,26 +196,31 @@ export default {
 			s.classList.remove('selected');			
 		},
 		
-		onBlur: function(){
+		_formatText: function(text){
+			return (this.mQuery && this.mQuery.searchString.length) ? text.replace(this.mQuery.searchString, '<span class="highlight">' + this.mQuery.searchString + '</span>') : text;
+		},
+		
+		_onBlur: function(){
 			if(this.$refs.input)
 				this.$refs.input.focus();
 		},
 		
-		onClick: function(evt){
-			console.log(evt.srcElement.tagName != 'LI',!evt.srcElement.hasAttribute('child'));
+		_onClick: function(evt){
+			//console.log(evt.srcElement.tagName != 'LI',!evt.srcElement.hasAttribute('child'));
 			//return;
 			const me = this;
 			if(evt.srcElement.tagName != 'LI' || !evt.srcElement.hasAttribute('child'))
 				return;
+			//console.log('ty',evt.srcElement.tagName != 'LI',!evt.srcElement.hasAttribute('child'));
 			me.$emit('click', evt.srcElement);
 			me.classObject.visible = false;
 			me.$destroy();
 		},
-		
+		/*
 		getCategories: function(path){
 			body.querySelector('library').query
 		},
-		
+		*/
 		showAt: function(x, y){
 			const me = this;
 			
@@ -224,7 +229,7 @@ export default {
 				me.$parent.$el.appendChild(div);
 				me.$mount(div);
 
-				me.$once('close', function(){
+				me.$once(['close', 'click'], function(){
 					me.$el.parentNode.removeChild(me.$el);
 				});			
 			}			
@@ -323,9 +328,6 @@ export default {
 	height: 259px;
 }
 
-#exMenu .body > ul{
-}
-
 #exMenu ul,
 #exMenu li
 {
@@ -345,10 +347,21 @@ export default {
 	
 }
 
-#exMenu li[child="1"] > span.highlight
+#exMenu li[child="1"] > img{
+	vertical-align: -3px;
+	pointer-events: none;
+}
+
+#exMenu li[child="1"] > span {
+	pointer-events: none;
+
+}
+
+#exMenu li[child="1"] > span > span.highlight
 {
 	background-color: yellow;
 	color: red;
+	pointer-events: none;
 }
 
 
@@ -433,8 +446,6 @@ export default {
 }
  
 
-#exMenu img{
-	vertical-align: -3px;
-}
+
 
 </style>
