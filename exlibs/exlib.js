@@ -268,6 +268,7 @@ export const Library = {
 				inputDatatype: false,
 				outputDatatype: false,
 				private: false,
+				context: false,
 			}
 		},
 		
@@ -305,13 +306,13 @@ export const Library = {
 					qs[id] += ':not([private="true"])';
 				});
 			}
-			ret = this.$el.querySelectorAll(qs.join(','));
+			ret = Array.from(this.$el.querySelectorAll(qs.join(',')));
 			//console.log(ret);
 			
 			if(query.inputDatatype){
 				var dtype = this.getDatatype(query.inputDatatype)
 					, pack = dtype.Package;
-				return Array.from(ret).filter(function(it){
+				ret = Array.from(ret).filter(function(it){
 					if(it.querySelector('out[datatype="' + pack.id + '.' + dtype.id + '"]'))
 						return true;
 					var res = false;
@@ -326,7 +327,7 @@ export const Library = {
 			if(query.outputDatatype){
 				var dtype = this.getDatatype(query.outputDatatype)
 					, pack = dtype.Package;
-				return Array.from(ret).filter(function(it){
+				ret = Array.from(ret).filter(function(it){
 					if(it.querySelector('in[datatype="' + pack.id + '.' + dtype.id + '"]'))
 						return true;
 					var res = false;
@@ -337,7 +338,7 @@ export const Library = {
 					return res;
 				});
 			}
-			
+			this.$emit('getNodes', ret, query);
 			return ret;
 		},
 		
