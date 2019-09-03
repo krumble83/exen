@@ -41,7 +41,7 @@ export default {
 				top: 0,
 			},
 			items: [],
-			mContextStore: false,
+			//mContextStore: false,
 			mQuery: false,
 		}
 	},
@@ -113,7 +113,7 @@ export default {
 				});
 			});
 			var ret = [];
-			this.Library.$emit('librarymenu:get', ret, this.mContextStore);
+			//this.Library.$emit('librarymenu:get', ret, this.mContextStore);
 			ret.forEach(function(vu){
 				var cat = me.items;
 				if(vu.Category)
@@ -127,11 +127,11 @@ export default {
 			});
 
 		},
-		
+		/*
 		setContextStore: function(store){
 			this.mContextStore = store;
 		},
-		/*
+		
 		_show: function(vue){
 			if(vue.private)
 				return false;

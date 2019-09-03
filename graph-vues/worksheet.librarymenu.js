@@ -50,7 +50,8 @@ export default {
 				q.outputDatatype = link.getOutput().datatype;
 			
 			evt.preventDefault();
-			menu.setContextStore(this.store);
+			//menu.setContextStore(this.store);
+			q.context = this.store;
 			menu.update(q);
 			menu.showAt(evt);
 
