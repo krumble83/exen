@@ -222,23 +222,27 @@ var FunctionStore = {
 			
 		},
 		
-		setLibrary: function(state, data){
+		setLibrary: function(state, lib){
 			const me = this;
-			state.library = data;
-			state.library.Library.$on('librarymenu:get', function(data, store){
+			state.library = lib;
+			state.library.Library.$on('getNodes', function(data, query){
+				//console.log(data);
 				var el = document.createElement('div')
-					, ComponentClass = Vue.extend(Category);
-				var instance = new ComponentClass({propsData: {id: state.library.fullPath}});
-				var ret = instance.Function(state.datas.name);
+					, ComponentClass = Vue.extend(Category)
+					, instance = new ComponentClass({propsData: {id: state.library.fullPath}})
+					, ret = instance.Function(state.datas.name);
+					
 				ret.Symbol('exlibs/img/function.png');
-				data.push(ret);
-
-				if(store == me){
+				data.push(ret.$el);
+				
+				return;
+				
+				if(query.context == me){
 					ComponentClass = Vue.extend(Function);
 					instance = new ComponentClass({propsData: {id: 'exitPoint', title: 'Add Return Node...'}});
-					data.push(instance);
+					data.push(instance.$el);
 				}
-				console.log(data);
+				//console.log(data);
 			});
 		}
 	},
