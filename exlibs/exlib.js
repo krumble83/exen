@@ -384,6 +384,7 @@ export const Package = {
 	props: {
 		__ctor: {type: String, default: 'package'},
 		categories: {type: Array, default: function(){return []}},
+		label: String,
 		color: String,
 		symbol: String,
 	},
