@@ -4,8 +4,8 @@
 		style="position:absolute"
 		:store="store"
 		@edited="onEdited"
-		@node:focus="onNodeFocus"
-		@node:blur="onNodeBlur"
+		@node:focus="Blueprint.$emit('node:focus', $event)"
+		@node:blur="Blueprint.$emit('node:blur', $event)"
 	>
 		<ExTitleBar :title="name" slot="front" :toolbuttons="[]" :doToolbarAction="[]" />
 	</component>
@@ -264,7 +264,7 @@
 			onEdited: function(worksheet){
 				this.$emit('edited', worksheet);
 			},
-			
+			/*
 			onNodeFocus: function(node){
 				//console.log('node focus', node, this);
 				this.Blueprint.$emit('node:focus', node);
@@ -274,7 +274,7 @@
 				//console.log('node blur', node, this);
 				this.Blueprint.$emit('node:blur', node);
 			},
-			
+			*/
 		}
 	}
 
