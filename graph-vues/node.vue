@@ -80,12 +80,13 @@
 	import {NodeContextMenu} from './contextmenu.js'
 	
 	import ExPin from './pin.vue';
+	import ExPinAdd from './pin.add.vue';
 	
 	export default {
 		inject: ['Worksheet', 'addSvgDef', 'camelCaseToLabel'],
 		mixins: [SvgBase, NodeSelectable, NodeDraggable, NodeContextMenu],
 		//mixins: [SvgBase, NodeSelectable, NodeDraggable, NodeGrid, ContextMenu],
-		components: {ExPin},
+		components: {ExPin, ExPinAdd},
 		
 		provide: function(){
 			var me = this;
