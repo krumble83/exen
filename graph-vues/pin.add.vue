@@ -57,7 +57,7 @@
 			datatype: {type: String, required: true},
 			'max-link': Number,
 			
-			pinCtor: {type: String, default: 'ExPinBase'},
+			pinctor: {type: String, default: 'ExPinAdd'},
 			
 			optionnal: {type: Boolean, default: false},
 			isarray: Boolean,

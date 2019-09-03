@@ -71,7 +71,7 @@
 			datatype: {type: String, required: true},
 			'max-link': Number,
 			
-			pinCtor: String,
+			pinctor: String,
 			
 			optionnal: {type: Boolean, default: false},
 			isarray: Boolean,
@@ -99,7 +99,7 @@
 			},
 			
 			cPinCtor: function(){
-				return this.pinCtor || this.Library.getDatatype(this.datatype).ctor || 'ExPinBase';
+				return this.pinctor || this.Library.getDatatype(this.datatype).pinctor || 'ExPinBase';
 			},
 			
 			cColor: function(){
