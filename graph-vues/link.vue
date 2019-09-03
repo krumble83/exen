@@ -7,7 +7,7 @@
 		fill="none" 
 		@contextmenu.prevent.stop="$emit('mouse:context', $event)"
 	/>
-	<!--<line :id="id" :x1="dc1.x" :y1="dc1.y" :x2="dc2.x" :y2="dc2.y" :stroke="color" :class="classObject" :datatype="datatype" />-->
+	<!--<line :id="id" :x1="dc1.x" :y1="dc1.y" :x2="dc2.x" :y2="dc2.y" :stroke="color" :class="classObject" :datatype="mDatatype" />-->
 </template>
 
 <script>
@@ -44,10 +44,12 @@
 				gid: this.id || this.$uid(),
 				classObject: {
 					exLink: true,
+					invalid: false,
 				},
 				mInputPin: this.inputPin,
 				mOutputPin: this.outputPin,
 				mWatchers: {input: [], output: []},
+				mDatatype: this.datatype,
 				
 				dc1: {x: 0, y:0},
 				dc2: {x: 0, y:0},
@@ -64,6 +66,8 @@
 					if(!val)
 						return;
 					//console.log('watch input ', val, old);
+					
+					this.mWatchers.input.push(val.$watch('datatype', this._datatypeChange));
 					
 					this.mWatchers.input.push(val.Node.$watch('mX', this.update));
 					this.mWatchers.input.push(val.Node.$watch('mY', this.update));
@@ -83,6 +87,8 @@
 					if(!val)
 						return;
 					//console.log('watch output', this.mOutputPin);
+
+					this.mWatchers.output.push(val.$watch('datatype', this._datatypeChange));
 					
 					this.mWatchers.output.push(val.Node.$watch('mX', this.update));
 					this.mWatchers.output.push(val.Node.$watch('mY', this.update));
@@ -171,6 +177,22 @@
 				return ret;
 			},
 			
+			_datatypeChange: function(newVal, oldVal){
+				console.log('pin datatype change', arguments);
+				if(this.mInputPin && this.mOutputPin){
+					if(this.getInput().datatype == this.getOutput().datatype){
+						this.mDatatype = this.getInput().datatype;
+						this.classObject.invalid = false;
+					}
+					else
+						this.classObject.invalid = true;
+				}
+				else if(newVal != this.datatype)
+					this.classObject.invalid = true;
+				else
+					this.classObject.invalid = false;
+			},
+			
 					
 			update: function(evt){
 				var me = this;
@@ -232,6 +254,11 @@
 	.exLink {
 		stroke-width: 2;
 		pointer-events: all;
+	}
+	
+	.exLink.invalid {
+		stroke-dasharray: 5;
+		stroke-width: 4;
 	}
 	
 	.exLink:hover {

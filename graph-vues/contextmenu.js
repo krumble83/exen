@@ -66,7 +66,7 @@ export const PinContextMenu = {
 			instance.addItem({id: 'breaklinks', title: 'Break Links', desc: 'Break all links to this Pin'});
 			
 			me.$emit('cmenu', me, instance, evt);
-			me.$node.$emit('cmenu', me, instance, evt);
+			me.Node.$emit('cmenu', me, instance, evt);
 			me.$worksheet.$emit('pin:cmenu', me, instance, evt);
 			instance.showAt(evt);
 			

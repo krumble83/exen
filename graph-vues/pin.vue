@@ -199,6 +199,10 @@
 				return this.$hasFlag(F_OUTPUT);
 			},
 			
+			isIO: function(){
+				return this.$hasFlag(F_OUTPUT) && this.$hasFlag(F_INPUT);
+			},
+			
 			addLink: function(link){
 				var me = this;
 				me.classObject.linked = true;

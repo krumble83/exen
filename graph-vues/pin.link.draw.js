@@ -45,7 +45,7 @@ const LinkDraw = {
 			var me = this;
 			document.removeEventListener('mousemove', me.drawUpdate);
 			me.$emit('draw:stop', evt);
-			me.$parent.$emit('link:draw:stop', me, evt);
+			me.$parent.$emit('link:draw:stop', evt, me);
 			if(evt.defaultPrevented)
 				return;
 			if(!me.mInputPin || !me.outputPin){
@@ -152,9 +152,9 @@ export default {
 			if(me == link.getInput() || me == link.getOutput())
 				return 1;
 			
-			if(link.getInput() && link.getInput().$node == me.$node)
+			if(link.getInput() && link.getInput().Node == me.Node)
 				return 2;			
-			if(link.getOutput() && link.getOutput().$node == me.$node)
+			if(link.getOutput() && link.getOutput().Node == me.Node)
 				return 2;
 
 			if(me.isInput() && link.getInput())
