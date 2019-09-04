@@ -28,14 +28,14 @@
 		</datatype>
 		
 		
-		<struct id="date" label="DateTime Structure">
+		<structure id="date" label="DateTime Structure">
 			<member id="year" datatype="core.type.int" label="Year" />
 			<member id="month" datatype="core.type.int" label="Month" />
 			<member id="day" datatype="core.type.int" label="Day" />
 			<member id="hour" datatype="core.type.int" label="Hour" />
 			<member id="minutes" datatype="core.type.int" label="Minute" />
 			<member id="seconds" datatype="core.type.int" label="Seconds" />
-		</struct>
+		</structure>
 	</package>
 </template>
 

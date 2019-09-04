@@ -36,8 +36,8 @@
 			</function>
 			<function id="sequence" title="Sequence" color="#C3C3C3" symbol="exlibs/core/img/sequence.png" keywords="sequence,then" tooltip="Execute a serie of pins in order. Click the Add pin button to add a new sequence">
 				<entry />
-				<out id="then" datatype="core.exec" label="Then [0]" group="1" />
-				<out id="add" datatype="special.add" label="Add pin" target="then" tooltip="Add a new action to the sequence." />
+				<out id="then" datatype="core.exec" label="Then" group="1" />
+				<out id="add" datatype="special.add" label="Add pin" target="1" tooltip="Add a new action to the sequence." />
 			</function>
 			<function id="selectBool" title="Select (Bool)" color="#C3C3C3" keywords="select bool" symbol="exlibs/core/img/select.png">
 				<in id="a" datatype="core.wildcards" group="1" />
