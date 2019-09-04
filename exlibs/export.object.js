@@ -29,7 +29,7 @@ In.mixins.push({
 	methods: {
 		toObject: function(parent){
 			const me = this
-				, exp = ['label', 'description', 'flags', 'color', 'datatype', 'ctor', 'pinctor', 'optional', 'isarray', 'group']
+				, exp = ['label', 'description', 'flags', 'color', 'datatype', 'ctor', 'pinctor', 'optional', 'isarray', 'group', 'target']
 				, ret = {name: me.id}
 
 			parent.inputs = parent.inputs || [];
@@ -49,7 +49,7 @@ Out.mixins.push({
 	methods: {
 		toObject: function(parent){
 			const me = this
-				, exp = ['label', 'description', 'flags', 'color', 'datatype', 'ctor', 'pinctor', 'optional', 'isarray', 'group']
+				, exp = ['label', 'description', 'flags', 'color', 'datatype', 'ctor', 'pinctor', 'optional', 'isarray', 'group', 'target']
 				, ret = {name: me.id}
 
 			parent.outputs = parent.outputs || [];

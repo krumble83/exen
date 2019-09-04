@@ -575,6 +575,7 @@ export const Pin = {
 		description: String,
 		group: String,
 		required: {type: Boolean, default: false},
+		target: String,
 	},
 	
 	data: function(){
@@ -692,21 +693,21 @@ export const Value = {
 Extend(Enum, Editor, 'Value');
 Vue.config.ignoredElements.push('value');
 
-export const Struct = {
+export const Structure = {
 	extends: Datatype,
 	mixins: [],
 	
 	props: {
-		__ctor: {type: String, default: 'class'},
+		__ctor: {type: String, default: 'structure'},
 		color: {type: String, default: '#0057c8'},
 		ctor: {type: String, default: "PinStructure"},
 	},
 }
-Extend(Package, Category, 'Struct');
-Vue.config.ignoredElements.push('struct');
+Extend(Package, Category, 'Structure');
+Vue.config.ignoredElements.push('structure');
 
 export const Class = {
-	extends: Struct,
+	extends: Structure,
 	mixins: [],
 	
 	props: {
@@ -755,7 +756,7 @@ export const Member = {
 		static: {type: Boolean, default: false},
 	},
 }
-Extend(Class, Struct, 'Member');
+Extend(Class, Structure, 'Member');
 Vue.config.ignoredElements.push('member');
 
 
