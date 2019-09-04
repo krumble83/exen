@@ -1,6 +1,6 @@
 <template>
 	<package id="special">
-		<datatype id="add" ctor="PinAdd" color="#fff" />
+		<datatype id="add" ctor="PinAdd" pinctor="PinAdd" color="#fff" />
 		<function id="reroutenode" title="Add reroute Node..." ctor="RereouteNode">
 			<in id="in" datatype="core.wildcards" group="1" />
 			<out id="out" datatype="core.wildcards" group="1" />
