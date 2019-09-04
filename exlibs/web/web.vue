@@ -213,9 +213,9 @@
 			
 			</class>
 			
-			<struct id="StyleSheet">
+			<structure id="StyleSheet">
 			
-			</struct>
+			</structure>
 			
 			<class id="DOMImplementation">
 			
