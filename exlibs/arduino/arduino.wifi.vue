@@ -14,36 +14,36 @@
 				</editor>
 			</enum>
 			<class id="Connection" label="Arduino WiFi Network Object" color="#55f" inherits="core.object">
-				<method id="begin" title="WiFi.begin()" color="#87663f" symbol="lib/img/esp8266.png" keywords="wifi connect,connect wifi">
+				<method id="begin" title="WiFi.begin()" color="#87663f" symbol="exlibs/img/arduino.png" keywords="wifi connect,connect wifi">
 					<entry /><exit />
 					<in id="ssid" datatype="core.type.string" />
 					<in id="password" datatype="core.type.string" />
 					<out id="status" datatype="status" />
 				</method>
-				<method id="localip" title="WiFi.localIP()" color="#87663f" symbol="lib/img/esp8266.png" keywords="wifi ip,ip wifi,local ip">
+				<method id="localip" title="WiFi.localIP()" color="#87663f" symbol="exlibs/img/arduino.png" keywords="wifi ip,ip wifi,local ip">
 					<out id="localip" datatype="network.type.ip" label="WiFi local IP" />
 				</method>
 			</class>
 			<class id="WiFiClient" label="Arduino WiFi Client Object" color="#55f" inherits="core.object">
-				<method id="connect" title="WiFiClient.connect() (url)" color="#87663f" symbol="lib/img/esp8266.png" keywords="wifi,connect">
+				<method id="connect" title="WiFiClient.connect() (url)" color="#87663f" symbol="exlibs/img/arduino.png" keywords="wifi,connect">
 					<entry /><exit />
 					<in id="target" datatype="WiFiClient" :flags="4194304" />
-					<in id="host" type="core.type.string" />
-					<in id="port" type="core.type.int" />
-					<out id="success" type="core.type.bool" />
+					<in id="host" datatype="core.type.string" />
+					<in id="port" datatype="core.type.int" />
+					<out id="success" datatype="core.type.bool" />
 				</method>
-				<method id="connectip" title="WiFiClient.connect() (ip)" color="#87663f" symbol="lib/img/esp8266.png" keywords="wifi,connect">
+				<method id="connectip" title="WiFiClient.connect() (ip)" color="#87663f" symbol="exlibs/img/arduino.png" keywords="wifi,connect">
 					<entry /><exit />
 					<in id="target" datatype="WiFiClient" :flags="4194304" />
-					<in id="host" type="network.type.ip" />
-					<in id="port" type="core.type.int" />
-					<out id="success" type="core.type.bool" />
+					<in id="host" datatype="network.type.ip" />
+					<in id="port" datatype="core.type.int" />
+					<out id="success" datatype="core.type.bool" />
 				</method>
-				<method id="connected" title="WiFiClient.connected()" color="#aaeea0" symbol="lib/img/function.png" keywords="wifi,connected">
+				<method id="connected" title="WiFiClient.connected()" color="#aaeea0" symbol="exlibs/img/function.png" keywords="wifi,connected">
 					<in id="target" datatype="WiFiClient" :flags="4194304" />
 					<out id="connected" datatype="core.type.bool" />
 				</method>
-				<method id="stop" title="WiFiClient.stop()" color="#87663f" symbol="lib/img/esp8266.png" keywords="wifi,stop">
+				<method id="stop" title="WiFiClient.stop()" color="#87663f" symbol="exlibs/img/arduino.png" keywords="wifi,stop">
 					<entry /><exit />
 					<out id="target" datatype="WiFiClient" :flags="4194304" />
 				</method>

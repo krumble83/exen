@@ -1,7 +1,8 @@
 <template>
 	<svg 
-		:id="gid"
+		:id="uid"
 		:class="classObject"
+		:data-name="name"
 		@mousedown.right.stop=""
 		@mousedown.left.stop="$emit('mouse:leftdown', $event)"
 		@mouseup.left.stop="$emit('mouse:leftup', $event)"
@@ -33,7 +34,7 @@
 			class="label" 
 			ref="label"
 		>
-		{{cLabel}}
+			{{cLabel}}
 		</text>
 		<component 
 			v-if="!$hasFlag('F_OUTPUT') && mEditor && mLinkCount < 1" 
@@ -86,6 +87,7 @@
 				classObject: {
 					exPin: true,
 					linkable: true,
+					hidden: false,
 				},
 				mLinkCount: 0,
 				mEditor: this.editor,
@@ -115,7 +117,7 @@
 		},
 		
 		watch: {
-			label: function(){
+			mLabel: function(){
 				var me = this;
 					me.update(true);
 			},

@@ -63,9 +63,10 @@ export default {
 			var lnode = this.Library.getNode(id)
 				, newNode = lnode ? lnode.toObject() : false;
 			if(newNode){
-				newNode.x = evt.clientX;
-				newNode.y = evt.clientY;
-				this.store.commit('addNode', lnode.toObject());
+				var pos = this.mouseToSvg(evt);
+				newNode.x = pos.x;
+				newNode.y = pos.y;
+				this.store.commit('addNode', newNode);
 			}
 		}
 	},

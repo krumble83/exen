@@ -108,7 +108,7 @@ function uid(prefix){
 		
 function newNode(){
 	return {
-		uid: uid(),
+		uid: uid('node'),
 		name: '',
 		flags: 0,
 		x: 200,
@@ -184,18 +184,23 @@ var FunctionStore = {
 		},
 		
 		addNode: function(state, data){
+			//console.log('store.blueprint.function:addNode', data);
 			var d = newNode();
 			stateMerge(d, data);
 			data.uid = d.uid;
 			state.nodes.push(d);
 		},
 		
-		addIo: function(state, data){
-			console.assert(data.flags);
-			if((data.flags & F_INPUT) == F_INPUT)
-				this.commit('addInput', data);
+		addNodeIo: function(state, data){
+			var node = this.getters.getNode(data.node);
+			console.assert(node && data.props.flags);
+						
+			if((data.props.flags & F_INPUT) == F_INPUT)
+				node.inputs.splice(data.pos ? data.pos : node.inputs.length, 0, data.props);
+				//node.inputs.push(data.props); //months.splice(1, 0, 'Feb');
 			else
-				this.commit('addOutput', data);
+				node.outputs.splice(data.pos ? data.pos : node.outputs.length, 0, data.props);
+				//node.outputs.push(data.props);
 		},
 		
 		addInput: function(state, data){
@@ -239,7 +244,7 @@ var FunctionStore = {
 	getters: {
 		getNode: (state, getters, rootState) => (uid) => {
 			if(uid)
-				return state.nodes.find(it => it.uid == uid || it.name == uid);
+				return state.nodes.find(it => it.uid == uid);
 			else
 				return state.nodes;
 		},

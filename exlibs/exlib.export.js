@@ -1,5 +1,5 @@
 
-import {Function, In, Out} from './default.export.js';
+import {Function, In, Out, Member} from './default.export.js';
 
 
 Function.mixins.push({
@@ -60,6 +60,23 @@ Out.mixins.push({
 			});
 			
 			parent.outputs.push(ret);
+		}
+	}
+});
+
+Member.mixins.push({
+	methods: {
+		toObject: function(parent){
+			const me = this
+				, exp = ['label', 'description', 'flags', 'datatype', 'isarray']
+				, ret = {name: me.id}
+
+			exp.forEach(function (id){
+				if(me[id] != undefined)
+					ret[id] = me[id];
+			});
+			
+			return ret;
 		}
 	}
 });

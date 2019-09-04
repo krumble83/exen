@@ -1,6 +1,6 @@
 <template>
 	<path 
-		:id="gid" 
+		:id="uid" 
 		:stroke="cColor" 
 		:class="classObject"
 		:d="'M' + dc1.x + ',' + dc1.y + ' C' + (dp1.x) + ',' + dp1.y + ' ' + (dp2.x) + ',' + dp2.y + ' ' + dc2.x + ',' + dc2.y" 
@@ -39,7 +39,7 @@
 
 		data: function(){
 			return {
-				gid: this.id || this.$uid(),
+				uid: this.id || this.$uid('link'),
 				classObject: {
 					exLink: true,
 					invalid: false,
@@ -161,7 +161,7 @@
 				me.mInputPin.Node.$off('remove', me.$destroy);
 			}
 			if(me.mOutputPin){
-				me.mInputPin.removeLink(me);
+				me.mOutputPin.removeLink(me);
 				me.mOutputPin.Node.$off('remove', me.$destroy);
 			}
 			//if(me.$parent)

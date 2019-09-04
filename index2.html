@@ -63,7 +63,8 @@ function test(){
 			import App from './ui-vues/project.vue';
 			console.log(App);
 
-			import './exlibs/export.object.js';
+			import './exlibs/exlib.export.js';
+			import './exlibs/exlib.construct.js';
 
 			import './exlibs/app.vue';
 			
@@ -88,6 +89,7 @@ function test(){
 			import './exlibs/arduino/arduino.sdcard.vue';
 			import './exlibs/arduino/arduino.io.analog.vue';
 			import './exlibs/arduino/arduino.io.digital.vue';
+			import './exlibs/arduino/arduino.wifi.vue';
 
 			import './exlibs/os/os.file.vue';
 			import './exlibs/web/web.vue';
@@ -95,6 +97,7 @@ function test(){
 			import './ui-vues/blueprint.graph.vue';
 			import './ui-vues/blueprint.function.vue';
 			import './ui-vues/blueprint.variable.vue';
+
 			
 			var test = new Vue(App);
 			test.createProject();
@@ -102,7 +105,8 @@ function test(){
 			test.packages.push('libCore', 'libCoreDatatype', 'App', 
 				'libCoreTypeInt', 'libCoreFlow', 'libCoreTypeFloat', 'libCoreArray', 'libCoreTypeBool', 'libCoreTypeString'
 				, 'libCoreTypeByte', 'libCoreDate', 'libArduinoCore','libArduinoEeprom', 'libArduinoSerial'
-				, 'libOsFile', 'libArduinoSpi', 'libArduinoIoDigital', 'libArduinoIoAnalog', 'libArduinoSdcard', 'libWeb'
+				, 'libOsFile', 'libArduinoSpi', 'libArduinoIoDigital', 'libArduinoIoAnalog', 'libArduinoSdcard', 'libArduinoWifi'
+				, 'libWeb'
 				, 'libSpecial'
 				);
 

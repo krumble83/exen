@@ -48,7 +48,7 @@
 				evt.stopPropagation();
 				if(this.action && typeof this.$root[this.action] === 'function')
 					this.$root[this.action]();
-				if(typeof this.callback === 'function')
+				if(typeof this.callback == 'function')
 					this.callback();
 				if(this.emit)
 					this.$root.$emit(this.emit);

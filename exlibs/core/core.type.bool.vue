@@ -70,7 +70,16 @@
 				<out id="output" datatype="core.type.bool" tooltip="True if a != b" />
 			</function>
 		</category>
-		
+
+		<category id="Utilities/Flow Control">
+			<function id="selectBool" title="Select (Bool)" color="#C3C3C3" keywords="select bool" symbol="exlibs/core/img/select.png">
+				<in id="a" datatype="core.wildcards" group="1" />
+				<in id="b" datatype="core.wildcards" group="1" />
+				<in id="pickA" datatype="core.type.bool" />
+				<out id="returnValue" datatype="core.wildcards" group="1" />
+			</function>
+		</category>
+
 	</package>
 </template>
 

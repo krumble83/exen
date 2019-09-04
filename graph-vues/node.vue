@@ -2,7 +2,7 @@
 	<svg
 		:class="classObject"
 		:style="styleObject"
-		:id="gid"
+		:id="uid"
 		:x="mX" 
 		:y="mY" 
 		:width="mWidth" 
@@ -83,6 +83,7 @@
 	
 	import ExPin from './pin.vue';
 	import PinAdd from './pin.add.vue';
+	import PinStructure from './pin.structure.vue';
 	import PinWildcards from './pin.wildcards.vue';
 	
 	const ctorCache = {};
@@ -91,7 +92,7 @@
 		inject: ['Worksheet', 'addSvgDef', 'camelCaseToLabel'],
 		mixins: [SvgBase, NodeSelectable, NodeDraggable, NodeContextMenu],
 		//mixins: [SvgBase, NodeSelectable, NodeDraggable, NodeGrid, ContextMenu],
-		components: {ExPin, PinAdd, PinWildcards},
+		components: {ExPin, PinAdd, PinStructure, PinWildcards},
 		
 		provide: function(){
 			var me = this;
@@ -298,6 +299,11 @@
 				return this.getInput(name) || this.getOutput(name);
 			},
 			
+			getPins: function(func){
+				var ret = this.$refs.inputs.filter(func);
+				return ret.concat(this.$refs.outputs.filter(func))
+			},
+
 			getInput: function(name){
 				if(name)
 					return this.$refs.inputs.find(pin => pin.name == name);

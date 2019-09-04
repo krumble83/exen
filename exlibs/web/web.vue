@@ -312,7 +312,7 @@
 			<function id="appendchild" title="appendChild()" color="#78c8fe" symbol="exlibs/img/function.png" keywords="append child,child append">
 				<entry /><exit />
 				<in id="parent" datatype="element" />
-				<in id="child" datatype="element" label="Child [0]" />
+				<in id="child" datatype="element" label="Child" />
 				<out id="add" datatype="special.add" label="Add Child" target="child" tooltip="Add a new Children." />
 			</function>
 			<function id="appendchildsarray" title="appendChildsArray()" color="#78c8fe" symbol="exlibs/img/function.png" keywords="append childs,childs append">

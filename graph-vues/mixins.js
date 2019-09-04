@@ -55,7 +55,7 @@ export {WorksheetHelpers};
 export const SvgBase = {
 	//mixins: [WorksheetHelpers],
 	props: {
-		gid: {type: String, default: function(){return Vue.options.methods.$uid()}},
+		uid: {type: String, default: function(){return Vue.options.methods.$uid('svg')}},
 		x: {type: Number, default: 0}, 
 		y: {type: Number, default: 0}, 
 		width: {type: Number, default: 100}, 

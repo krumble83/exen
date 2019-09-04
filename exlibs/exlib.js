@@ -1,71 +1,5 @@
 Vue.config.ignoredElements = [];
-//Vue.config.ignoredElements = ['datatype', 'Datatype', 'Class', 'class', 'package', 'Package'];
 
-
-
-/*
-function componentFactory(slot) {
-	return new Promise((resolve, reject) => {
-		window.setTimeout(() => { // Asynchronous fetching
-			resolve({ // Return the actual component
-				template: `<div>
-					${slot}
-				 </div>`,
-				methods: {
-					submit() {
-						console.log('hello');
-					}
-				}
-			});
-		}, 1000);
-	});
-}
-
-componentFactory('<button @click="submit">OK</button>') // Build the component
-  .then(component => {
-    new Vue({ // Instantiate vue
-      el: '#app',
-      components: {
-        builtComponent: component
-      }
-    });
-  });
-
-*/
-
-
-function Extend(){
-	var args = Array.prototype.slice.call(arguments);
-	
-	if(args.length === 1)
-		return;
-
-	var tok = args.shift()
-		, name = args[args.length - 1];
-	var ret = {methods: {}};
-	var f = function(obj){
-		if(!obj)
-			return this._create(name,{});
-		var id = (typeof obj == 'string') ? obj : obj.id;
-		obj = (typeof obj == 'string') ? {id: obj} : obj;
-		//console.log('----', obj, name);
-		//console.assert(obj.id, 'YOU MUST PROVIDE ID');
-		return this.$children.find(it => it.id == id) || this._create(name, obj);
-		//return this._create(name, obj);
-	}
-	ret.methods[name] = f;
-	tok.mixins.push(ret)
-	Extend.apply(this, args);
-}
-
-
-
-const IdPackageId = {
-	created: function(){
-		//console.log('**', this.Package);
-		this._id = this.Package.id + '.' + this.id;
-	}	
-}
 
 const SplitPackageName = {
 	methods : {
@@ -74,11 +8,6 @@ const SplitPackageName = {
 		}
 	}
 }
-
-//const ignoreImports = ['id', 'childs'];
-
-
-
 
 export const Base = {
 	//components: {},
@@ -375,12 +304,6 @@ export const Library = {
 		},
 			
 	},
-	
-	zrender: function(createElement){
-		return createElement('library',
-			'slot'
-		);
-	}
 }
 Vue.config.ignoredElements.push('library');
 
@@ -406,7 +329,6 @@ export const Package = {
 		}
 	}
 }
-Extend(Library, 'Package');
 Vue.config.ignoredElements.push('package');
 
 
@@ -447,7 +369,6 @@ export const Category = {
 		},
 	}
 }
-Extend(Package, Category, 'Category');
 Vue.config.ignoredElements.push('category');
 
 
@@ -501,7 +422,6 @@ export const Function = {
 		private:  {type: Boolean, default: false},
 	}
 }
-Extend(Package, Category, 'Function');
 Vue.config.ignoredElements.push('function');
 
 export const Datatype = {
@@ -551,7 +471,6 @@ export const Datatype = {
 		}
 	}
 }
-Extend(Package, Category, 'Datatype');
 Vue.config.ignoredElements.push('datatype');
 
 
@@ -601,7 +520,6 @@ export const In = {
 		flags: {type: Number, default: F_INPUT},
 	}
 }
-Extend(Node, Function, 'In');
 Vue.config.ignoredElements.push('in');
 
 export const Out = {
@@ -613,7 +531,6 @@ export const Out = {
 		flags: {type: Number, default: F_OUTPUT},
 	},
 }
-Extend(Node, Function, 'Out');
 Vue.config.ignoredElements.push('out');
 
 export const Entry = {
@@ -625,7 +542,6 @@ export const Entry = {
 		datatype: {type: String, default: 'core.exec'},
 	},
 }
-Extend(Node, 'Entry');
 Vue.config.ignoredElements.push('entry');
 
 export const Exit = {
@@ -637,7 +553,6 @@ export const Exit = {
 		datatype: {type: String, default: 'core.exec'},
 	},
 }
-Extend(Node, 'Exit');
 Vue.config.ignoredElements.push('exit');
 
 
@@ -652,7 +567,6 @@ export const Editor = {
 		ctor: String,
 	}
 }
-Extend(Pin, Datatype, 'Editor');
 Vue.config.ignoredElements.push('editor');
 
 export const Pattern = {
@@ -665,7 +579,6 @@ export const Pattern = {
 		flags: {type: String},
 	}
 }
-Extend(Package, Category, Editor, 'Pattern');
 Vue.config.ignoredElements.push('pattern');
 
 
@@ -678,7 +591,6 @@ export const Enum = {
 		color: {type: String, default: '#8000FF'},
 	},
 }
-Extend(Package, Category, 'Enum');
 Vue.config.ignoredElements.push('enum');
 
 export const Value = {
@@ -690,7 +602,6 @@ export const Value = {
 		value: Number,
 	},
 }
-Extend(Enum, Editor, 'Value');
 Vue.config.ignoredElements.push('value');
 
 export const Structure = {
@@ -703,7 +614,6 @@ export const Structure = {
 		ctor: {type: String, default: "PinStructure"},
 	},
 }
-Extend(Package, Category, 'Structure');
 Vue.config.ignoredElements.push('structure');
 
 export const Class = {
@@ -716,7 +626,6 @@ export const Class = {
 	},
 
 }
-Extend(Package, Category, 'Class');
 Vue.config.ignoredElements.push('class');
 
 
@@ -729,7 +638,6 @@ export const Interface = {
 	},
 
 }
-Extend(Package, Category, 'Interface');
 Vue.config.ignoredElements.push('interface');
 
 
@@ -741,7 +649,6 @@ export const Method = {
 		__ctor: {type: String, default: 'method'},
 	},
 }
-Extend(Class, 'Method');
 Vue.config.ignoredElements.push('method');
 
 export const Member = {
@@ -756,7 +663,6 @@ export const Member = {
 		static: {type: Boolean, default: false},
 	},
 }
-Extend(Class, Structure, 'Member');
 Vue.config.ignoredElements.push('member');
 
 
@@ -770,8 +676,6 @@ export const Device = {
 		__ctor: {type: String, default: 'device'},
 	},
 }
-Extend(Package, Category, 'Device');
-Extend(Device, 'Category');
 Vue.config.ignoredElements.push('device');
 
 export const Component = {
@@ -784,7 +688,6 @@ export const Component = {
 		label: String,
 	},
 }
-Extend(Device, 'Component');
 Vue.config.ignoredElements.push('component');
 
 
@@ -801,7 +704,6 @@ export const Provide = {
 		component: String,
 	},
 }
-Extend(Device, Component, 'Provide');
 Vue.config.ignoredElements.push('provide');
 
 export const Require = {
@@ -814,7 +716,6 @@ export const Require = {
 		component: String,
 	},
 }
-Extend(Device, Component, 'Require');
 Vue.config.ignoredElements.push('require');
 
 

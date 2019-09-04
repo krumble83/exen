@@ -135,7 +135,7 @@
 		
 		<category id="Utilities/Flow Control">
 			<function id="selectInt" title="Select (Int)" keywords="select int" symbol="exlibs/core/img/selectint.png" color="#C3C3C3">
-				<in id="in" datatype="core.wildcards" label="in [0]" group="1" />
+				<in id="in" datatype="core.wildcards" label="in" group="1" />
 				<in id="pick" datatype="core.type.int" />
 				<out id="returnValue" datatype="core.wildcards" group="1" />
 				<out id="add" datatype="special.add" label="Add pin" target="in" tooltip="Add a new input." />

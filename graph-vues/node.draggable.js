@@ -4,6 +4,7 @@ import {WorksheetHelpers} from './mixins.js';
 
 export default {
 	mixins: [WorksheetHelpers],
+	inject: ['Store'],
 	
 	created: function(){
 		this.$on('mouse:leftdown', this.dragMouseDown);
@@ -67,7 +68,7 @@ export default {
 						me.classObject.dragging = false;
 						document.removeEventListener('mousemove', moveFn);
 						if(me.mX != startPos.x || me.mY != startPos.y){
-							me.Worksheet.store.commit('changeNodeProperty', {node: me.id, props: {x: me.mX, y: me.mY}});
+							me.Store.commit('changeNodeProperty', {node: me.id, props: {x: me.mX, y: me.mY}});
 							me.$emit('drag:end', evt, me);
 							me.Worksheet.$emit('node:drag:stop', me, evt);
 							//this.$worksheet.$emit('node:dragend', evt, this);

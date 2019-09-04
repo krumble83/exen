@@ -35,7 +35,7 @@ export const NodeContextMenu = {
 			instance.addSeparator();
 			instance.addItem({id: 'breaklinks', title: 'Break Links', desc: 'Break all links to this Node'});
 			
-			me.$emit('cmenu', me, instance, evt);
+			me.$emit('cmenu', instance, evt);
 			me.Worksheet.$emit('node:cmenu', me, instance, evt);
 			instance.showAt(evt);
 
@@ -65,7 +65,7 @@ export const PinContextMenu = {
 			instance.addTitle('Pin');
 			instance.addItem({id: 'breaklinks', title: 'Break Links', desc: 'Break all links to this Pin'});
 			
-			me.$emit('cmenu', me, instance, evt);
+			me.$emit('cmenu', instance, evt);
 			me.Node.$emit('cmenu', me, instance, evt);
 			me.Worksheet.$emit('pin:cmenu', me, instance, evt);
 			instance.showAt(evt);

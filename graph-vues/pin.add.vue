@@ -3,6 +3,7 @@
 	
 	export default {
 		extends : ExPin,
+		inject: ['Store'],
 		
 		props: {
 			target: String,
@@ -48,9 +49,10 @@
 			
 			_updatePinGroup: function(){
 				const me = this
-					, group = me.Node.getPinGroup(me.target);
+					, regex = new RegExp('^' + me.target + '(\[[0-9]+\])*$')
+					, pins = me.Node.getPins(function(pin){return regex.test(pin.name)});
 				var a = 0;
-				group.forEach(function(pin){
+				pins.forEach(function(pin){
 					pin.mLabel = pin.label + ' [' + a + ']';
 					a++;
 				});				
@@ -58,20 +60,24 @@
 			
 			_onClick: function(evt){
 				const me = this
-					, group = me.Node.getPinGroup(me.target)
-					, firstPin = group[0]
-					, node = me.Worksheet.store.getters.getNode(me.Node.name)
-					, pin = (firstPin.isInput()) ? node.inputs.find(it => it.name == firstPin.name) : node.outputs.find(it => it.name == firstPin.name)
+					, node = me.Store.getters.getNode(me.Node.uid)
+					, target = node.inputs.find(it => it.name == me.target) || node.outputs.find(it => it.name == me.target)
+					, regex = new RegExp('^' + me.target + '(\[[0-9]+\])*$')
+					, pins = me.Node.getPins(function(pin){return regex.test(pin.name)})
+					, lastPin = pins[pins.length-1]
+
+				var clone = JSON.parse(JSON.stringify(target));
+				var a = 1;
+				while(me.Node.getPin(clone.name + '[' + a + ']'))
+					a++;
 				
-				var clone = JSON.parse(JSON.stringify(pin));
-				clone.name += '_' + group.length;
+				clone.name = clone.name + '[' + a + ']';
 				
-				if(firstPin.isInput())
-					node.inputs.splice(node.inputs.indexOf(pin)+1, 0, clone);
+				if((target.flags & F_INPUT) == F_INPUT)
+					me.Store.commit('addNodeIo', {node: node.uid, pos: node.inputs.indexOf(lastPin), props: clone});
 				else
-					node.outputs.splice(node.outputs.indexOf(pin)+1, 0, clone);
-				//node.outputs.push(clone);
-				
+					me.Store.commit('addNodeIo', {node: node.uid, pos: node.outputs.indexOf(lastPin), props: clone});
+
 				this.$nextTick(function(){
 					me._updatePinGroup();
 				});

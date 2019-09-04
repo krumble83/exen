@@ -37,19 +37,13 @@
 			<function id="sequence" title="Sequence" color="#C3C3C3" symbol="exlibs/core/img/sequence.png" keywords="sequence,then" tooltip="Execute a serie of pins in order. Click the Add pin button to add a new sequence">
 				<entry />
 				<out id="then" datatype="core.exec" label="Then" group="1" />
-				<out id="add" datatype="special.add" label="Add pin" target="1" tooltip="Add a new action to the sequence." />
-			</function>
-			<function id="selectBool" title="Select (Bool)" color="#C3C3C3" keywords="select bool" symbol="exlibs/core/img/select.png">
-				<in id="a" datatype="core.wildcards" group="1" />
-				<in id="b" datatype="core.wildcards" group="1" />
-				<in id="pickA" datatype="core.type.bool" />
-				<out id="returnValue" datatype="core.wildcards" group="1" />
+				<out id="add" datatype="special.add" label="Add pin" target="then" tooltip="Add a new action to the sequence." />
 			</function>
 			<function id="switch" title="Switch on Int" color="#C3C3C3" keywords="switch">
 				<entry />
 				<in id="selection" datatype="core.type.int" />
 				<out id="default" datatype="core.exec" />
-				<out id="out" datatype="core.exec" label="value 0" />
+				<out id="out" datatype="core.exec" label="value" />
 				<out id="add" datatype="special.add" label="Add" target="out" />
 			</function>
 		</category>

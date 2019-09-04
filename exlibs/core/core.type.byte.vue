@@ -5,7 +5,7 @@
 				<in id="in" datatype="core.type.byte" />
 				<out id="value" datatype="core.type.byte" label="Byte" />
 			</function>
-			<function id="tobit" title="Byte to Bit" color="#aaeea0" symbol="exlibs/img/function.png">
+			<function id="tobit" title="Byte to Bit" color="#aaeea0" symbol="exlibs/img/function.png" keywords="byte bit">
 				<in id="byte" datatype="core.type.byte" />
 				<out id="bit0" datatype="core.type.bool" label="Bit 0" />	
 				<out id="bit1" datatype="core.type.bool" label="Bit 1" />
@@ -16,7 +16,7 @@
 				<out id="bit6" datatype="core.type.bool" label="Bit 6" />
 				<out id="bit7" datatype="core.type.bool" label="Bit 7" />
 			</function>
-			<function id="tobyte" title="Bit to Byte" color="#aaeea0" symbol="exlibs/img/function.png">
+			<function id="tobyte" title="Bit to Byte" color="#aaeea0" symbol="exlibs/img/function.png" keywords="byte bit">
 				<in id="bit0" datatype="core.type.bool" label="Bit 0" />
 				<in id="bit1" datatype="core.type.bool" label="Bit 1" />
 				<in id="bit2" datatype="core.type.bool" label="Bit 2" />
@@ -59,9 +59,9 @@
 		<category id="Byte/Arithmetic">
 			<function id="add" ctor="NodeOp" color="#555" symbol="exlibs/core/img/op.add.png" keywords="add,+" subtitle="+" title="Byte + Byte">				
 				<in id="a" datatype="core.type.byte" label=" " />
-				<in id="b" datatype="core.type.byte" label=" " />
+				<in id="a[1]" datatype="core.type.byte" label=" " />
 				<out id="output" datatype="core.type.byte" />
-				<out id="add" datatype="special.add" label="Add Item" target="a" tooltip="Add a new value." />
+				<out id="add" datatype="special.add" label="Add Value" target="a" tooltip="Add a new value." />
 			</function>
 			<function id="sub" ctor="NodeOp" color="#555" symbol="exlibs/core/img/op.sub.png" keywords="sub,-" subtitle="-" title="Byte - Byte">
 				<in id="a" datatype="core.type.byte" label=" " />
@@ -104,6 +104,15 @@
 				<in id="a" datatype="core.type.byte" />
 				<in id="b" datatype="core.type.byte" />
 				<out id="output" datatype="core.type.bool" tooltip="True if a >= b" />
+			</function>
+		</category>
+		
+		<category id="Utilities/Flow Control">
+			<function id="selectByte" title="Select (Byte)" keywords="select byte" symbol="exlibs/core/img/selectint.png" color="#C3C3C3">
+				<in id="in" datatype="core.wildcards" label="in" group="1" />
+				<in id="pick" datatype="core.type.byte" />
+				<out id="returnValue" datatype="core.wildcards" group="1" />
+				<out id="add" datatype="special.add" label="Add pin" target="in" tooltip="Add a new input." />
 			</function>
 		</category>
 	</package>

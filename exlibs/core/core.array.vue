@@ -1,6 +1,11 @@
 <template>
 	<package id="core.array">
 		<category id="Utilities/Array">
+			<function id="make" title="Make Array" color="#C3C3C3" symbol="exlibs/img/array.png" keywords="array create,create array,makearray,arraymake">
+				<in id="item" datatype="core.wildcards" label="Item" group="1" />
+				<out id="array" datatype="core.wildcards[]" group="1" />
+				<out id="add" datatype="special.add" label="Add Item" target="item" tooltip="Add a new Item to Array." />
+			</function>
 			<function id="get" title="Get array item" color="#C3C3C3" symbol="exlibs/img/array.png" keywords="array get,get array,get item,arrayget">
 				<in id="array" datatype="core.wildcards[]" group="1" tooltip="The array to get the item from" />
 				<in id="index" datatype="core.type.int" tooltip="The index in the array to get the item from" />
@@ -12,7 +17,6 @@
 			</function>
 			<function id="set" title="Set Array Item" color="#C3C3C3" symbol="exlibs/img/array.png" keywords="array set item,set item array,item set array">
 				<entry /><exit />
-				<in id="entry" datatype="core.exec" />
 				<in id="array" datatype="core.wildcards[]" group="1" :flags="4194304" tooltip="The array to perform the operation on" />
 				<in id="index" datatype="core.type.int" tooltip="The index to assign the item to" />
 				<in id="item" datatype="core.wildcards" group="1" tooltip="The item to assign to the index of the array." />
@@ -20,15 +24,9 @@
 			</function>
 			<function id="add" title="Add Array Item" color="#C3C3C3" symbol="exlibs/img/array.png" keywords="array add item,add item array,item append array,append array item, array append">
 				<entry /><exit />
-				<in id="entry" datatype="core.exec" />
 				<in id="array" datatype="core.wildcards[]" group="1" tooltip="The array to perform the operation on" />
 				<in id="item" datatype="core.wildcards" group="1" tooltip="The item to assign to the index of the array." />
 				<out id="index" datatype="core.type.int" tooltip="The Array index of the newly inserted item." />
-			</function>
-			<function id="make" title="Make Array" color="#C3C3C3" symbol="exlibs/img/array.png" keywords="array create,create array,makearray,arraymake">
-				<in id="item" datatype="core.wildcards" label="Item [0]" group="1" />
-				<out id="array" datatype="core.wildcards[]" group="1" />
-				<out id="add" datatype="special.add" label="Add Item" target="item" tooltip="Add a new Item to Array." />
 			</function>
 			<function id="each" title="For Each Array Item" color="#C3C3C3" symbol="exlibs/img/array.png" keywords="foreach,array each,each array,each item,eachitem">
 				<entry />
