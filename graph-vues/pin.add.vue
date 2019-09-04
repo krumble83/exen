@@ -1,6 +1,4 @@
-
 <script>
-
 	import ExPin from './pin.vue';
 	
 	export default {
@@ -16,7 +14,6 @@
 					linkable: false,
 					pinadd: true,
 				},
-				mAddGroup: false,
 			}
 		},
 		
@@ -69,8 +66,10 @@
 				var clone = JSON.parse(JSON.stringify(pin));
 				clone.name += '_' + group.length;
 				
-				node.outputs.splice(node.outputs.indexOf(pin)+1, 0, clone);
-				
+				if(firstPin.isInput())
+					node.inputs.splice(node.inputs.indexOf(pin)+1, 0, clone);
+				else
+					node.outputs.splice(node.outputs.indexOf(pin)+1, 0, clone);
 				//node.outputs.push(clone);
 				
 				this.$nextTick(function(){

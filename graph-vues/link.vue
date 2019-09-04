@@ -68,7 +68,8 @@
 					
 					this.mWatchers.input.push(val.$watch('datatype', this._datatypeChange));
 					
-					val.mLinkCount++;
+					//val.mLinkCount++;
+					val.addLink(this);
 					
 					this.mWatchers.input.push(val.Node.$watch('mX', this.update));
 					this.mWatchers.input.push(val.Node.$watch('mY', this.update));
@@ -79,7 +80,8 @@
 							el();
 						});
 						old.Node.$off('remove', this.$destroy);
-						old.mLinkCount--;
+						old.removeLink(this);
+						//old.mLinkCount--;
 					}
 				}
 			},
@@ -93,7 +95,8 @@
 
 					this.mWatchers.output.push(val.$watch('datatype', this._datatypeChange));
 					
-					val.mLinkCount++;
+					//val.mLinkCount++;
+					val.addLink(this);
 
 					this.mWatchers.output.push(val.Node.$watch('mX', this.update));
 					this.mWatchers.output.push(val.Node.$watch('mY', this.update));
@@ -104,7 +107,8 @@
 							el();
 						});
 						old.Node.$off('remove', this.$destroy);
-						old.mLinkCount--;
+						old.removeLink(this);
+						//old.mLinkCount--;
 					}
 				}
 			},
@@ -153,11 +157,11 @@
 			});
 
 			if(me.mInputPin){
-				me.mInputPin.mLinkCount--;
+				me.mInputPin.removeLink(me);
 				me.mInputPin.Node.$off('remove', me.$destroy);
 			}
 			if(me.mOutputPin){
-				me.mOutputPin.mLinkCount--;
+				me.mInputPin.removeLink(me);
 				me.mOutputPin.Node.$off('remove', me.$destroy);
 			}
 			//if(me.$parent)
@@ -165,6 +169,14 @@
 		},
 		
 		methods: {
+			
+			getDatatype: function(){
+				return this.datatype;
+			},
+			
+			canChangeDatatype: function(newDatatype, evt, fromPin){
+				
+			},
 			
 			isPinLinkable: function(pin){
 				var ret = {code: 0, label: '<img src="img/linkok.png"> Place a new Link'};

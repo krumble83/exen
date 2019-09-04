@@ -27,7 +27,7 @@
 
 		<text 
 			x="26" 
-			y="15" 
+			y="14" 
 			:transform="$hasFlag('F_OUTPUT') ? 'translate(-52)': ''" 
 			:text-anchor="$hasFlag('F_OUTPUT') ? 'end': 'start'" 
 			class="label" 
@@ -87,10 +87,10 @@
 					exPin: true,
 					linkable: true,
 				},
-				//dEditor: this.editor,
 				mLinkCount: 0,
 				mEditor: this.editor,
 				mLabel: this.label,
+				mDatatype: this.datatype,
 			}
 		},
 
@@ -111,7 +111,7 @@
 			
 			cIsArray: function(){
 				return this.datatype.endsWith('[]');
-			}
+			},
 		},
 		
 		watch: {
@@ -197,6 +197,22 @@
 				return p;
 				//return p.matrixTransform(this.getViewportEl().getScreenCTM().inverse());
 
+			},
+			
+			addLink: function(link){
+				this.mLinkCount++;
+			},
+			
+			removeLink: function(link){
+				this.mLinkCount--;
+			},
+			
+			getDatatype: function(){
+				return this.datatype;
+			},
+			
+			getLinks: function(){
+				
 			},
 			
 			isInput: function(){

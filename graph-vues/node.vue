@@ -83,6 +83,7 @@
 	
 	import ExPin from './pin.vue';
 	import PinAdd from './pin.add.vue';
+	import PinWildcards from './pin.wildcards.vue';
 	
 	const ctorCache = {};
 	
@@ -90,7 +91,7 @@
 		inject: ['Worksheet', 'addSvgDef', 'camelCaseToLabel'],
 		mixins: [SvgBase, NodeSelectable, NodeDraggable, NodeContextMenu],
 		//mixins: [SvgBase, NodeSelectable, NodeDraggable, NodeGrid, ContextMenu],
-		components: {ExPin, PinAdd},
+		components: {ExPin, PinAdd, PinWildcards},
 		
 		provide: function(){
 			var me = this;
