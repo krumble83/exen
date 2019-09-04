@@ -23,11 +23,11 @@
 				<value id="HIGH" />
 			</editor>
 		</enum>
-		<struct id="setting" label="Arduino SPI Setting Structure" color="#0057c8">
+		<structure id="setting" label="Arduino SPI Setting Structure" color="#0057c8">
 			<member id="speedMaximum" datatype="core.type.int" label="BUS Max Speed" />
 			<member id="dataOrder" datatype="arduino.spi.dataorder" label="DataOrder" />
 			<member id="dataMode" datatype="arduino.spi.datamode" label="SPI DataMode" />
-		</struct>
+		</structure>
 
 		<category id="Arduino/SPI">
 			<function id="begintransaction" title="SPI.Begin()" color="#87663f" symbol="exlibs/img/arduino.png" keywords="spi begin transaction">
