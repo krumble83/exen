@@ -190,6 +190,14 @@ var FunctionStore = {
 			state.nodes.push(d);
 		},
 		
+		addIo: function(state, data){
+			console.assert(data.flags);
+			if((data.flags & F_INPUT) == F_INPUT)
+				this.commit('addInput', data);
+			else
+				this.commit('addOutput', data);
+		},
+		
 		addInput: function(state, data){
 			var i = newPin();
 			data = data || {};
@@ -231,7 +239,7 @@ var FunctionStore = {
 	getters: {
 		getNode: (state, getters, rootState) => (uid) => {
 			if(uid)
-				return state.nodes.find(it => it.uid == uid);
+				return state.nodes.find(it => it.uid == uid || it.name == uid);
 			else
 				return state.nodes;
 		},
