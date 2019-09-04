@@ -101,6 +101,10 @@ export default {
 
 		startDrawLink: function(evt){
 			const me = this;
+			
+			if(!me.classObject.linkable)
+				return;
+			
 			if(me.isInput())
 				var d = {inputPin: me, color: me.Library.getDatatype(me.datatype).Color(), datatype: me.datatype}
 			else if(me.isOutput())
@@ -118,12 +122,18 @@ export default {
 		},
 		
 		finishLink: function(evt){
+			const me = this;
 			console.log('finish link', this.Worksheet.$refs.drawlink);
+
+			if(!me.classObject.linkable)
+				return;
+			
+
 			//evt.stopPropagation();
-			var link = this.Worksheet.$refs.drawlink;
+			var link = me.Worksheet.$refs.drawlink;
 			if(!link)
 				return;
-			link.finishLink(this);
+			link.finishLink(me);
 		},
 		
 		acceptLink: function(link){

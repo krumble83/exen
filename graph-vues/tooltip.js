@@ -96,7 +96,7 @@ ExPin.mixins.push({
 				showTooltip(ev, msg);
 			}
 			
-			if(link){
+			if(me.classObject.linkable && link){
 				link = this.Worksheet.$el.querySelector('.exLink.draw').__vue__;
 				var accept = me.acceptLink(link);
 				if(accept == 1)
@@ -112,6 +112,7 @@ ExPin.mixins.push({
 			}
 				
 			this.$el.addEventListener('mousemove', move, false);
+			
 
 			this.$once('mouse:leave', function(){
 				hideTooltip();

@@ -33,25 +33,27 @@
 		</g>
 		<rect width="100%" height="100%" rx="9" ry="9" fill-opacity="0" stroke-width="0" />
 		
-		<g ref="inputs" class="inputs" :transform="subtitle ? 'translate(0,50)' : title ? 'translate(0,36)' : ''">
+		<g ref="inputsGroup" class="inputs" :transform="subtitle ? 'translate(0,50)' : title ? 'translate(0,36)' : ''">
 			<slot name="inputs">
 				<component v-for="(pin, idx) in cInputs" :key="pin.id" 
 					class="input"
 					:is="pin.ctor ? pin.ctor : getCtor(pin.datatype) || 'ExPin'" 
 					:max-link="pin.maxlink ? pin.maxlink : 1"
 					@resize="$emit('pin:resize', $event)"
+					ref="inputs"
 					v-bind="pin"
 				/>
 			</slot>
 		</g>
 		
-		<g ref="outputs" class="outputs" :transform="'translate(' + outputsGroupPos.x + ',' + (subtitle ? 50 : 36) + ')'">
+		<g ref="outputsGroup" class="outputs" :transform="'translate(' + outputsGroupPos.x + ',' + (subtitle ? 50 : 36) + ')'">
 			<slot name="outputs">	
 				<component v-for="(pin, idx) in cOutputs" :key="pin.id" 
 					class="output"
 					:is="pin.ctor ? pin.ctor : getCtor(pin.datatype) || 'ExPin'" 
 					:max-link="pin.maxlink ? pin.maxlink : 99"
 					@resize="$emit('pin:resize', $event)"
+					ref="outputs"
 					v-bind="pin"
 				/>
 			</slot>
@@ -80,13 +82,15 @@
 	import {NodeContextMenu} from './contextmenu.js'
 	
 	import ExPin from './pin.vue';
-	import ExPinAdd from './pin.add.vue';
+	import PinAdd from './pin.add.vue';
+	
+	const ctorCache = {};
 	
 	export default {
 		inject: ['Worksheet', 'addSvgDef', 'camelCaseToLabel'],
 		mixins: [SvgBase, NodeSelectable, NodeDraggable, NodeContextMenu],
 		//mixins: [SvgBase, NodeSelectable, NodeDraggable, NodeGrid, ContextMenu],
-		components: {ExPin, ExPinAdd},
+		components: {ExPin, PinAdd},
 		
 		provide: function(){
 			var me = this;
@@ -132,7 +136,6 @@
 				mExpanded: false,
 				outputsGroupPos: {x: 0, y:0},
 				mEdited: false,
-				mCtorsCache : {},
 			}
 		},
 		
@@ -233,8 +236,8 @@
 				, maxHeigth = 30
 				, headBox = this.$refs.header
 				, headRect = headBox.querySelector('rect')
-				, inputsBox = this.$refs.inputs.getBBox()
-				, outputsBox = this.$refs.outputs.getBBox()
+				, inputsBox = this.$refs.inputsGroup.getBBox()
+				, outputsBox = this.$refs.outputsGroup.getBBox()
 
 				if(onNextTick)
 					return me.$nextTick(function(){me.update()});
@@ -285,23 +288,31 @@
 			},
 			
 			getCtor: function(id){
-				if(!id in this.mCtorsCache)
-					this.mCtorsCache[id] = this.Library.getDatatype(id).ctor;
-				return this.mCtorsCache[id];
+				if(typeof ctorCache[id] == 'undefined')
+					ctorCache[id] = this.Library.getDatatype(id).ctor;
+				return ctorCache[id];
 			},
-			/*
-			getInput: function(name, asComponent){
-				if(asComponent)
-					return this.$refs['input_' + name][0];
-				return this.inputs.find(pin => pin.name === name);
+			
+			getPin: function(name){
+				return this.getInput(name) || this.getOutput(name);
+			},
+			
+			getInput: function(name){
+				if(name)
+					return this.$refs.inputs.find(pin => pin.name == name);
+				return this.$refs.inputs;
 			},
 
-			getOutput: function(name, asComponent){
-				if(asComponent)
-					return this.$refs['output_' + name][0];
-				return this.outputs.find(pin => pin.name === name);
+			getOutput: function(name){
+				if(name)
+					return this.$refs.outputs.find(pin => pin.name == name);
+				return this.$refs.outputs;
 			},
-			*/
+			
+			getPinGroup: function(group){
+				var ret = this.$refs.inputs.filter(pin => pin.group == group);
+				return ret.concat(this.$refs.outputs.filter(pin => pin.group == group))
+			}
 		},
 	};
 </script>

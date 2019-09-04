@@ -8,6 +8,7 @@
 		@mouseenter="$emit('mouse:enter', $event)"
 		@mouseleave="$emit('mouse:leave', $event)"
 		@mouseup.right.stop="$emit('mouse:rightup', $event)" 
+		@click.stop="$emit('mouse:click', $event)"
 		@contextmenu.prevent.stop="$emit('mouse:cmenu', $event)"
 		overflow="visible"
 		v-inline.vertical="7"
@@ -49,15 +50,16 @@
 	import {PinContextMenu} from './contextmenu.js';
 	import PinDrawLink from './pin.link.draw.js';
 
-	import ExPinBase from './pin.render.default.vue';
+	import PinBase from './pin.render.default.vue';
 	import PinExec from './pin.render.exec.vue';
+	import PinAdd from './pin.render.add.vue';
 	
 	import PinEditorInput from './pin.editor.input.vue';
 	
 	export default {
 		inject: ['Worksheet', 'Node', 'addSvgDef', 'camelCaseToLabel', 'Library'],
 		mixins: [SvgBase, PinDrawLink, PinContextMenu],
-		components: {ExPinBase, PinExec, PinEditorInput},
+		components: {PinBase, PinExec, PinAdd, PinEditorInput},
 		
 		props: {
 			name: {type: String, required: true},
@@ -75,7 +77,7 @@
 			
 			optionnal: {type: Boolean, default: false},
 			isarray: Boolean,
-			group: {type: String, default:''},
+			group: String,
 			editor: false,
 		},
 
@@ -88,6 +90,7 @@
 				//dEditor: this.editor,
 				mLinkCount: 0,
 				mEditor: this.editor,
+				mLabel: this.label,
 			}
 		},
 
@@ -95,11 +98,11 @@
 			cLabel: function(){
 				if(this.name.startsWith('@'))
 					return '';
-				return this.camelCaseToLabel(this.label) || this.camelCaseToLabel(this.name)
+				return this.camelCaseToLabel(this.mLabel) || this.camelCaseToLabel(this.name)
 			},
 			
 			cPinCtor: function(){
-				return this.pinctor || this.Library.getDatatype(this.datatype).pinctor || 'ExPinBase';
+				return this.pinctor || this.Library.getDatatype(this.datatype).pinctor || 'PinBase';
 			},
 			
 			cColor: function(){
@@ -241,7 +244,7 @@
 		fill-opacity: 0;
 	}
 
-	.exWorksheet .exNode .exPin > rect:first-child:hover{
+	.exWorksheet .exNode .exPin.linkable > rect:first-child:hover{
 		fill-opacity: 1;
 	}
 	

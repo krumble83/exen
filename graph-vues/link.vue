@@ -263,4 +263,8 @@
 		pointer-events: none;
 	}
 	
+	.exWorksheet.drawlinkevent .exNode .exPin:not(.linkable){
+		pointer-events: none;
+	}
+	
 </style>
