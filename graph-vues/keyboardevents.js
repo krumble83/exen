@@ -11,7 +11,7 @@ export const worksheetKeyboardEvents = {
 			menu.getItem('copy').shortcut = 'ctrl+C';
 		});
 		
-	},	
+	},
 	
 	methods: {
 		onKeyUp: function(evt){

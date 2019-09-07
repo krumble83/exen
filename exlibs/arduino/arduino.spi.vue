@@ -53,5 +53,5 @@
 	export default exp;
 
 	import App from '../../ui-vues/project.vue';
-	App.components['libArduinoSpi'] = exp;
+	App.components['arduino.spi'] = exp;
 </script>

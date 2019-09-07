@@ -36,7 +36,7 @@ const LinkDraw = {
 		startDraw: function(){
 			const me = this;
 			document.addEventListener('mousemove', me.drawUpdate);
-			document.addEventListener('mouseup', me.stopDraw, {useCapture: true, once: true});
+			document.addEventListener('mouseup', me.stopDraw, {capture: true, once: true});
 			me.$emit('draw:start');
 			me.$parent.$emit('link:draw:start', me);
 		},

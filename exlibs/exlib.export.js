@@ -35,6 +35,11 @@ In.mixins.push({
 			parent.inputs = parent.inputs || [];
 
 			exp.forEach(function (id){
+				//console.log(id, me[id], (me[id] && me[id].search) ? me[id].search('/.') == -1 : '');
+				if(id == 'datatype' && (me[id].indexOf('.') == -1)){
+					ret[id] = me.Package.fullpath + '.' + me[id];
+					return;
+				}
 				if(me[id] != undefined)
 					ret[id] = me[id];
 			});
@@ -55,6 +60,10 @@ Out.mixins.push({
 			parent.outputs = parent.outputs || [];
 
 			exp.forEach(function (id){
+				if(id == 'datatype' && (me[id].indexOf('.') == -1)){
+					ret[id] = me.Package.fullpath + '.' + me[id];
+					return;
+				}
 				if(me[id] != undefined)
 					ret[id] = me[id];
 			});
@@ -72,6 +81,10 @@ Member.mixins.push({
 				, ret = {name: me.id}
 
 			exp.forEach(function (id){
+				if(id == 'datatype' && (me[id].indexOf('.') == -1)){
+					ret[id] = me.Package.fullpath + '.' + me[id];
+					return;
+				}
 				if(me[id] != undefined)
 					ret[id] = me[id];
 			});

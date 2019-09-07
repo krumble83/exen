@@ -43,8 +43,12 @@
 					clone.flags = (clone.flags || 0) + (me.isInput() ? F_INPUT : F_OUTPUT);
 					clone.name += '[' + clone.name + ']';
 					clone.label = '[' + me.cLabel + '] ' + clone.label;
-					me.Store.commit('addNodeIo', {node: node.uid, pos: node.outputs.indexOf(me.name), props: clone});
+					//console.log(node.outputs.indexOf(me.name)+1);
+					me.Store.commit('addNodeIo', {node: node.uid, pos: node.outputs.indexOf(me)+1, props: clone});
 				});
+				//me.update();
+				//me.Node.update(true);
+				
 			},
 			
 			recombineStructurePin: function(){

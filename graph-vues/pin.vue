@@ -3,12 +3,10 @@
 		:id="uid"
 		:class="classObject"
 		:data-name="name"
-		@mousedown.right.stop=""
 		@mousedown.left.stop="$emit('mouse:leftdown', $event)"
 		@mouseup.left.stop="$emit('mouse:leftup', $event)"
 		@mouseenter="$emit('mouse:enter', $event)"
 		@mouseleave="$emit('mouse:leave', $event)"
-		@mouseup.right.stop="$emit('mouse:rightup', $event)" 
 		@click.stop="$emit('mouse:click', $event)"
 		@contextmenu.prevent.stop="$emit('mouse:cmenu', $event)"
 		overflow="visible"
@@ -213,8 +211,11 @@
 				return this.datatype;
 			},
 			
-			getLinks: function(){
-				
+			getLink: function(){
+				var me = this;
+				return this.Worksheet.getLink(function(link){
+					return link.mInputPin == me || link.mOutputPin == me;
+				});
 			},
 			
 			isInput: function(){

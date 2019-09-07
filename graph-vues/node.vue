@@ -233,7 +233,8 @@
 								
 			update: function(onNextTick){
 				//console.log('Node: Start resize ' + this.mTitle);
-				var oldSize = {w: this.mWidth, h: this.mHeight}
+				var me = this
+				, oldSize = {w: this.mWidth, h: this.mHeight}
 				, maxWidth = 80
 				, maxHeigth = 30
 				, headBox = this.$refs.header
@@ -244,14 +245,13 @@
 				if(onNextTick)
 					return me.$nextTick(function(){me.update()});
 				
-				//this.$forceUpdate();
 				
 				//compute header
 				if(headRect)
 					headRect.style.display = 'none';
-				this.mWidth = 600;
+				me.mWidth = 600;
 				var temp = headBox.getBBox();
-				this.mWidth = oldSize.w;
+				me.mWidth = oldSize.w;
 				if(headRect)
 					headRect.style.display = 'block';
 				headBox = temp;
@@ -261,32 +261,38 @@
 								
 				//outputs
 				//this.outputsGroupPos.y = this.subtitle ? 50 : 37;
-				this.outputsGroupPos.x = maxWidth;
+				me.outputsGroupPos.x = maxWidth;
 				
 				//body
 				if(maxWidth != oldSize.w)
-					this.mWidth = maxWidth;
+					me.mWidth = maxWidth;
 				
 
 				maxHeigth = Math.max(maxHeigth, headBox.height + 30, headBox.height + 30 + inputsBox.height, headBox.height + 30 + outputsBox.height);
 				
-				if(this.$refs.optional){
-					this.$refs.optional.setAttribute('width', maxWidth-5);
-					this.$refs.optional.setAttribute('y', maxHeigth-14);
+				if(me.$refs.optional){
+					me.$refs.optional.setAttribute('width', maxWidth-5);
+					me.$refs.optional.setAttribute('y', maxHeigth-14);
 					maxHeigth += 5;
 				}
 				
 				if(maxHeigth != oldSize.h)
-					this.mHeight = maxHeigth;
+					me.mHeight = maxHeigth;
 				
 				if(maxWidth != oldSize.w || maxHeigth != oldSize.h)
-					this.$emit('resize');
+					me.$emit('resize');
+				setTimeout(function(){
+					me.$forceUpdate();
+				}, 1000);
+				
+				
 			},
 			
 			remove: function(){
-				this.$emit('remove');
-				this.Worksheet.$emit('node:remove');
-				this.Worksheet.removeNode(this.id);
+				const me = this;
+				me.$emit('remove');
+				//me.Worksheet.$emit('node:remove');
+				me.Worksheet.removeNode(me);
 			},
 			
 			getCtor: function(id){
@@ -296,23 +302,29 @@
 			},
 			
 			getPin: function(name){
-				return this.getInput(name) || this.getOutput(name);
-			},
-			
-			getPins: function(func){
-				var ret = this.$refs.inputs.filter(func);
-				return ret.concat(this.$refs.outputs.filter(func))
+				if(typeof name == 'string')
+					return this.getInput(name) || this.getOutput(name);
+				else if(typeof name == 'function'){
+					var ret = this.$refs.inputs.filter(name);
+					return ret.concat(this.$refs.outputs.filter(name))
+				}
+				var ret = this.$refs.inputs;
+				return ret.concat(this.$refs.outputs)
 			},
 
 			getInput: function(name){
-				if(name)
+				if(typeof name == 'string')
 					return this.$refs.inputs.find(pin => pin.name == name);
+				if(typeof name == 'function')
+					return this.$refs.inputs.filter(name);
 				return this.$refs.inputs;
 			},
 
 			getOutput: function(name){
-				if(name)
+				if(typeof name == 'string')
 					return this.$refs.outputs.find(pin => pin.name == name);
+				if(typeof name == 'function')
+					return this.$refs.outputs.filter(name);
 				return this.$refs.outputs;
 			},
 			

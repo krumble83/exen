@@ -1,45 +1,21 @@
 
+
 export default {
-	
-	provide: function(){
-		var me = this;
 		
-		return {
-			preventPanCmenu: function(evts, callback){
-				var targ = this;
-				
-				me.$once('pan:start', function(){
-					targ.dPanned = true;
-				});
-				
-				targ.$on(evts, function(){
-					if(targ.dPanned){
-						targ.dPanned = false;
-						me.$once('pan:start', function(){
-							targ.dPanned = true;
-						});
-						return;
-					}
-					callback.apply(targ, arguments);
-				});
-			},
-		}
-	},
-	
 	data: function(){
 		return {
 			classObject: {
 				panEvent: false,
 			},
 		}
-	},		
-
+	},
+	
 	created: function(){
-		this.$on('node:cmenu', this.stopPan);
+		//this.$on('node:cmenu', this.stopPan);
 	},
 	
 	beforeDestroy: function(){
-		this.$off('node:cmenu', this.stopPan);	
+		//this.$off('node:cmenu', this.stopPan);	
 	},
 			
 	mounted: function(){
@@ -55,42 +31,40 @@ export default {
 			useGlobalMove: false,
 			restrictPanButton: 2,
 			endPan: function(pan, evt){
+				console.log('pan:end');
+				evt.stopPropagation();
+				evt.stopImmediatePropagation();
 				me.$emit('pan:end', pan, evt);
 				me.classObject.panEvent = false;
 			},
 			startPan: function(evt){
 				console.log('pan:start');
-				me.$emit('pan:start', evt);
+				document.addEventListener('contextmenu', function(ev){
+					console.log('prevent context');
+					ev.preventDefault();
+					ev.stopPropagation();	
+				}, {capture:true, once: true});
+				
 				me.classObject.panEvent = true;
+				me.$emit('pan:start', evt);
 			},
+			onPan: function(newPan){
+				//console.log('pan:panning', newPan);
+				me.$emit('pan:panning', newPan);
+			}
 		});
 		this.$el._panzoom = panzoom;
-		this.$emit('panzoom', panzoom);
+		this.$emit('pan:init', panzoom);
 	},
 	
 	methods: {
 		stopPan: function(){
 			this.$el._panzoom.stopPan();
 		},
-		
-		preventPan: function(evts, callback){
-			var targ = this;
-			
-			targ.$once('pan:start', function(){
-				targ.dPanned = true;
-			});
-			
-			targ.$on(evts, function(evt){
-				if(targ.dPanned){
-					targ.dPanned = false;
-					targ.$once('pan:start', function(){
-						targ.dPanned = true;
-					});
-					return;
-				}
-				callback.apply(targ, arguments);
-			});
+		/*
+		isPanning: function(){
+			return this.classObject.panEvent;
 		},
-		
+		*/
 	}
 };

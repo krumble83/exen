@@ -75,7 +75,7 @@
 					});
 				}
 				
-				document.addEventListener('mousemove', mouseMove, {useCapture : true});
+				document.addEventListener('mousemove', mouseMove, {capture : true});
 				
 				document.addEventListener('mouseup', function(){
 					document.removeEventListener('mousemove', mouseMove);

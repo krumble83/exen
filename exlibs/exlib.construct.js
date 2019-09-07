@@ -1,7 +1,7 @@
  
 import {Node,Pin} from './exlib.js';
 
-import {Library,Package,Datatype,Class,Function,In,Out,Method,Entry,Exit,Category,Editor,Enum,Value,Structure,Member,Component,Device} from './default.export.js';
+import {Library,Package,Datatype,Class,Function,In,Out,Method,Entry,Exit,Category,Editor,Enum,Value,Structure,Member,Hardware,Device} from './default.export.js';
 
 function Extend(){
 	var args = Array.prototype.slice.call(arguments);
@@ -44,8 +44,9 @@ Extend(Package, Category, 'Class');
 Extend(Package, Category, 'Interface');
 Extend(Class, 'Method');
 Extend(Class, Structure, 'Member');
-Extend(Package, Category, 'Device');
-Extend(Device, 'Category');
-Extend(Device, 'Component');
-Extend(Device, Component, 'Provide');
-Extend(Device, Component, 'Require');
+
+Extend(Package, Category, 'Hardware');
+Extend(Hardware, 'Category');
+Extend(Hardware, 'Device');
+Extend(Hardware, Device, 'Provide');
+Extend(Hardware, Device, 'Require');

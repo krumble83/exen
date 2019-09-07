@@ -50,7 +50,7 @@
 			_updatePinGroup: function(){
 				const me = this
 					, regex = new RegExp('^' + me.target + '(\[[0-9]+\])*$')
-					, pins = me.Node.getPins(function(pin){return regex.test(pin.name)});
+					, pins = me.Node.getPin(function(pin){return regex.test(pin.name)});
 				var a = 0;
 				pins.forEach(function(pin){
 					pin.mLabel = pin.label + ' [' + a + ']';
@@ -63,7 +63,7 @@
 					, node = me.Store.getters.getNode(me.Node.uid)
 					, target = node.inputs.find(it => it.name == me.target) || node.outputs.find(it => it.name == me.target)
 					, regex = new RegExp('^' + me.target + '(\[[0-9]+\])*$')
-					, pins = me.Node.getPins(function(pin){return regex.test(pin.name)})
+					, pins = me.Node.getPin(function(pin){return regex.test(pin.name)})
 					, lastPin = pins[pins.length-1]
 
 				var clone = JSON.parse(JSON.stringify(target));

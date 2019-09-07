@@ -11,19 +11,11 @@ export default {
 	},
 	
 	created: function(){
-		var me = this;
-		
-		//me.$on(['link:draw:stop', 'mouse:cmenu'], me.showLibraryMenu);
-		me.preventPan(['link:draw:stop', 'mouse:cmenu'], me.showLibraryMenu);
-		/*
-		me.$once('pan:start', function(){
-			me.dPanned = true;
-		});
-		*/
+		this.$on(['link:draw:stop', 'mouse:cmenu'], this.showLibraryMenu);
 	},
 	
 	beforeDestroy: function(){
-		me.$off(['link:draw:stop', 'mouse:cmenu'], me.showLibraryMenu);
+		this.$off(['link:draw:stop', 'mouse:cmenu'], this.showLibraryMenu);
 	},
 	
 	methods: {
@@ -63,6 +55,7 @@ export default {
 			var lnode = this.Library.getNode(id)
 				, newNode = lnode ? lnode.toObject() : false;
 			if(newNode){
+				console.log(newNode);
 				var pos = this.mouseToSvg(evt);
 				newNode.x = pos.x;
 				newNode.y = pos.y;

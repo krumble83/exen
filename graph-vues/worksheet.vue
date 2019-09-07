@@ -61,6 +61,7 @@
 			</template>
 		</g>
 		<slot name="front" />
+		<WorksheetMouseBorder />
 	</svg>
 </template>
 	
@@ -72,15 +73,16 @@
 	import ExLink from './link.vue';
 
 	import EventBus from '../cmon-js/event-bus.js';
-	import WorksheetSelection from './worksheet.selection.js'
-	import {worksheetKeyboardEvents} from './keyboardevents.js'
-	import WorksheetGrid from './worksheet.grid.js'
-	import WorksheetPanZoom from './worksheet.panzoom.js'
-	import WorksheetLibraryMenu from './worksheet.librarymenu.js'
+	import WorksheetSelection from './worksheet.selection.js';
+	import {worksheetKeyboardEvents} from './keyboardevents.js';
+	import WorksheetGrid from './worksheet.grid.js';
+	import WorksheetPanZoom from './worksheet.panzoom.js';
+	import WorksheetLibraryMenu from './worksheet.librarymenu.js';
+	import WorksheetMouseBorder from './worksheet.mouseborder.vue';
 
 	export default {
 		mixins: [WorksheetGrid, WorksheetPanZoom, WorksheetSelection, worksheetKeyboardEvents, WorksheetLibraryMenu, WorksheetToolTip],
-		components: {ExNode, ExLink},
+		components: {ExNode, ExLink, WorksheetMouseBorder},
 		//mixins: [VueUndoRedo, WorksheetGrid, WorksheetSelection, WorksheetTooltip, WorksheetLibraryMenu],
 		
 		provide: function() {
@@ -165,19 +167,25 @@
 				}
 			},
 			
-
+			getLink: function(name){
+				if(typeof name == 'string')
+					return this.$refs.links.find(link => link.id == name);
+				if(typeof name == 'function')
+					return (this.$refs.links) ? this.$refs.links.filter(name) : [];
+				return this.$refs.links;
+			},
 			
 			
 			hasFeature: function(name){
 				return this.features.indexOf(name) != -1;
 			},
 			
-			getNode: function(val){
-				if(typeof val == 'function')
-					return this.$refs.nodes.filter(val);
-				
-				// assume val is the id of node
-				return this.$refs.nodes.find(node => node.id === val);
+			getNode: function(name){
+				if(typeof name == 'string')
+					return this.$refs.nodes.find(node => node.id == name);
+				if(typeof name == 'function')
+					return (this.$refs.nodes) ? this.$refs.nodes.filter(name) : [];
+				return this.$refs.nodes;
 			},
 			
 			removeNode: function(id){
@@ -193,7 +201,7 @@
 			removeLink: function(id){
 				this.$store.commit('deleteLink', id);
 			},
-			
+			/*
 			getLink: function(val){
 				//console.log(this.$refs.links);
 				if(!this.$refs.links && typeof val == 'function'){
@@ -206,7 +214,7 @@
 				// assume val is the id of node
 				return this.$refs.links.find(link => link.id === val);
 			},
-			
+			*/
 			addDef: function(data){
 				const me = this;
 				

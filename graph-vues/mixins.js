@@ -34,12 +34,12 @@ const WorksheetHelpers = {
 		
 		getSvgPoint(x, y){
 			var point = this.getSvg().createSVGPoint();
-			if(typeof x == 'undefined')
+			if(typeof x == 'undefined' || typeof y == 'undefined')
 				return point;
 
 			point.x = x;
 			point.y = y;
-			var ret = point.matrixTransform(this.getViewportEl().getScreenCTM().inverse()); // <------------- /!\ getScreenCTM() /!\
+			var ret = point.matrixTransform(this.getViewportEl().getScreenCTM().inverse()); // <-------------  getScreenCTM() 
 			return ret;
 		},
 	},

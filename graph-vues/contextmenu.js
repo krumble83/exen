@@ -4,13 +4,10 @@
 import Menu from '../cmon-vues/contextmenu.vue';
 
 export const NodeContextMenu = {
-	inject: ['preventPanCmenu', 'App'],
+	inject: ['App'],
 	
 	created: function(){
-		const me = this;
-
-		me.preventPanCmenu('mouse:cmenu', me.showContextMenu);
-
+		this.$on('mouse:cmenu', this.showContextMenu);
 	},
 	
 	beforeDestroy: function(){
@@ -19,15 +16,17 @@ export const NodeContextMenu = {
 	
 	methods: {
 		showContextMenu: function(evt){
-			console.log('*-*-',this.App);
+			//console.log('showContextMenu',this.App);
 			const me = this
 				, ComponentClass = Vue.extend(Menu)
 				, instance = new ComponentClass({parent: me.App});
 				
 			instance.classObject.context = true;
 			
-			instance.addTitle('Node');
-			instance.addItem({id: 'delete', title: 'Delete', desc: 'Delete this Node'});
+			instance.addTitle('Node Actions');
+			instance.addItem({id: 'delete', title: 'Delete', desc: 'Delete this Node', callback: function(){
+				me.remove();
+			}});
 			instance.addItem({id: 'duplicate', title: 'Duplicate', desc: 'Duplicate this Node'});
 			instance.addSeparator();
 			instance.addItem({id: 'cut', title: 'Cut'});
@@ -57,16 +56,16 @@ export const PinContextMenu = {
 	methods: {
 		showContextMenu: function(evt){
 			const me = this;
-
 			var ComponentClass = Vue.extend(Menu);
 			var instance = new ComponentClass({parent: me.App});
 			instance.classObject.context = true;
-						
-			instance.addTitle('Pin');
+			
+			console.log('links: ', me.getLink());
+			instance.addTitle('Pin Actions');
 			instance.addItem({id: 'breaklinks', title: 'Break Links', desc: 'Break all links to this Pin'});
 			
 			me.$emit('cmenu', instance, evt);
-			me.Node.$emit('cmenu', me, instance, evt);
+			me.Node.$emit('pin:cmenu', me, instance, evt);
 			me.Worksheet.$emit('pin:cmenu', me, instance, evt);
 			instance.showAt(evt);
 			

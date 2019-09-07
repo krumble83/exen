@@ -969,8 +969,8 @@ SvgPanZoom.prototype.handleMouseDown = function(evt, prevEvt, source) {
 
 
 SvgPanZoom.prototype.stopPan = function() {
-	this.options.endPan(this.getPan());
-    this.state = 'none'
+	//this.options.endPan(this.getPan());
+    //this.state = 'none'
 }
 
 /**
@@ -1020,7 +1020,8 @@ SvgPanZoom.prototype.handleMouseUp = function(evt) {
 
   if (this.state === 'pan') {
     // Quit pan mode
-	this.options.endPan(this.getPan(), evt);
+	if(!this.startDrag)
+		this.options.endPan(this.getPan(), evt);
     this.state = 'none'
   }
 }

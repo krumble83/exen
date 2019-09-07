@@ -85,9 +85,12 @@ export const Base = {
 	methods: {
 		
 		_create: function(type, data){
+			//console.log('create', this.$el);
+			const me = this;
+			
 			var test = document.createElement('component');
-			if(this.$el)
-				this.$el.appendChild(test);
+			if(me.$el)
+				me.$el.appendChild(test);
 			var ComponentClass = Vue.extend(eval(type));
 			var instance = new ComponentClass({propsData: data, parent: this, el: test});
 			instance.$mount(test);
@@ -207,6 +210,11 @@ export const Library = {
 			return ret;
 		},
 		
+		getHardware: function(id){
+			var name = me.splitPackageName(id);
+			return me.$el.querySelector('package[id="' + name[0] + '"] hardware[id="' + name[1] + '"]').__vue__;			
+		},
+		
 		getNodesByQuery: function(query){
 			//console.log(query);
 			const me = this;
@@ -274,7 +282,7 @@ export const Library = {
 				return this.$el.querySelectorAll('[isdatatype="true"]:not([private="true"])');
 			id = id.replace('[]', '');
 			var name = this.splitPackageName(id);
-			//console.log(id, name, this.$el.querySelector('package[id="' + name[0] + '"] datatype[id="' + name[1] + '"]'));
+			//console.log(id, name, 'package[id="' + name[0] + '"] [isdatatype="true"][id="' + name[1] + '"]');
 			return this.$el.querySelector('package[id="' + name[0] + '"] [isdatatype="true"][id="' + name[1] + '"]').__vue__;
 		},
 		
@@ -399,6 +407,7 @@ export const Node = {
 	data: function(){
 		return {
 			_symbol: this.symbol,
+			_title: this.title,
 		}
 	},
 	
@@ -406,6 +415,14 @@ export const Node = {
 		Symbol: function(str){
 			this._symbol = str;
 		},
+		
+		Title: function(str){
+			if(str){
+				this._title = str;
+				return this;
+			}
+			return this._title;
+		}
 
 	},
 }
@@ -590,6 +607,23 @@ export const Enum = {
 		__ctor: {type: String, default: 'enum'},
 		color: {type: String, default: '#8000FF'},
 	},
+	
+	mounted: function(){
+		if(this.private)
+			return;
+		
+		const cat = this.Package.Category('Utilities/Enum')
+			, make = cat.Function({id: 'makeLiteralEnum' + this.id, title: 'Make literal ' + this.label || this.id})
+			, eq = cat.Function({id: 'eqEnum' + this.id, title: 'Equal (' + (this.label || this.id) + ')'});
+			
+		make.In({id: 'enum', datatype: this.id});
+		make.Out({id: 'returnValue', datatype: this.id});
+
+		eq.In({id: 'in1', datatype: this.id});
+		eq.In({id: 'in2', datatype: this.id});
+		eq.Out({id: 'out', datatype: 'core.type.bool'});
+
+	},
 }
 Vue.config.ignoredElements.push('enum');
 
@@ -667,6 +701,17 @@ Vue.config.ignoredElements.push('member');
 
 
 
+export const Hardware = {
+	extends: Base,
+	mixins: [],
+	inject: ['Library', 'Package'],
+	
+	props: {
+		__ctor: {type: String, default: 'hardware'},
+	},
+}
+Vue.config.ignoredElements.push('hardware');
+
 export const Device = {
 	extends: Base,
 	mixins: [],
@@ -674,21 +719,10 @@ export const Device = {
 	
 	props: {
 		__ctor: {type: String, default: 'device'},
-	},
-}
-Vue.config.ignoredElements.push('device');
-
-export const Component = {
-	extends: Base,
-	mixins: [],
-	inject: ['Library', 'Package'],
-	
-	props: {
-		__ctor: {type: String, default: 'component'},
 		label: String,
 	},
 }
-Vue.config.ignoredElements.push('component');
+Vue.config.ignoredElements.push('device');
 
 
 export const Provide = {
@@ -701,7 +735,7 @@ export const Provide = {
 		platform: String,
 		type: String,
 		library: String,
-		component: String,
+		device: String,
 	},
 }
 Vue.config.ignoredElements.push('provide');
@@ -713,7 +747,7 @@ export const Require = {
 	
 	props: {
 		__ctor: {type: String, default: 'require'},
-		component: String,
+		device: String,
 	},
 }
 Vue.config.ignoredElements.push('require');
