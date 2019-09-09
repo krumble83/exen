@@ -7,6 +7,7 @@ export default {
 			classObject: {
 				panEvent: false,
 			},
+			mPanzoom: false,
 		}
 	},
 	
@@ -31,16 +32,16 @@ export default {
 			useGlobalMove: false,
 			restrictPanButton: 2,
 			endPan: function(pan, evt){
-				console.log('pan:end');
+				//console.log('pan:end');
 				evt.stopPropagation();
 				evt.stopImmediatePropagation();
 				me.$emit('pan:end', pan, evt);
 				me.classObject.panEvent = false;
 			},
 			startPan: function(evt){
-				console.log('pan:start');
+				//console.log('pan:start');
 				document.addEventListener('contextmenu', function(ev){
-					console.log('prevent context');
+					//console.log('prevent context');
 					ev.preventDefault();
 					ev.stopPropagation();	
 				}, {capture:true, once: true});
@@ -54,6 +55,7 @@ export default {
 			}
 		});
 		this.$el._panzoom = panzoom;
+		this.mPanzoom = panzoom;
 		this.$emit('pan:init', panzoom);
 	},
 	

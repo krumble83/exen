@@ -4,7 +4,7 @@
 			<function id="freememory" title="freeMemory()" color="#87663f" symbol="exlibs/img/arduino.png" keywords="free memory" tooltip="Get Arduino Free RAM">
 				<out id="freemem" datatype="core.type.int" label="Free Memory" />
 			</function>
-			<function id="delay" title="delay()" color="#87663f" symbol="exlibs/img/arduino.png" keywords="delay,pause" tooltip="Pause program for x ms">
+			<function id="delay" title="delay()" subtitle="target is me!!" color="#87663f" symbol="exlibs/img/arduino.png" keywords="delay,pause" tooltip="Pause program for x ms">
 				<entry /><exit />
 			</function>
 			<function id="delaymicroseconds" title="delayMicroseconds()" color="#87663f" symbol="exlibs/img/arduino.png" keywords="delay,pause" tooltip="Pauses the program for the amount of time (in microseconds) specified as parameter. There are a thousand microseconds in a millisecond, and a million microseconds in a second.">
@@ -38,5 +38,5 @@
 	export default exp;
 
 	import App from '../../ui-vues/project.vue';
-	App.components['libArduinoCore'] = exp;
+	App.components['arduino.core'] = exp;
 </script>

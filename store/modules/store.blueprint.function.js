@@ -31,7 +31,11 @@ var BluePrintFunctionModule = {
 			console.assert(file);
 			file.store = store;
 			store.commit('setData', file);
-			store.commit('addNode', {name: 'entryPoint2', flags: F_READ_ONLY, x:400, y: 400});
+			
+			var n = this.getters.Library.Library.getNodeById('core.flow.sequence').toObject();
+			n. x = 500;
+			n.y = 300;
+			store.commit('addNode', n);
 		},
 		
 		delete: function(state, data){
@@ -87,11 +91,22 @@ var BluePrintFunctionModule = {
 }
 
 
-var newPin = function(){
+const newNode = function (){
 	return {
-		_linked: false,
+		uid: uid('node'),
+		name: '',
+		flags: 0,
+		x: 200,
+		y: 200,
+		inputs: [],
+		outputs: [],
+	}
+};
+
+
+const newPin = function(){
+	return {
 		name: 'default',
-		//type: F_INPUT, 
 		flags: 0,
 		datatype: 'core.type.bool', 
 		optional: false,
@@ -106,23 +121,113 @@ function uid(prefix){
 	});
 }
 		
-function newNode(){
+
+
+const NodeModuleStore = function(state){
 	return {
-		uid: uid('node'),
-		name: '',
-		flags: 0,
-		x: 200,
-		y: 200,
-		inputs: [],
-		outputs: [],
+		state: state,
+		namespaced: true,
+		mutations: {
+
+			remove: function(state, data){
+				
+			},
+			
+			update: function(state, data){
+				
+			},
+			
+			addPin: function(state, data){						
+				if((data.props.flags & F_INPUT) == F_INPUT)
+					state.inputs.splice(data.pos ? data.pos : state.inputs.length, 0, data.props);
+				else
+					state.outputs.splice(data.pos ? data.pos : state.outputs.length, 0, data.props);
+			},
+			
+			removePin: function(state, pinName){
+				var p = state.inputs.find(pin => pin.name == pinName);
+				if(p){
+					state.inputs.splice(state.inputs.indexOf(p), 1);
+					return;
+				}
+				p = state.outputs.find(pin => pin.name == pinName);
+				if(p)
+					state.outputs.splice(state.outputs.indexOf(p), 1);
+			}
+		},
+		
+		getters: {
+			getNode: (state) => {
+				return state;
+			},
+			
+			getInput: (state) => (name) => {
+				if(name)
+					return state.inputs.find(pin => pin.name == name);
+				return state.inputs;
+			},
+
+			getOutput: (state) => (name) => {
+				if(name)
+					return state.outputs.find(pin => pin.name == name);
+				return state.outputs;
+			},
+
+			getPin: (state, getters) => (name) => {
+				if(name)
+					return getters.getInput(name) || getters.getOutput(name);
+				return state.inputs.concat(state.outputs);
+			}
+		}
 	}
-};
+}
+
+const PinModule = {
+	
+}
+
+const LinkModule = {
+	namespaced: true,
+	mutations: {
+		add: function(state, data){
+			data.uid = data.uid || uid();
+			this.commit('addLink', data);
+		},
+		
+		remove: function(state, uid){
+			this.commit('removeLink', uid);
+		},
+		
+		update: function(state, uid, data){
+			
+		}
+	},
+	
+	getters: {
+		
+		getPin: (state, getters) => (name) => {
+			return getters.getInput(name) || getters.getOutput(name);
+		},
+		
+		getInput: (state) => (name) => {
+			if(name)
+				return state.inputs.find(it => it.name == name);
+			return state.inputs;
+		},
+		
+		getOutput: (state) => (name) => {
+			if(name)
+				return state.outputs.find(it => it.name == name);
+			return state.outputs;
+		},		
+	}
+}
 
 import img from '../../ui-img/function.png';
 import {Category, Function, In, Out} from '../../exlibs/default.export.js';
 //import EventBus from '../../cmon-js/event-bus.js'
 
-var FunctionStore = {
+const FunctionStore = {
 	state: function(){
 		return {
 			uid: uid(),
@@ -141,38 +246,34 @@ var FunctionStore = {
 		};
 	},
 	
+	modules: {
+		link: LinkModule,
+		//node: NodeModule,
+		pin: PinModule
+	},
+		
 	mutations: {
 		
 		setData: function(state, data){
 			//stateMerge(state.datas, data);
+			const me = this;
 			state.datas = data;
 			
-			var n = {
-				uid: state.uid + '_entryPoint',
-				name: 'entryPoint', 
-				title: state.datas.name, 
-				flags: F_READ_ONLY, 
-				symbol: 'exlibs/img/start.png', 
-				color: '#7f2197',
-			};
+			var n = state.library.Library.getNodeById('core.entryPoint').toObject();
+			n.uid = state.uid + '_entryPoint'
+			n.title = state.datas.name;
+			n.flags = F_READ_ONLY;
+			n.outputs.forEach(function(i){
+				me.commit('addOutput', i);
+			});			
+			delete n.outputs;
 			this.commit('addNode', n);
+
 			n = this.getters.EntryPointNode;
 			Vue.set(n, 'outputs', state.datas.outputs);
 			Vue.set(n, 'inputs', state.datas.inputs);
 
-			var i = {
-				name: '@exit',
-				type: F_OUTPUT,
-				datatype: 'core.exec',
-			};
-			this.commit('addOutput', i);
-			
-			/*
-			EventBus.$on('librarymenu:get', function(data, query, context){
-				console.log('ok');
-			});
-			*/
-
+			//TODO: remove this watcher
 			var w = this.watch(
 				state => state.datas.name,
 				() => {
@@ -184,13 +285,13 @@ var FunctionStore = {
 		},
 		
 		addNode: function(state, data){
-			//console.log('store.blueprint.function:addNode', data);
 			var d = newNode();
 			stateMerge(d, data);
 			data.uid = d.uid;
 			state.nodes.push(d);
+			this.registerModule(data.uid, NodeModuleStore(state.nodes[state.nodes.length-1]));
 		},
-		
+		/*
 		addNodeIo: function(state, data){
 			var node = this.getters.getNode(data.node);
 			console.assert(node && data.props.flags);
@@ -202,7 +303,7 @@ var FunctionStore = {
 				node.outputs.splice(data.pos ? data.pos : node.outputs.length, 0, data.props);
 				//node.outputs.push(data.props);
 		},
-		
+		*/
 		addInput: function(state, data){
 			var i = newPin();
 			data = data || {};
@@ -222,6 +323,25 @@ var FunctionStore = {
 			stateMerge(i, data);
 			state.datas.outputs.push(i);
 		},
+		
+		
+		
+		addLink: function(state, data){
+			console.log('store:link/add', data);
+			state.links.push(data);
+		},
+		
+		removeLink: function(state, uid){
+			var link = this.getters.getLink(uid);
+			if(link)
+				state.links.splice(state.links.indexOf(link), 1);
+		},
+		
+		updateLink: function(state, data){
+			
+		},
+		
+		
 		
 		changeInputProperty: function(state, data){
 			stateMerge(state.datas.inputs.find(it => it.name == data.name), data.props);
@@ -268,9 +388,9 @@ var FunctionStore = {
 
 		EntryPointNode: (state, getters) => getters.getNode(state.uid + '_entryPoint'),
 		
-		getLink: (state, getters, rootState) => (pinIn, pinOut) => {
-			if(pinIn)
-				return state.nodes.find(it => it.name == name);
+		getLink: (state, getters, rootState) => (uid) => {
+			if(uid)
+				return state.links.find(it => it.uid == uid);
 			else
 				return state.links;
 		},

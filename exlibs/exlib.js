@@ -170,13 +170,20 @@ export const Base = {
 		}
 	},
 		
-	template: '<component :is="__ctor" v-bind="properties">{{value}}<component v-for="child in childs" :is="child.__ctor" v-bind="child" /><slot /></component>'
+	template: 	'<component :is="__ctor" v-bind="properties">{{value}} \
+					<component v-for="child in childs" \
+						:is="child.__ctor" \
+						v-bind="child" \
+					/>\
+					<slot />\
+				</component>'
 }
 
+/*
 function test(){
 	return (new DOMParser()).parseFromString("<library/>", 'text/xml');
 }
-
+*/
 export const Library = {
 	extends: Base,
 	mixins: [SplitPackageName],
@@ -299,6 +306,12 @@ export const Library = {
 			console.assert(false, 'unknown query');
 		},
 		
+		getNodeById: function(id){
+			var q = this.createQuery();
+			q.id = id;
+			return this.getNodesByQuery(q);
+		},
+		
 		getCategory: function(id){
 			return this.$el.querySelector('category[id="' + id + '"]');
 		},	
@@ -392,6 +405,7 @@ export const Node = {
 	
 	props: {
 		__ctor: {type: String, default: 'node'},
+		ctor: String,
 		title: String,
 		subtitle: String,
 		keywords: String, //{type: Array, default: function(){return []}},
@@ -507,6 +521,7 @@ export const Pin = {
 		ctor: String,
 		pinctor: String,
 		datatype: {type: String, required: true},
+		maxlink: {type: Number, default: 99},
 		keywords: {type: Array, default: function(){return []}},
 		description: String,
 		group: String,
@@ -535,6 +550,7 @@ export const In = {
 	props: {
 		__ctor: {type: String, default: 'in'},
 		flags: {type: Number, default: F_INPUT},
+		maxlink: {type: Number, default: 1},
 	}
 }
 Vue.config.ignoredElements.push('in');
@@ -568,6 +584,7 @@ export const Exit = {
 	props: {
 		id:{type: String, default: '@exit'},
 		datatype: {type: String, default: 'core.exec'},
+		maxlink: {type: Number, default: 1},
 	},
 }
 Vue.config.ignoredElements.push('exit');
@@ -681,7 +698,18 @@ export const Method = {
 	
 	props: {
 		__ctor: {type: String, default: 'method'},
+		childs: {type: Array, default: function(){ return [{__ctor: 'in', id: 'target', datatype: "toto"}]}},
 	},
+	data: function(){
+		return {
+			
+		}
+	},
+		
+	template: 	'<component :is="__ctor" v-bind="properties">{{value}} \
+					<in id="target" datatype="zozo" /> \
+					<slot /> \
+				</component>'
 }
 Vue.config.ignoredElements.push('method');
 

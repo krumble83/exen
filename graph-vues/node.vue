@@ -20,25 +20,23 @@
 			class="body" 
 			width="100%" 
 			height="100%" 
-			rx="9" 
-			ry="9" 
 			fill="url(#exBgGradient)" 
 			filter="url(#exBgFilter)" 
 		/>
 		<g class="header" ref="header">
-			<rect v-if="title" width="100%" height="100%" rx="9" ry="9" :fill="'url(#nodeHeader_' + color.replace('#', '') + ')'" :clip-path="'url(#exNodeClipPath_' + ((subtitle) ? '2' : '1') + ')'" />
-			<image v-if="title && symbol" :href="symbol" x="10" y="6" width="16" height="16" />
-			<text v-if="title" class="title" :x="symbol ? '31' : 10" y="18">{{cTitle}}</text>
-			<text v-if="title && subtitle" class="subtitle" :x="symbol ? '28' : 10" y="38">{{subtitle}}</text>
+			<rect v-if="title" width="100%" height="100%" :fill="'url(#nodeHeader_' + color.replace('#', '') + ')'" :clip-path="'url(#exNodeClipPath_' + ((subtitle) ? '2' : '1') + ')'" />
+			<image v-if="title && symbol" :href="symbol" x="10" y="3" width="16" height="16" />
+			<text v-if="title" class="title" :x="symbol ? '31' : 10" y="16">{{cTitle}}</text>
+			<text v-if="title && subtitle" class="subtitle" :x="symbol ? '28' : 10" y="33">{{subtitle}}</text>
 		</g>
-		<rect width="100%" height="100%" rx="9" ry="9" fill-opacity="0" stroke-width="0" />
+		<rect width="100%" height="100%" fill-opacity="0" stroke-width="0" />
 		
-		<g ref="inputsGroup" class="inputs" :transform="subtitle ? 'translate(0,50)' : title ? 'translate(0,36)' : ''">
+		<g ref="inputsGroup" class="inputs" :transform="subtitle ? 'translate(0,45)' : title ? 'translate(0,29)' : ''">
 			<slot name="inputs">
 				<component v-for="(pin, idx) in cInputs" :key="pin.id" 
 					class="input"
 					:is="pin.ctor ? pin.ctor : getCtor(pin.datatype) || 'ExPin'" 
-					:max-link="pin.maxlink ? pin.maxlink : 1"
+					:maxlink="pin.maxlink ? pin.maxlink : 1"
 					@resize="$emit('pin:resize', $event)"
 					ref="inputs"
 					v-bind="pin"
@@ -46,12 +44,12 @@
 			</slot>
 		</g>
 		
-		<g ref="outputsGroup" class="outputs" :transform="'translate(' + outputsGroupPos.x + ',' + (subtitle ? 50 : 36) + ')'">
+		<g ref="outputsGroup" class="outputs" :transform="'translate(' + outputsGroupPos.x + ',' + (subtitle ? 45 : 29) + ')'">
 			<slot name="outputs">	
 				<component v-for="(pin, idx) in cOutputs" :key="pin.id" 
 					class="output"
 					:is="pin.ctor ? pin.ctor : getCtor(pin.datatype) || 'ExPin'" 
-					:max-link="pin.maxlink ? pin.maxlink : 99"
+					:maxlink="pin.maxlink ? pin.maxlink : 99"
 					@resize="$emit('pin:resize', $event)"
 					ref="outputs"
 					v-bind="pin"
@@ -77,20 +75,21 @@
 
 	import Color from './color.js';
 	import {SvgBase} from './mixins.js'
-	import NodeDraggable from './node.draggable.js'
+	import {WorksheetHelpers} from './mixins.js';
+	import NodeDraggable from './node.draggable.vue'
 	import NodeSelectable from './node.selectable.js'
 	import {NodeContextMenu} from './contextmenu.js'
 	
 	import ExPin from './pin.vue';
-	import PinAdd from './pin.add.vue';
-	import PinStructure from './pin.structure.vue';
-	import PinWildcards from './pin.wildcards.vue';
+	import PinAdd from './pin.sub.add.vue';
+	import PinStructure from './pin.sub.structure.vue';
+	import PinWildcards from './pin.sub.wildcards.vue';
 	
 	const ctorCache = {};
 	
 	export default {
-		inject: ['Worksheet', 'addSvgDef', 'camelCaseToLabel'],
-		mixins: [SvgBase, NodeSelectable, NodeDraggable, NodeContextMenu],
+		inject: ['Worksheet', 'addSvgDef', 'camelCaseToLabel', 'Store'],
+		mixins: [SvgBase, NodeSelectable, NodeContextMenu, NodeDraggable, WorksheetHelpers],
 		//mixins: [SvgBase, NodeSelectable, NodeDraggable, NodeGrid, ContextMenu],
 		components: {ExPin, PinAdd, PinStructure, PinWildcards},
 		
@@ -115,6 +114,8 @@
 		computed: {
 			cTitle: function(){return this.camelCaseToLabel(this.title || this.name)},
 			cInputs: function(){
+				//console.log(this.Store);
+				//return this.Store.getters[this.uid + '/getInput']();
 				if(this.mExpanded)
 					return this.inputs;
 				return this.inputs.filter(it => it.optional != true);
@@ -161,15 +162,19 @@
 				this.$emit('node:resize')
 			},
 			mExpanded: function(){
-				this.$nextTick(function(){
-					this.update();
-				});
+				this.update(true);
 			},
 			title: function(){
-				this.$nextTick(function(){
-					this.update();console.log('zZz')
-				});
+				this.update(true);
 			},
+			
+			inputs: function(){
+				this.update(true);				
+			},
+			
+			outputs: function(){
+				this.update(true);				
+			}
 		},
 
 		created: function(){
@@ -181,9 +186,8 @@
 					{props: {is: 'stop','stop-color': new Color(this.color).darker(0.1).toString(),offset: '0'}},
 					{props: {is: 'stop','stop-color': this.color,offset: '0.02'}},
 					{props: {is: 'stop','stop-color': new Color(this.color).darker(0.45).toString(),offset: '0.3'}},
-					{props: {is: 'stop','stop-color': new Color(this.color).darker(0.4).toString(),offset: '0.7'}},
-					{props: {is: 'stop','stop-color': new Color(this.color).darker(0.8).toString(),offset: '0.95'}},
-					{props: {is: 'stop','stop-color': new Color(this.color).darker(0.8).toString(),offset: '1'}}				
+					{props: {is: 'stop','stop-color': new Color(this.color).darker(0.6).toString(),offset: '0.6'}},
+					{props: {is: 'stop','stop-color': new Color(this.color).darker(1).toString(),offset: '0.95'}}
 				]
 			}
 			//console.log(this);
@@ -192,7 +196,7 @@
 			def = {
 				props: {is: 'clipPath', id: 'exNodeClipPath_' + ((this.subtitle) ? '2' : '1')},
 				childs: [
-					{props: {is: 'rect', x:'0', y:'0', width:'100%', height: ((this.subtitle) ? '45' : '29')}}
+					{props: {is: 'rect', x:'0', y:'0', width:'100%', height: ((this.subtitle) ? '39' : '22')}}
 				]
 			}
 			this.addSvgDef(def);		
@@ -268,7 +272,7 @@
 					me.mWidth = maxWidth;
 				
 
-				maxHeigth = Math.max(maxHeigth, headBox.height + 30, headBox.height + 30 + inputsBox.height, headBox.height + 30 + outputsBox.height);
+				maxHeigth = Math.max(maxHeigth, headBox.height + 23, headBox.height + 23 + inputsBox.height, headBox.height + 23 + outputsBox.height);
 				
 				if(me.$refs.optional){
 					me.$refs.optional.setAttribute('width', maxWidth-5);
@@ -281,10 +285,12 @@
 				
 				if(maxWidth != oldSize.w || maxHeigth != oldSize.h)
 					me.$emit('resize');
+				/*
 				setTimeout(function(){
 					me.$forceUpdate();
 				}, 1000);
-				
+				*/
+				me.$emit('update');
 				
 			},
 			
@@ -305,8 +311,8 @@
 				if(typeof name == 'string')
 					return this.getInput(name) || this.getOutput(name);
 				else if(typeof name == 'function'){
-					var ret = this.$refs.inputs.filter(name);
-					return ret.concat(this.$refs.outputs.filter(name))
+					var ret = this.$refs.inputs ? this.$refs.inputs.filter(name) : [];
+					return ret.concat(this.$refs.outputs ? this.$refs.outputs.filter(name) : [])
 				}
 				var ret = this.$refs.inputs;
 				return ret.concat(this.$refs.outputs)
@@ -314,23 +320,34 @@
 
 			getInput: function(name){
 				if(typeof name == 'string')
-					return this.$refs.inputs.find(pin => pin.name == name);
+					return this.$refs.inputs ? this.$refs.inputs.find(pin => pin.name == name) : false;
 				if(typeof name == 'function')
-					return this.$refs.inputs.filter(name);
-				return this.$refs.inputs;
+					return this.$refs.inputs ? this.$refs.inputs.filter(name) : [];
+				return this.$refs.inputs || [];
 			},
 
 			getOutput: function(name){
 				if(typeof name == 'string')
-					return this.$refs.outputs.find(pin => pin.name == name);
+					return this.$refs.outputs ? this.$refs.outputs.find(pin => pin.name == name) :  false;
 				if(typeof name == 'function')
-					return this.$refs.outputs.filter(name);
-				return this.$refs.outputs;
+					return this.$refs.outputs ? this.$refs.outputs.filter(name) : [];
+				return this.$refs.outputs || [];
 			},
 			
 			getPinGroup: function(group){
 				var ret = this.$refs.inputs.filter(pin => pin.group == group);
 				return ret.concat(this.$refs.outputs.filter(pin => pin.group == group))
+			},
+			
+			storeCommit: function(type, payload){
+				this.Store.commit(this.uid + '/' + type, payload);
+			},
+			
+			storeGet: function(type, payload){
+				if(payload)
+					return this.Store.getters[this.uid + '/' + type](payload);
+				else
+					return this.Store.getters[this.uid + '/' + type];
 			}
 		},
 	};
@@ -338,7 +355,6 @@
 
 <style>
 	.exWorksheet .exNode{
-		cursor: move;
 		stroke: none;
 		fill: none;
 		outline: none;
@@ -361,7 +377,18 @@
 		user-select: none; /* Standard */
 	}
 
+	.exWorksheet .exNode > rect,
+	.exWorksheet .exNode > .header > rect{
+		rx: 9;
+		ry: 9;
+	}
 
+	.exWorksheet .exNode.selected > rect{
+		stroke-width: 3px !important;
+		stroke: url(#selectionHandlerStroke);
+	}
+	
+	
 	.exWorksheet .exNode > .header{
 		font-family: Helvetica, Arial, sans-serif;
 		font-size: 12px;
@@ -412,11 +439,6 @@
 	.exWorksheet.selectEvent .exNode{
 		pointer-events: none !important;
 		cursor: crosshair !important;
-	}
-	
-	.exWorksheet .exNode.selected > rect{
-		stroke-width: 3px;
-		stroke: url(#selectionHandlerStroke);
 	}
 	
 </style>

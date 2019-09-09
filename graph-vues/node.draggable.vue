@@ -1,4 +1,5 @@
 
+<script>
 import {WorksheetHelpers} from './mixins.js';
 
 
@@ -75,6 +76,7 @@ export default {
 	data: function(){
 		return {
 			classObject: {
+				draggable: true,
 				dragging: false,
 			}
 		}
@@ -89,3 +91,14 @@ export default {
 
 	}
 }
+</script>
+
+<style>
+	.exWorksheet .exNode.draggable{
+		cursor: move;
+	}
+	
+	.exWorksheet .exNode.dragging .exPin{
+		pointer-events : none;
+	}	
+</style>

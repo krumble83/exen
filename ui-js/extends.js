@@ -2,7 +2,7 @@
 
 function inline(el, bind, vm){
 		var prev = el.previousSibling;
-		
+				
 		while(prev && (prev.nodeName == '#text' || window.getComputedStyle(prev).display == 'none'))
 			prev = prev.previousSibling;
 

@@ -20,5 +20,5 @@
 	export default exp;
 
 	import App from '../../ui-vues/project.vue';
-	App.components['libArduinoIoAnalog'] = exp;
+	App.components['arduino.io.analog'] = exp;
 </script>

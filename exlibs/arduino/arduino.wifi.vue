@@ -61,5 +61,5 @@
 	export default exp;
 
 	import App from '../../ui-vues/project.vue';
-	App.components['libArduinoWifi'] = exp;
+	App.components['arduino.wifi'] = exp;
 </script>

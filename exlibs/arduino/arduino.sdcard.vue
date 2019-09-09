@@ -13,34 +13,30 @@
 					<in id="csPin" datatype="arduino.io.digital.dpin" tooltip="SPI Chip Select Pin" />
 				</method>
 				<method id="open" title="SD.open()" color="#87663f" symbol="exlibs/img/arduino.png">
-					<entry />
+					<entry /><exit />
 					<in id="path" datatype="core.type.string" />
 					<in id="mode" datatype="openmode" />
-					<in id="success" datatype="core.exec" />
-					<in id="fail" datatype="core.exec" />
-					<in id="fileObject" datatype="os.file.fileObject" />
+					<out id="success" datatype="core.type.bool" />
+					<out id="fileObject" datatype="os.file.fileObject" />
 				</method>
 				<method id="exists" title="SD.exists()" color="#aaeea0" symbol="exlibs/img/function.png" keywords="file exists,dir exists,path exists">
 					<in id="path" datatype="core.type.string" />
-					<in id="exists" datatype="core.type.bool" />
+					<out id="exists" datatype="core.type.bool" />
 				</method>
 				<method id="mkdir" title="SD.mkdir()" color="#87663f" symbol="exlibs/img/arduino.png" keywords="make directory, directory make">
-					<entry />
+					<entry /><exit />
 					<in id="path" datatype="core.type.string" />
-					<in id="success" datatype="core.exec" />
-					<in id="fail" datatype="core.exec" />
+					<out id="success" datatype="core.type.bool" />
 				</method>
 				<method id="rmdir" title="SD.rmdir()" color="#87663f" symbol="exlibs/img/arduino.png" keywords="remove directory,delete directory,directory remove,directory delete">
 					<entry /><exit />
 					<in id="path" datatype="core.type.string" />
-					<in id="success" datatype="core.exec" />
-					<in id="fail" datatype="core.exec" />
+					<out id="success" datatype="core.type.bool" />
 				</method>
 				<method id="remove" title="SD.remove()" color="#87663f" symbol="exlibs/img/arduino.png" keywords="remove file,delete file,file remove,file delete">
 					<entry /><exit />
 					<in id="file" datatype="core.type.string" />
-					<in id="success" datatype="core.exec" />
-					<in id="fail" datatype="core.exec" />
+					<out id="success" datatype="core.type.bool" />
 				</method>
 			</class>
 		</category>
@@ -56,5 +52,5 @@
 	export default exp;
 
 	import App from '../../ui-vues/project.vue';
-	App.components['libArduinoSdcard'] = exp;
+	App.components['arduino.sdcard'] = exp;
 </script>

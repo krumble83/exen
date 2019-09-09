@@ -1,11 +1,17 @@
 
+<script>
 import {WorksheetHelpers} from './mixins.js';
 import ExLink from './link.vue';
 
 const LinkDraw = {
 	extends: ExLink,
 	mixins: [WorksheetHelpers],
+	inject: ['Worksheet', 'Store'],
 	
+	props: {
+		id: {type: String, default: 'drawLink'},
+	},
+
 	data: function(){
 		return {
 			classObject: {
@@ -18,42 +24,71 @@ const LinkDraw = {
 		const me = this;
 		me.$once('draw:start', function(){
 			me.classObject.draw = true;
-			me.$parent.$el.classList.add('drawlinkevent');
+			me.Worksheet.$el.classList.add('drawlinkevent');
 		});
-		
+		/*
 		me.$once('draw:stop', function(){
 			me.classObject.draw = false;
-			me.$parent.$el.classList.remove('drawlinkevent');
+			me.Worksheet.$el.classList.remove('drawlinkevent');
 		});
-		
+		*/
 	},
 	
 	beforeDestroy: function(){
-		this.$el.parentNode.removeChild(this.$el);
+		const me = this;
+		document.removeEventListener('mouseup', me.stopDraw, {once: true});		
+		document.removeEventListener('mouseup', me.stopDraw, {once: true});
+		me.Worksheet.$el.classList.remove('drawlinkevent');
+		me.$el.parentNode.removeChild(me.$el);
+		me.Worksheet.$emit('link:draw:remove');
 	},
 	
 	methods: {
-		startDraw: function(){
+		startDraw: function(evt){
 			const me = this;
 			document.addEventListener('mousemove', me.drawUpdate);
-			document.addEventListener('mouseup', me.stopDraw, {capture: true, once: true});
+			document.addEventListener('mouseup', me.stopDraw, {once: true});
 			me.$emit('draw:start');
-			me.$parent.$emit('link:draw:start', me);
+			me.Worksheet.$emit('link:draw:start', me);
+			me.drawUpdate(evt);
 		},
 		
 		stopDraw: function(evt){
+			console.log('drawlink:stop');
 			const me = this;
 			document.removeEventListener('mousemove', me.drawUpdate);
 			me.$emit('draw:stop', evt);
-			me.$parent.$emit('link:draw:stop', evt, me);
+			me.Worksheet.$emit('link:draw:stop', evt, me);
 			if(evt.defaultPrevented)
 				return;
 			if(!me.mInputPin || !me.outputPin){
-				me.$parent.$emit('link:draw:cancel', me);
-				me.$el.parentNode.removeChild(me.$el);
+				me.Worksheet.$emit('link:draw:cancel', me);
 				me.$destroy();
 			}
 			console.log('stop draw');			
+		},
+		
+		finishLink: function(pin){
+			//console.log('finish link 2');
+			const me = this
+				, link = {datatype: me.datatype, color: me.color};
+				
+			if(pin.acceptLink(me) != 0){
+				me.$destroy();
+				return;
+			}
+				
+			if(me.getInput()){
+				link.inputPin = me.getInput();
+				link.outputPin = pin;
+			}
+			else {
+				link.inputPin = pin;
+				link.outputPin = me.getOutput();
+			}
+			me.$destroy();
+			me.Store.commit('link/add', link);
+			me.Worksheet.$emit('link:add');
 		},
 		
 		drawUpdate: function(evt){
@@ -83,6 +118,14 @@ const LinkDraw = {
 export default {
 	inject: ['Library'],
 	mixins: [WorksheetHelpers],
+	
+		data: function() {
+			return {
+				classObject: {
+					linkable: true,
+				},
+			}
+		},
 	
 	created: function(){
 		const me = this;
@@ -117,27 +160,28 @@ export default {
 			
 			instance.$mount();
 			me.Worksheet.$el.querySelector('.exLinks').appendChild(instance.$el);
-			instance.startDraw();
+			instance.startDraw(evt);
 			me.Worksheet.$emit('pin:drawlink', evt, d);
 		},
 		
 		finishLink: function(evt){
 			const me = this;
-			console.log('finish link', this.Worksheet.$refs.drawlink);
+			evt.stopPropagation();
 
 			if(!me.classObject.linkable)
 				return;
 			
 
 			//evt.stopPropagation();
-			var link = me.Worksheet.$refs.drawlink;
-			if(!link)
-				return;
-			link.finishLink(me);
+			var link = me.Worksheet.$el.querySelector('#drawLink');
+			
+			console.assert(link && link.__vue__);
+			
+			link.__vue__.finishLink(me);
 		},
 		
 		acceptLink: function(link){
-			console.log(link.getInput(), link.getOutput());
+			//console.log(link.getInput(), link.getOutput());
 			const me = this;
 			
 			if(me == link.getInput() || me == link.getOutput())
@@ -156,3 +200,16 @@ export default {
 		},
 	},
 }
+</script>
+
+<style>
+	.exWorksheet .exNode .exPin.linkable{
+		pointer-events : all;
+		cursor: crosshair;
+	}
+	
+	.exWorksheet .exNode .exPin.linkable > rect:first-child:hover{
+		fill-opacity: 1;
+	}
+	
+</style>

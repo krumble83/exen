@@ -5,13 +5,59 @@
 		:class="classObject"
 		:d="'M' + dc1.x + ',' + dc1.y + ' C' + (dp1.x) + ',' + dp1.y + ' ' + (dp2.x) + ',' + dp2.y + ' ' + dc2.x + ',' + dc2.y" 
 		@contextmenu.prevent.stop="$emit('mouse:context', $event)"
+		@dblclick="$emit('mouse:dblclick', $event)"
 	/>
 </template>
 
 <script>
 
+
+	const findMousePoint = function(e, resolution){
+		var me = this
+			//, doc = me.doc()
+			, screenPoint = me.Worksheet.mouseToSvg(e)
+			, len = me.$el.getTotalLength()
+			, bestMatch
+			, pt;
+		
+		resolution = resolution || 200;
+		
+		for(var a=1; a < resolution; a++){
+			pt = me.$el.getPointAtLength((len/(resolution+1))*a);
+			var l = pt.x - screenPoint.x;
+			if(bestMatch && Math.abs(pt.x - screenPoint.x) > Math.abs(bestMatch.distance))
+				return bestMatch;
+			if(!bestMatch || Math.abs(pt.x - screenPoint.x) < Math.abs(bestMatch.distance))
+				bestMatch = {distance: pt.x - screenPoint.x, length: (len/(resolution+1))*a, point: {x: pt.x, y: pt.y}};
+		}
+		return bestMatch;
+	}
+/*
+	const findMousePoint = function(e, resolution){
+		var me = this
+			, doc = me.doc()
+			, screenPoint = me.parent(exSVG.Worksheet).point(e)
+			, len = me.length()
+			, bestMatch
+			, pt;
+		
+		resolution = resolution || 100;
+		
+		for(var a=1; a < resolution; a++){
+			pt = me.pointAt((len/(resolution+1))*a);
+			var l = pt.x - screenPoint.x;
+			if(bestMatch && Math.abs(pt.x - screenPoint.x) > Math.abs(bestMatch.distance))
+				return bestMatch;
+			if(!bestMatch || Math.abs(pt.x - screenPoint.x) < Math.abs(bestMatch.distance))
+				bestMatch = {distance: pt.x - screenPoint.x, length: (len/(resolution+1))*a, point: {x: pt.x, y: pt.y}};
+		}
+		return bestMatch;
+	}
+*/
+
 	export default {
 		mixins: [],
+		inject: ['Worksheet', 'Library', 'Store'],
 		//mixins: [WorksheetHelpers, ContextMenu],
 		props: {
 			id: String,
@@ -74,12 +120,14 @@
 					this.mWatchers.input.push(val.Node.$watch('mX', this.update));
 					this.mWatchers.input.push(val.Node.$watch('mY', this.update));
 					//val.Node.$on('resize', this.update);
-					val.Node.$once('remove', this.$destroy);
+					val.Node.$once('remove', this.remove);
+					val.Node.$on('update', this.update);
 					if(old){
 						this.mWatchers.input.forEach(function(el){
 							el();
 						});
-						old.Node.$off('remove', this.$destroy);
+						old.Node.$off('remove', this.remove);
+						old.Node.$off('update', this.update);
 						old.removeLink(this);
 						//old.mLinkCount--;
 					}
@@ -101,12 +149,14 @@
 					this.mWatchers.output.push(val.Node.$watch('mX', this.update));
 					this.mWatchers.output.push(val.Node.$watch('mY', this.update));
 					//val.Node.$on('resize', this.update);
-					val.Node.$once('remove', this.$destroy);
+					val.Node.$once('remove', this.remove);
+					val.Node.$on('update', this.update);
 					if(old){
 						this.mWatchers.output.forEach(function(el){
 							el();
 						});
-						old.Node.$off('remove', this.$destroy);
+						old.Node.$off('remove', this.remove);
+						old.Node.$off('update', this.update);
 						old.removeLink(this);
 						//old.mLinkCount--;
 					}
@@ -115,14 +165,17 @@
 		},
 		
 		created: function(){
-			return;
+			const me = this;
+			/*
 			var def = {
-				props: {is: 'filter',id: 'link_blur',x: 0,y: 0},
+				props: {is:'filter', id:'link_blur', x:0, y:0},
 				childs: [
-					{props: {is: 'feGaussianBlur', in:'SourceGraphic', stdDeviation:0.7}}
+					{props: {is:'feGaussianBlur', in:'SourceGraphic', stdDeviation:0.7}}
 				]
 			}
-			this.Worksheet.addDef(def);		
+			this.Worksheet.addDef(def);	
+			*/
+			me.$on('mouse:dblclick', this._onDblClick);
 		},
 		
 		mounted: function(){
@@ -142,10 +195,13 @@
 				console.assert(p);
 				me.mOutputPin = p;
 			}
+			me.update();
 		},
 		
 		beforeDestroy: function(){
+			console.log('link:beforeDestroy');
 			const me = this;
+			me.$off('mouse:dblclick', this._onDblClick);
 			
 			me.$emit('remove');
 
@@ -158,17 +214,32 @@
 
 			if(me.mInputPin){
 				me.mInputPin.removeLink(me);
-				me.mInputPin.Node.$off('remove', me.$destroy);
+				me.mInputPin.Node.$off('remove', me.remove);
+				me.mInputPin.Node.$off('update', this.update);
 			}
 			if(me.mOutputPin){
 				me.mOutputPin.removeLink(me);
-				me.mOutputPin.Node.$off('remove', me.$destroy);
+				me.mOutputPin.Node.$off('remove', me.remove);
+				me.mOutputPin.Node.$off('update', this.update);
 			}
-			//if(me.$parent)
-			//	me.$parent.$el.removeChild(me.$el);
+			me.Store.commit('removeLink', {uid: me.id});
+			//me.$el.parentNode.removeChild(me.$el);
 		},
 		
 		methods: {
+			
+			_onDblClick: function(evt){
+				var pos = findMousePoint.call(this, evt);
+				//console.log('link:dblclick', pos);
+				var n = this.Library.getNodeById('core.rerouteNode').toObject();
+				n.x = pos.point.x-10;
+				n.y = pos.point.y-10;
+				this.Store.commit('addNode', n);
+				this.$nextTick(function(){
+					var n2 = this.Worksheet.getNode(n.uid);
+					n2.splitLink(this);					
+				});
+			},
 			
 			getDatatype: function(){
 				return this.datatype;
@@ -244,6 +315,10 @@
 			getOutput: function(){
 				return this.mOutputPin;
 			},
+			
+			remove: function(){
+				this.$destroy();
+			}
 		},
 	}
 	

@@ -22,9 +22,6 @@
 	
 	export default {
 		props: {
-			classObject: {
-				disabled: false,
-			},
 			title: String,
 			desc: String,
 			shortcut: String,
@@ -37,6 +34,9 @@
 		
 		data: function(){
 			return {
+				classObject: {
+					disabled: false,
+				},
 				id: this.$uid(),
 				items: []
 			}

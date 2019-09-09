@@ -6,7 +6,7 @@ Function.mixins.push({
 	methods: {
 		toObject: function(parent){
 			const me = this
-				, exp = ['title', 'subtitle', 'flags', 'color', 'symbol', 'x', 'y'];
+				, exp = ['title', 'subtitle', 'flags', 'color', 'symbol', 'x', 'y', 'ctor'];
 			parent = parent || {};
 			parent.name = this.fullpath;
 			
@@ -29,7 +29,7 @@ In.mixins.push({
 	methods: {
 		toObject: function(parent){
 			const me = this
-				, exp = ['label', 'description', 'flags', 'color', 'datatype', 'ctor', 'pinctor', 'optional', 'isarray', 'group', 'target']
+				, exp = ['label', 'description', 'flags', 'color', 'datatype', 'ctor', 'pinctor', 'optional', 'isarray', 'group', 'target', 'maxlink']
 				, ret = {name: me.id}
 
 			parent.inputs = parent.inputs || [];
@@ -54,7 +54,7 @@ Out.mixins.push({
 	methods: {
 		toObject: function(parent){
 			const me = this
-				, exp = ['label', 'description', 'flags', 'color', 'datatype', 'ctor', 'pinctor', 'optional', 'isarray', 'group', 'target']
+				, exp = ['label', 'description', 'flags', 'color', 'datatype', 'ctor', 'pinctor', 'optional', 'isarray', 'group', 'target', 'maxlink']
 				, ret = {name: me.id}
 
 			parent.outputs = parent.outputs || [];

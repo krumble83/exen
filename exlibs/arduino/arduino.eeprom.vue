@@ -30,5 +30,5 @@
 	export default exp;
 
 	import App from '../../ui-vues/project.vue';
-	App.components['libArduinoEeprom'] = exp;
+	App.components['arduino.eeprom'] = exp;
 </script>

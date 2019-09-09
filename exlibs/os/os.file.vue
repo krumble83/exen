@@ -45,6 +45,15 @@
 					<in id="target" datatype="fileObject" :flags="4194304" />
 				</method>
 			</class>
+			
+			<function id="splitPath" title="Split Path" color="#aaeea0" symbol="exlibs/img/function.png">
+				<in id="inPath" datatype="core.type.string" />
+				<out id="path" datatype="core.type.string" />
+				<out id="fileName" datatype="core.type.string" />
+				<out id="extension" datatype="core.type.string" />
+				<out id="drive" datatype="core.type.string" :optional="true" description="Available only on windows system" />
+			</function>
+			
 		</category>
 	</package>
 </template>
@@ -58,5 +67,5 @@
 	export default exp;
 
 	import App from '../../ui-vues/project.vue';
-	App.components['libOsFile'] = exp;
+	App.components['os_file'] = exp;
 </script>

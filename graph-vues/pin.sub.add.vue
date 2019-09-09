@@ -3,7 +3,7 @@
 	
 	export default {
 		extends : ExPin,
-		inject: ['Store'],
+		//inject: ['Store'],
 		
 		props: {
 			target: String,
@@ -60,23 +60,25 @@
 			
 			_onClick: function(evt){
 				const me = this
-					, node = me.Store.getters.getNode(me.Node.uid)
-					, target = node.inputs.find(it => it.name == me.target) || node.outputs.find(it => it.name == me.target)
+					, node = me.Node.storeGet('getNode')
+					, target = me.Node.storeGet('getPin', me.target)
+					//, target = node.inputs.find(it => it.name == me.target) || node.outputs.find(it => it.name == me.target)
 					, regex = new RegExp('^' + me.target + '(\[[0-9]+\])*$')
 					, pins = me.Node.getPin(function(pin){return regex.test(pin.name)})
 					, lastPin = pins[pins.length-1]
 
 				var clone = JSON.parse(JSON.stringify(target));
+				//clone.name = clone.name.replace(/\[[0-9]+\]/, ''); 
 				var a = 1;
-				while(me.Node.getPin(clone.name + '[' + a + ']'))
+				while(me.Node.storeGet('getPin', clone.name + '[' + a + ']'))
 					a++;
 				
 				clone.name = clone.name + '[' + a + ']';
 				
 				if((target.flags & F_INPUT) == F_INPUT)
-					me.Store.commit('addNodeIo', {node: node.uid, pos: node.inputs.indexOf(lastPin), props: clone});
+					me.Node.storeCommit('addPin', {pos: node.inputs.indexOf(lastPin), props: clone});
 				else
-					me.Store.commit('addNodeIo', {node: node.uid, pos: node.outputs.indexOf(lastPin), props: clone});
+					me.Node.storeCommit('addPin', {pos: node.outputs.indexOf(lastPin), props: clone});
 
 				this.$nextTick(function(){
 					me._updatePinGroup();

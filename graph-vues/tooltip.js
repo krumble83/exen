@@ -61,7 +61,7 @@ export default {
 			}
 			
 			document.addEventListener('mousemove', draw);
-			me.$once(['link:draw:stop', ], function(){
+			me.$once(['link:draw:stop', 'link:draw:remove'], function(){
 				document.removeEventListener('mousemove', draw);
 				hideTooltip();
 			});
@@ -99,6 +99,7 @@ ExPin.mixins.push({
 			if(me.classObject.linkable && link){
 				link = this.Worksheet.$el.querySelector('.exLink.draw').__vue__;
 				var accept = me.acceptLink(link);
+				console.log('accept:', accept);
 				if(accept == 1)
 					return hideTooltip();
 				if(accept == 0)
@@ -144,13 +145,14 @@ ExNode.mixins.push({
 	methods: {
 		tooltipMouseEnter: function(evt){				
 			var me = this
+			, header = me.$el.querySelector('.header')
 			, valid
 			, msg;
 			
 			
 			var move = function(ev){
 				//console.log(ev);
-				if(!me.$el.querySelector('.header').contains(ev.srcElement) && !ev.buttons == 1)
+				if(!header || (!header.contains(ev.srcElement) && !ev.buttons == 1))
 					hideTooltip();
 				else if(!ev.buttons == 1) // if not drawing link
 					showTooltip(ev, msg);

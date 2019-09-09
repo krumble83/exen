@@ -5,6 +5,22 @@
 		<datatype id="component" label="Component" color="#ff0" />
 		<datatype id="exec" label="Exec" pinctor="PinExec" color="#fff" :private="true" />
 		<datatype id="wildcards" :private="true" label="Wildcards" ctor="PinWildcards" color="#666" />
+		
+		<datatype id="scalar" label="Scalar Value" color="fff" />
+		
+		<function id="entryPoint" :private="true" symbol="exlibs/img/start.png"	color="#7f2197">
+			<exit />
+		</function>
+		
+		<function id="returnNode" :private="true" symbol="exlibs/img/start.png"	color="#7f2197">
+			<entry />
+		</function>
+		
+		<function id="rerouteNode" title="Add reroute Node..." ctor="NodeReroute">
+			<in id="@in" datatype="core.wildcards" />
+			<out id="@out" datatype="core.wildcards" />
+		</function>
+		
 	</package>
 </template>
 

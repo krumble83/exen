@@ -27,13 +27,6 @@
 			snap: {default: 16},
 		},
 		
-		data: function(){
-			return {
-				classObject: {
-					panEvent: false,
-				},
-			}
-		},		
 		provide: {
 			snapToGrid: function(x, y){
 				if(typeof x !== 'undefined' && typeof y === 'undefined')
@@ -61,54 +54,7 @@
 			];
 				
 			this.addDef(data);
-			
-			this.$on('node:cmenu', this.stopPan);
 		},
-		
-		beforeDestroy: function(){
-			this.$off('node:cmenu', this.stopPan);
-			
-		},
-				
-		mounted: function(){
-			const me = this
-				, panzoom = svgPanZoom(this.$el, {
-					viewportSelector: '.exViewport', 
-					fit: false, 
-					center: false,
-					zoomScaleSensitivity: 0.4,
-					minZoom: 0.05,
-					maxZoom: 1,
-					preventMouseEventsDefault: false, // set to false for dragging ui elements
-					useGlobalMove: true,
-					restrictPanButton: 2,
-					endPan: function(pan, evt){
-						me.$emit('pan:end', pan, evt);
-						me.classObject.panEvent = false;
-					},
-					startPan: function(evt){
-						me.$emit('pan:start', evt);
-						me.classObject.panEvent = true;
-					},
-				});
-			me.$el._panzoom = panzoom;
-			me.$emit('panzoom', panzoom);
-		},
-		
-		methods: {
-			stopPan: function(){
-				this.$el._panzoom.stopPan();
-			},
-
-			snaptoGridzzzzzzzzzz: function(x, y){
-				if(typeof x !== "undefined" && typeof y === "undefined")
-					return parseInt(x/16)*16;
-				else if(typeof y !== "undefined" && typeof x === "undefined")
-					return parseInt(y/16)*16;
-				else
-					return {x: parseInt(x/16)*16, y: parseInt(y/16)*16};
-			}
-		}
 	});
 
 </script>

@@ -44,5 +44,5 @@
 	export default exp;
 
 	import App from '../../ui-vues/project.vue';
-	App.components['libArduinoIoDigital'] = exp;
+	App.components['arduino.io.digital'] = exp;
 </script>

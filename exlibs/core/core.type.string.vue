@@ -56,6 +56,12 @@
 				<in id="b" datatype="core.type.string" />
 				<out id="output" datatype="core.type.bool" tooltip="True if a = b" />
 			</function>
+			
+			
+			<function id='c_str' title="c_str">
+				<in id="string" datatype="core.type.string" />
+				<out id="out" datatype="core.type.byte[]" />
+			
 		</category>
 	</package>
 </template>

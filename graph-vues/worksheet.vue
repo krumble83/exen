@@ -80,9 +80,11 @@
 	import WorksheetLibraryMenu from './worksheet.librarymenu.js';
 	import WorksheetMouseBorder from './worksheet.mouseborder.vue';
 
+	import NodeReroute from './node.sub.reroute.vue';
+
 	export default {
 		mixins: [WorksheetGrid, WorksheetPanZoom, WorksheetSelection, worksheetKeyboardEvents, WorksheetLibraryMenu, WorksheetToolTip],
-		components: {ExNode, ExLink, WorksheetMouseBorder},
+		components: {ExNode, ExLink, WorksheetMouseBorder, NodeReroute},
 		//mixins: [VueUndoRedo, WorksheetGrid, WorksheetSelection, WorksheetTooltip, WorksheetLibraryMenu],
 		
 		provide: function() {
@@ -182,7 +184,7 @@
 			
 			getNode: function(name){
 				if(typeof name == 'string')
-					return this.$refs.nodes.find(node => node.id == name);
+					return this.$refs.nodes.find(node => node.uid == name);
 				if(typeof name == 'function')
 					return (this.$refs.nodes) ? this.$refs.nodes.filter(name) : [];
 				return this.$refs.nodes;
@@ -193,13 +195,11 @@
 			},
 			
 			addLink: function(data){
-				if(!data.id)
-					data.id = this.getUid('node');
-				this.$store.commit('addLink', data);
+				this.store.commit('link/add', data);
 			},
 			
 			removeLink: function(id){
-				this.$store.commit('deleteLink', id);
+				this.store.commit('deleteLink', id);
 			},
 			/*
 			getLink: function(val){

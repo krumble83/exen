@@ -71,3 +71,23 @@ export const SvgBase = {
 		}
 	},
 }	
+
+export const StoreObject = {
+	inject: ['Store'],
+	
+	props: {
+		storeModule: {type: String, required: true},
+	},
+		
+	methods:{
+		
+		create: function(data){
+			this.commit(this.storeModule + '/' + 'add', data);
+		},
+		
+		remove: function(){
+			this.commit(this.storeModule + '/' + 'remove', data);
+		},
+	}
+}
+

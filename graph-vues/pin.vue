@@ -3,6 +3,7 @@
 		:id="uid"
 		:class="classObject"
 		:data-name="name"
+		:x="mX"
 		@mousedown.left.stop="$emit('mouse:leftdown', $event)"
 		@mouseup.left.stop="$emit('mouse:leftup', $event)"
 		@mouseenter="$emit('mouse:enter', $event)"
@@ -10,7 +11,7 @@
 		@click.stop="$emit('mouse:click', $event)"
 		@contextmenu.prevent.stop="$emit('mouse:cmenu', $event)"
 		overflow="visible"
-		v-inline.vertical="7"
+		v-inline.vertical="6"
 		:data-link-count="mLinkCount"
 	>
 		<rect 
@@ -47,7 +48,7 @@
 
 	import {SvgBase} from './mixins.js'
 	import {PinContextMenu} from './contextmenu.js';
-	import PinDrawLink from './pin.link.draw.js';
+	import PinDrawLink from './pin.link.draw.vue';
 
 	import PinBase from './pin.render.default.vue';
 	import PinExec from './pin.render.exec.vue';
@@ -57,7 +58,7 @@
 	
 	export default {
 		inject: ['Worksheet', 'Node', 'addSvgDef', 'camelCaseToLabel', 'Library'],
-		mixins: [SvgBase, PinDrawLink, PinContextMenu],
+		mixins: [SvgBase, PinContextMenu, PinDrawLink],
 		components: {PinBase, PinExec, PinAdd, PinEditorInput},
 		
 		props: {
@@ -70,7 +71,7 @@
 			flags: Number,
 			color: String,
 			datatype: {type: String, required: true},
-			'max-link': Number,
+			maxlink: Number,
 			
 			pinctor: String,
 			
@@ -84,7 +85,6 @@
 			return {
 				classObject: {
 					exPin: true,
-					linkable: true,
 					hidden: false,
 				},
 				mLinkCount: 0,
@@ -135,6 +135,12 @@
 					me.mEditor = false;
 
 				me.update(true);
+				me.$emit('datatype:change');
+			},
+			
+			mLinkCount: function(newVal){
+				if(newVal > this.maxlink)
+					console.log('max link');
 			}
 		},
 		
@@ -241,20 +247,14 @@
 
 <style>
 	.exWorksheet .exNode .exPin{
-		
+		cursor: default;		
 	}
 
 	.exWorksheet .exNode .exPin.hidden{
 		display: none;
 	}
 
-	.exWorksheet .exNode .exPin.linkable{
-		pointer-events : all;
-		cursor: crosshair;
-	}
-
-	.exWorksheet.selectEvent .exNode .exPin,
-	.exWorksheet .exNode.dragging .exPin{
+	.exWorksheet.selectEvent .exNode .exPin{
 		pointer-events : none;
 	}
 
@@ -263,13 +263,10 @@
 		fill-opacity: 0;
 	}
 
-	.exWorksheet .exNode .exPin.linkable > rect:first-child:hover{
-		fill-opacity: 1;
-	}
-	
 	.exWorksheet .exNode .exPin text.label{
 		stroke-width: 0;
-		font-size: 16px;
+		font-size: 12px;
+		font-family: Arial, Helvetica, sans-serif;
 		fill: #fff;
 		pointer-events : none;
 	}

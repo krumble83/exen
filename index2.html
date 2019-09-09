@@ -4,7 +4,8 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="viewport" content="width=device-width">
 		<link rel="stylesheet" type="text/css" href="css/ui.css" media="all">
-		<link rel="stylesheet" href="elibs/fontawesome.css">	
+		<link rel="stylesheet" href="elibs/fontawesome.css">
+		<base href="http://127.0.0.1/exen/">
 		<title>eXen</title>
 
 		<script src="cmon-js/constants.js"></script>
@@ -25,6 +26,8 @@
 	<body>
 		<div id="app" />
 		<!--<div style="position:absolute;top:0;left:0;background-color:#000;opacity:0.5;width:100%;height:100%"></div>-->
+		
+		
 		
 		<script type="boom!">
 
@@ -81,6 +84,8 @@ function test(){
 			import './exlibs/core/core.type.string.vue';
 			import './exlibs/core/core.type.byte.vue';
 			
+			import './exlibs/arduino';
+/*
 			import './exlibs/arduino/arduino.core.vue';
 			import './exlibs/arduino/arduino.eeprom.vue';
 			import './exlibs/arduino/arduino.serial.vue';
@@ -90,9 +95,11 @@ function test(){
 			import './exlibs/arduino/arduino.io.analog.vue';
 			import './exlibs/arduino/arduino.io.digital.vue';
 			import './exlibs/arduino/arduino.wifi.vue';
+*/
 			import './exlibs/arduino/hardware/arduino.hardware.mega.vue';
 
-			import './exlibs/os/os.file.vue';
+			import './exlibs/os';
+			//import './exlibs/os/os.file.vue';
 			import './exlibs/web/web.vue';
 
 			import './ui-vues/blueprint.graph.vue';
@@ -104,10 +111,9 @@ function test(){
 			test.createProject();
 			test.doTest();
 			test.packages.push('libCore', 'libCoreDatatype', 'App', 
-				'libCoreTypeInt', 'libCoreFlow', 'libCoreTypeFloat', 'libCoreArray', 'libCoreTypeBool', 'libCoreTypeString'
-				, 'libCoreTypeByte', 'libCoreDate', 'libArduinoCore','libArduinoEeprom', 'libArduinoSerial'
-				, 'libOsFile', 'arduino.spi', 'libArduinoIoDigital', 'libArduinoIoAnalog', 'libArduinoSdcard', 'libArduinoWifi', 'arduino.hardware.mega'
-				, 'libWeb'
+				'libCoreTypeInt', 'libCoreFlow', 'libCoreTypeFloat', 'libCoreArray', 'libCoreTypeBool', 'libCoreTypeString', 'libCoreTypeByte', 'libCoreDate'
+				, 'arduino.core', 'arduino.stream', 'arduino.eeprom', 'arduino.serial', 'arduino.spi', 'arduino.io.digital', 'arduino.io.analog', 'arduino.sdcard', 'arduino.wifi', 'arduino.hardware.mega'
+				, 'libWeb', 'os_file'
 				, 'libSpecial'
 				);
 
