@@ -49,7 +49,7 @@
 				<component v-for="(pin, idx) in cOutputs" :key="pin.id" 
 					class="output"
 					:is="pin.ctor ? pin.ctor : getCtor(pin.datatype) || 'ExPin'" 
-					:maxlink="pin.maxlink ? pin.maxlink : 99"
+					:maxlink="pin.maxlink ? pin.maxlink : -1"
 					@resize="$emit('pin:resize', $event)"
 					ref="outputs"
 					v-bind="pin"
@@ -59,7 +59,7 @@
 		<svg
 			v-if="hasOptionalPin"
 			ref="optional"
-			class="exExtend" 
+			class="extend" 
 			@click.stop="mExpanded = !mExpanded" 
 			@mousedown.stop=""
 		>
@@ -114,8 +114,6 @@
 		computed: {
 			cTitle: function(){return this.camelCaseToLabel(this.title || this.name)},
 			cInputs: function(){
-				//console.log(this.Store);
-				//return this.Store.getters[this.uid + '/getInput']();
 				if(this.mExpanded)
 					return this.inputs;
 				return this.inputs.filter(it => it.optional != true);

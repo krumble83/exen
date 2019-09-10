@@ -67,10 +67,6 @@
 	var store = new Vuex.Store(ProjectStore);
 	
 	import {Library} from '../exlibs/default.export.js';
-	//import {Package,Datatype,Class,Function,Input,Output,Method,Entry,Exit,Category,Editor,Enum,Value,Structure,Member} from '../exlibs/exlib.js';
-	
-	//import libCoreType from '../exlibs/core/core.type.vue'
-	//import libCore from '../exlibs/core/core.vue'
 	
 	import ProjectPanel from './project.panel.vue';
 	

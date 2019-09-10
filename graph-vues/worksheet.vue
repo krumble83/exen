@@ -80,11 +80,12 @@
 	import WorksheetLibraryMenu from './worksheet.librarymenu.js';
 	import WorksheetMouseBorder from './worksheet.mouseborder.vue';
 
+	import NodeEntrypoint from './node.sub.entrypoint.vue';
 	import NodeReroute from './node.sub.reroute.vue';
 
 	export default {
 		mixins: [WorksheetGrid, WorksheetPanZoom, WorksheetSelection, worksheetKeyboardEvents, WorksheetLibraryMenu, WorksheetToolTip],
-		components: {ExNode, ExLink, WorksheetMouseBorder, NodeReroute},
+		components: {ExNode, ExLink, WorksheetMouseBorder, NodeReroute, NodeEntrypoint},
 		//mixins: [VueUndoRedo, WorksheetGrid, WorksheetSelection, WorksheetTooltip, WorksheetLibraryMenu],
 		
 		provide: function() {

@@ -1,25 +1,25 @@
 <template>
 	<package id="core.type">
 
-		<datatype id="bool" label="Boolean" color="#940000" tooltip="True or False" inherits="core.scalar">
+		<datatype id="bool" label="Boolean" color="#940000" >
 			<editor id="bool" />
 		</datatype>
 		
-		<datatype id="int" label="Integer" color="#1edfab" tooltip="Any non floating number" inherits="core.scalar">
+		<datatype id="int" label="Integer" color="#1edfab" tooltip="Any non floating number">
 			<editor id="input" ctor="input">
 				<value id="pattern">/^[+-]?\d+(\.\d+)?$/</value>
 				<value id="default">0</value>
 			</editor>
 		</datatype>
 		
-		<datatype id="float" label="Float" color="#9FFF44" tooltip="Any floating number" inherits="core.scalar">
+		<datatype id="float" label="Float" color="#9FFF44" tooltip="Any floating number">
 			<editor id="input" ctor="input">
 				<value id="pattern">/^[+-]?\d+$/</value>
 				<value id="default">0</value>
 			</editor>
 		</datatype>
 		
-		<datatype id="byte" color="#016e64" label="Byte" inherits="core.scalar">
+		<datatype id="byte" color="#016e64" label="Byte">
 			<editor id="input" ctor="input" />
 		</datatype>
 		

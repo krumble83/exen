@@ -8,7 +8,7 @@
 		
 		<datatype id="scalar" label="Scalar Value" color="fff" />
 		
-		<function id="entryPoint" :private="true" symbol="exlibs/img/start.png"	color="#7f2197">
+		<function id="entryPoint" :private="true" ctor="NodeEntrypoint" symbol="exlibs/img/start.png"	color="#7f2197">
 			<exit />
 		</function>
 		
@@ -16,10 +16,7 @@
 			<entry />
 		</function>
 		
-		<function id="rerouteNode" title="Add reroute Node..." ctor="NodeReroute">
-			<in id="@in" datatype="core.wildcards" />
-			<out id="@out" datatype="core.wildcards" />
-		</function>
+		<function id="rerouteNode" title="Add reroute Node..." ctor="NodeReroute" />
 		
 	</package>
 </template>

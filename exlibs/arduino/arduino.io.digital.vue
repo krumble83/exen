@@ -1,30 +1,29 @@
 <template>
-	<package id="arduino.io.digital">
-		<datatype id="dpin" label="Arduino Digital Pin Component" color="#ff0" inherits="core.component" />
-		<enum id="pinmode" color="#8000FF" inherits="core.type.enum" tooltip="Enum" label="Arduino Digital Pin Mode Enum">
-			<editor id="select">
-				<value id="INPUT" />
-				<value id="OUTPUT" />
-				<value id="INPUT_PULLUP" />
-			</editor>
+	<package id="arduino.io.digital" color="#87663f" symbol="exlibs/arduino/arduino.png">
+		<datatype id="dpin" label="Arduino Digital Pin Component" color="#ff0" />
+		<enum id="pinmode" label="Arduino Digital Pin Mode Enum">
+			<value id="INPUT" />
+			<value id="OUTPUT" />
+			<value id="INPUT_PULLUP" />
 		</enum>
+
 		<category id="Arduino/Digital IO Pin">
-			<function id="pinmode" title="pinMode()" color="#87663f" symbol="exlibs/img/arduino.png" keywords="pinmode, pin mode">
+			<function id="pinMode" title="pinMode" keywords="arduino pinmode pin mode">
 				<entry /><exit />
 				<in id="pin" datatype="dpin" label="Digital Pin" />
 				<in id="mode" datatype="pinmode" />
 			</function>
-			<function id="digitalwrite" title="digitalwrite()" color="#87663f" symbol="exlibs/img/arduino.png" keywords="digitalwrite">
+			<function id="digitalWrite" title="digitalWrite" keywords="arduino digitalwrite digital pin write">
 				<entry /><exit />
 				<in id="pin" datatype="dpin" label="Digital Pin" />
-				<in id="value" datatype="core.type.bool" />
+				<in id="value" datatype="core.type.bool" label="LOW/HIGH" />
 			</function>
-			<function id="digitalread" title="digitalRead()" color="#87663f" symbol="exlibs/img/arduino.png" keywords="digitalread,read">
+			<function id="digitalRead" title="digitalRead" keywords="arduino digitalread digital pin read">
 				<entry /><exit />
 				<in id="pin" datatype="dpin" label="Digital Pin" />
 				<out id="value" datatype="core.type.bool" />
 			</function>
-			<function id="pulseIn" title="pulseIn()" color="#87663f" symbol="exlibs/img/arduino.png">
+			<function id="pulseIn" title="pulseIn" keywords="arduino pulse pulsein digital pin">
 				<entry /><exit />
 				<in id="pin" datatype="dpin" />
 				<in id="value" datatype="core.type.bool" label="LOW/HIGH" />

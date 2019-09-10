@@ -139,7 +139,7 @@
 			},
 			
 			mLinkCount: function(newVal){
-				if(newVal > this.maxlink)
+				if(this.maxlink > 0 && newVal > this.maxlink)
 					console.log('max link');
 			}
 		},
@@ -222,6 +222,10 @@
 				return this.Worksheet.getLink(function(link){
 					return link.mInputPin == me || link.mOutputPin == me;
 				});
+			},
+			
+			getType: function(){
+				
 			},
 			
 			isInput: function(){

@@ -54,7 +54,7 @@ function filterObject(object, allowed){
 const filtered = filterObject(raw, allowedz);
 
 filtered.item1.value = 'zzzz'
-console.log(filtered, raw);
+//console.log(filtered, raw);
 
 function test(){
 	const zz = Math.random();
@@ -64,7 +64,7 @@ function test(){
 			Vue.config.performance = true;
 			
 			import App from './ui-vues/project.vue';
-			console.log(App);
+			//console.log(App);
 
 			import './exlibs/exlib.export.js';
 			import './exlibs/exlib.construct.js';
@@ -100,7 +100,7 @@ function test(){
 
 			import './exlibs/os';
 			//import './exlibs/os/os.file.vue';
-			import './exlibs/web/web.vue';
+			//import './exlibs/web/web.vue';
 
 			import './ui-vues/blueprint.graph.vue';
 			import './ui-vues/blueprint.function.vue';
@@ -113,7 +113,8 @@ function test(){
 			test.packages.push('libCore', 'libCoreDatatype', 'App', 
 				'libCoreTypeInt', 'libCoreFlow', 'libCoreTypeFloat', 'libCoreArray', 'libCoreTypeBool', 'libCoreTypeString', 'libCoreTypeByte', 'libCoreDate'
 				, 'arduino.core', 'arduino.stream', 'arduino.eeprom', 'arduino.serial', 'arduino.spi', 'arduino.io.digital', 'arduino.io.analog', 'arduino.sdcard', 'arduino.wifi', 'arduino.hardware.mega'
-				, 'libWeb', 'os_file'
+				//, 'libWeb'
+				, 'os_file'
 				, 'libSpecial'
 				);
 

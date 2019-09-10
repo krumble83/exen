@@ -1,8 +1,8 @@
 <template>
 	<package id="os.file">
 		<category id="Operating System/Files">
-			<class id="fileObject" label="File Object" color="#55f" inherits="core.object">
-				<method id="name" title="File.name()" color="#aaeea0" symbol="exlibs/img/function.png">
+			<class id="fileObject" label="File Object" >
+				<method id="name" title="File.name()">
 					<in id="target" datatype="fileObject" :flags="4194304" />
 					<out id="name" datatype="core.type.string" />
 				</method>
@@ -10,7 +10,7 @@
 					<entry /><exit />
 					<in id="target" datatype="fileObject" :flags="4194304" />
 				</method>
-				<method id="position" title="File.position()" color="#aaeea0" symbol="exlibs/img/function.png">
+				<method id="position" title="File.position()">
 					<in id="target" datatype="fileObject" :flags="4194304" />
 					<out id="position" datatype="core.type.int" />
 				</method>
@@ -27,11 +27,11 @@
 					<out id="success" datatype="core.exec" />
 					<out id="fail" datatype="core.exec" />
 				</method>
-				<method id="size" title="File.size()" color="#aaeea0" symbol="exlibs/img/function.png" keywords="file size,size file">
+				<method id="size" title="File.size()" keywords="file size">
 					<in id="target" datatype="fileObject" :flags="4194304" />
 					<out id="size" datatype="core.type.int" />
 				</method>
-				<method id="isDirectory" title="File.isDirectory()" color="#aaeea0" symbol="exlibs/img/function.png">
+				<method id="isDirectory" title="File.isDirectory()">
 					<in id="target" datatype="fileObject" :flags="4194304" />
 					<out id="isDirectory" datatype="core.type.bool" />
 				</method>
@@ -46,7 +46,7 @@
 				</method>
 			</class>
 			
-			<function id="splitPath" title="Split Path" color="#aaeea0" symbol="exlibs/img/function.png">
+			<function id="splitPath" title="Split Path">
 				<in id="inPath" datatype="core.type.string" />
 				<out id="path" datatype="core.type.string" />
 				<out id="fileName" datatype="core.type.string" />

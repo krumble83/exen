@@ -1,41 +1,48 @@
 <template>
-	<package id="arduino.serial">
-		<datatype id="connection" label="Arduino Serial Connection object" color="#55f" inherits="core.object" />
-		<datatype id="port" label="Arduino Serial Port Component Component" color="#ff0" inherits="core.component" />
+	<package id="arduino.serial" color="#aaeea0" symbol="exlibs/arduino/arduino.png" >
+		<datatype id="connection" label="Arduino Serial Connection object" color="#55f" />
+		<datatype id="port" label="Arduino Serial Port Component Component" color="#ff0" />
 
 		<category id="Arduino/Serial">
-			<function id="available" title="available (serial)" color="#aaeea0" symbol="exlibs/img/arduino.png" keywords="serial available">
-				<in id="serialConnection" datatype="connection" />
-				<out id="bytes" datatype="core.type.int" />
-			</function>
-			<function id="availableForWrite" title="availableForWrite (serail)" color="#aaeea0" symbol="exlibs/img/arduino.png">
-				<in id="serialConnection" datatype="connection" />
-				<out id="out" datatype="core.type.int" />
-			</function>
-			<function id="begin" title="Serial.begin()" color="#78c8fe" symbol="exlibs/img/arduino.png" keywords="serial available">
-				<entry /><exit />
-				<in id="serialPort" datatype="port" />
-				<in id="bauds" datatype="core.type.int" />
-				<out id="serialConnection" datatype="connection" />
-			</function>
-			<function id="end" title="end (Serial)" color="#78c8fe" symbol="exlibs/img/arduino.png">
-				<entry /><exit />
-				<in id="serialConnection" datatype="connection" />
-			</function>
-			<function id="ifSerial" title="if (Serial)" color="#78c8fe" symbol="exlibs/img/arduino.png">
-				<in id="serialConnection" datatype="connection" />
-				<out id="out" datatype="core.type.bool" />			
-			</function>
-			<function id="writeByte" title="Serial Write Byte" color="#78c8fe" symbol="exlibs/img/arduino.png" keywords="serial write byte">
-				<entry /><exit />
-				<in id="serialConnection" datatype="connection" />
-				<in id="byte" datatype="core.type.byte" />
-			</function>
-			<function id="writeBytes" title="Serial Write Bytes Array" color="#78c8fe" symbol="exlibs/img/arduino.png" keywords="serial write byte">
-				<entry /><exit />
-				<in id="serialConnection" datatype="connection" />
-				<in id="byte" datatype="core.type.byte[]" />
-			</function>
+			
+			<enum id="serialConfig" label="Arduino Serial Configuration Enum">
+				<value id="SERIAL_5N1" /><value id="SERIAL_6N1" /><value id="SERIAL_7N1" /><value id="SERIAL_8N1" :default="true" /><value id="SERIAL_5N2" />
+				<value id="SERIAL_6N2" /><value id="SERIAL_7N2" /><value id="SERIAL_8N2" /><value id="SERIAL_5E1" /><value id="SERIAL_6E1" /><value id="SERIAL_7E1" />
+				<value id="SERIAL_8E1" /><value id="SERIAL_5E2" /><value id="SERIAL_6E2" /><value id="SERIAL_7E2" /><value id="SERIAL_8E2" /><value id="SERIAL_5O1" />
+				<value id="SERIAL_6O1" /><value id="SERIAL_7O1" /><value id="SERIAL_8O1" /><value id="SERIAL_5O2" /><value id="SERIAL_6O2" /><value id="SERIAL_7O2" />
+				<value id="SERIAL_8O2" />
+			</enum>
+		
+			<class id="serial" label="Arduino Serial Connection" inherits="arduino.stream.stream">
+				<method id="availableForWrite" title="availableForWrite (serial)">
+					<in id="serialConnection" datatype="connection" />
+					<out id="out" datatype="core.type.int" />
+				</method>
+				<method id="begin" title="Serial.begin()" keywords="arduino serial available">
+					<entry /><exit />
+					<in id="serialPort" datatype="port" />
+					<in id="bauds" datatype="core.type.int" />
+					<out id="serialConnection" datatype="connection" />
+				</method>
+				<method id="end" title="end (Serial)" >
+					<entry /><exit />
+					<in id="serialConnection" datatype="connection" />
+				</method>
+				<method id="ifSerial" title="if (Serial)" >
+					<in id="serialConnection" datatype="connection" />
+					<out id="out" datatype="core.type.bool" />			
+				</method>
+				<method id="writeByte" title="Serial Write Byte" keywords="arduino serial write byte">
+					<entry /><exit />
+					<in id="serialConnection" datatype="connection" />
+					<in id="byte" datatype="core.type.byte" />
+				</method>
+				<method id="writeBytes" title="Serial Write Bytes Array" keywords="arduino serial write byte">
+					<entry /><exit />
+					<in id="serialConnection" datatype="connection" />
+					<in id="byte" datatype="core.type.byte[]" />
+				</method>
+			</class>
 		</category>
 	</package>
 </template>

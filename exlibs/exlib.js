@@ -1,6 +1,5 @@
 Vue.config.ignoredElements = [];
 
-
 const SplitPackageName = {
 	methods : {
 		splitPackageName: function(string){
@@ -51,15 +50,6 @@ export const Base = {
 				else
 					ret[key] = this.$props[key];
 			}
-			/*
-			this.$data.forEach(function(prop){
-				if(prop.startsWith('__')
-					return;
-				if(prop.startsWith('_')
-					ret[prop
-				ret[prop.name] = prop.value;
-			});
-			*/
 			return ret;
 		},
 		
@@ -171,7 +161,7 @@ export const Base = {
 	},
 		
 	template: 	'<component :is="__ctor" v-bind="properties">{{value}} \
-					<component v-for="child in childs" \
+					<component v-for="child in childs" v-bind:key="child.id" \
 						:is="child.__ctor" \
 						v-bind="child" \
 					/>\
@@ -333,9 +323,9 @@ export const Package = {
 	mixins: [],
 	props: {
 		__ctor: {type: String, default: 'package'},
-		categories: {type: Array, default: function(){return []}},
+		//categories: {type: Array, default: function(){return []}},
 		label: String,
-		color: String,
+		color:  {type: String, default: '#f00'},
 		symbol: String,
 	},
 	provide: function(){
@@ -370,8 +360,8 @@ export const Category = {
 	
 	props: {
 		__ctor: {type: String, default: 'category'},
-		symbol: String,
-		color: String,
+		symbol: {type: String, default: function(){return this.Package.symbol}},
+		color: {type: String, default: function(){return this.Package.color}},
 	},
 	
 	computed: {
@@ -401,19 +391,17 @@ export const Node = {
 		Package: {default: false},
 		Category: {default: false},
 	},
-	//mixins: [IdPackageId],
 	
 	props: {
 		__ctor: {type: String, default: 'node'},
 		ctor: String,
 		title: String,
 		subtitle: String,
-		keywords: String, //{type: Array, default: function(){return []}},
+		keywords: String,
 		description: String,
-		//categories: {type: Array, default: function(){return []}},
 		flags: Number,
-		color: {type: String, default: function(){return this.Category.color}},
-		symbol: {type: String, default: function(){return this.Category.symbol}},
+		color: {type: String, default: function(){return this.Category ? this.Category.color : this.Package.symbol || '#f00'}},
+		symbol: {type: String, default: function(){return this.Category ? this.Category.symbol : this.Package.symbol || 'exlibs/img/function.png'}},
 		x: Number,
 		y: Number,
 	},
@@ -443,72 +431,51 @@ export const Node = {
 Vue.config.ignoredElements.push('node');
 //Extend(Node, 'Category');
 
-export const Function = {
-	extends: Node,
-	mixins: [],
-	
-	props: {
-		__ctor: {type: String, default: 'function'},
-		isfunction: {type: Boolean, default: true},
-		private:  {type: Boolean, default: false},
-	}
-}
-Vue.config.ignoredElements.push('function');
 
-export const Datatype = {
+
+export const Pattern = {
 	extends: Base,
 	mixins: [],
-	inject: {
-		Library: 'Library',
-		Package: 'Package',
-		Category: {
-			from: 'Category',
-			default: undefined
-		},
-	},
-	//mixins: [IdPackageId],
+	inject: ['Library', 'Package'],
 	
 	props: {
-		__ctor: {type: String, default: 'datatype'},
-		private: {type: Boolean, default: false},
-		ctor: String,
-		pinctor: String,
-		color: {type: String, required: true},
-		inherits: String,
-		description: String,
-		label: String,
-		isdatatype: {type: Boolean, default: true},
-	},
-	
-	data: function(){
-		return {
-			//fullpath: this.Package.fullPath + '.' + this.id,
-		}
-	},
-	
-	methods: {
-		Color: function(){
-			return this.color;
-		},
-		
-		Label: function(){
-			return this.label;
-		},
-		
-		Editor: function(data){
-			if(!data)
-				return this.$children.find(it => it.__ctor == "editor");
-			return this._create('editor', data);
-		}
+		__ctor: {type: String, default: 'editor'},
+		flags: {type: String},
 	}
 }
-Vue.config.ignoredElements.push('datatype');
+Vue.config.ignoredElements.push('pattern');
 
+export const Value = {
+	extends: Base,
+	mixins: [],
+	
+	props: {
+		__ctor: {type: String, default: 'value'},
+		default: {type: Boolean, default: false},
+		value: Number,
+	},
+}
+Vue.config.ignoredElements.push('value');
+
+
+
+export const Editor = {
+	extends: Base,
+	mixins: [],
+	inject: ['Library', 'Package'],
+	
+	props: {
+		__ctor: {type: String, default: 'editor'},
+		ctor: String,
+	}
+}
+Vue.config.ignoredElements.push('editor');
 
 
 
 export const Pin = {
 	extends: Base,
+	components: {Editor},
 	mixins: [],
 	inject: ['Library', 'Package'],
 	
@@ -521,7 +488,7 @@ export const Pin = {
 		ctor: String,
 		pinctor: String,
 		datatype: {type: String, required: true},
-		maxlink: {type: Number, default: 99},
+		maxlink: {type: Number, default: -1},
 		keywords: {type: Array, default: function(){return []}},
 		description: String,
 		group: String,
@@ -573,6 +540,7 @@ export const Entry = {
 	props: {
 		id:{type: String, default: '@entry'},
 		datatype: {type: String, default: 'core.exec'},
+		maxlink: {type: Number, default: -1},
 	},
 }
 Vue.config.ignoredElements.push('entry');
@@ -589,35 +557,85 @@ export const Exit = {
 }
 Vue.config.ignoredElements.push('exit');
 
-
-
-export const Editor = {
-	extends: Base,
+export const Function = {
+	extends: Node,
+	components: {In, Out, Entry, Exit},
 	mixins: [],
-	inject: ['Library', 'Package'],
 	
 	props: {
-		__ctor: {type: String, default: 'editor'},
+		__ctor: {type: String, default: 'function'},
+		isfunction: {type: Boolean, default: true},
+		private:  {type: Boolean, default: false},
+	},
+}
+Vue.config.ignoredElements.push('function');
+
+
+
+
+export const Datatype = {
+	extends: Base,
+	components: {Editor},
+	mixins: [],
+	inject: {
+		Library: 'Library',
+		Package: 'Package',
+		Category: {
+			from: 'Category',
+			default: undefined
+		},
+	},
+	//mixins: [IdPackageId],
+	
+	props: {
+		__ctor: {type: String, default: 'datatype'},
+		label: String,
+		description: String,
+		private: {type: Boolean, default: false},
 		ctor: String,
-	}
-}
-Vue.config.ignoredElements.push('editor');
-
-export const Pattern = {
-	extends: Base,
-	mixins: [],
-	inject: ['Library', 'Package'],
+		pinctor: String,
+		color: {type: String, required: true},
+		inherits: String,
+		isdatatype: {type: Boolean, default: true},
+	},
 	
-	props: {
-		__ctor: {type: String, default: 'editor'},
-		flags: {type: String},
+	mounted: function(){
+		this._parseInherits();
+	},
+	
+	methods: {
+		
+		_parseInherits: function(){
+			const me = this;
+	
+		},
+		
+		Color: function(){
+			return this.color;
+		},
+		
+		Label: function(){
+			return this.label;
+		},
+		
+		Editor: function(data){
+			if(!data)
+				return this.$children.find(it => it.__ctor == "editor");
+			return this._create('editor', data);
+		}
 	}
 }
-Vue.config.ignoredElements.push('pattern');
+Vue.config.ignoredElements.push('datatype');
+
+
+
+
+
 
 
 export const Enum = {
 	extends: Datatype,
+	components: {Value},
 	mixins: [],
 	
 	props: {
@@ -644,72 +662,29 @@ export const Enum = {
 }
 Vue.config.ignoredElements.push('enum');
 
-export const Value = {
-	extends: Base,
-	mixins: [],
-	
-	props: {
-		__ctor: {type: String, default: 'value'},
-		value: Number,
-	},
-}
-Vue.config.ignoredElements.push('value');
 
-export const Structure = {
-	extends: Datatype,
-	mixins: [],
-	
-	props: {
-		__ctor: {type: String, default: 'structure'},
-		color: {type: String, default: '#0057c8'},
-		ctor: {type: String, default: "PinStructure"},
-	},
-}
-Vue.config.ignoredElements.push('structure');
-
-export const Class = {
-	extends: Structure,
-	mixins: [],
-	
-	props: {
-		__ctor: {type: String, default: 'class'},
-		color: {type: String, default: '#00f'},
-	},
-
-}
-Vue.config.ignoredElements.push('class');
-
-
-export const Interface = {
-	extends: Class,
-	mixins: [],
-	
-	props: {
-		__ctor: {type: String, default: 'interface'},
-	},
-
-}
-Vue.config.ignoredElements.push('interface');
 
 
 export const Method = {
 	extends: Function,
 	mixins: [],
+	inject: {
+		Class: 'Class',
+		Package: 'Package',
+		Category: {
+			from: 'Category',
+			default: undefined
+		},
+	},
 	
 	props: {
 		__ctor: {type: String, default: 'method'},
-		childs: {type: Array, default: function(){ return [{__ctor: 'in', id: 'target', datatype: "toto"}]}},
+		subtitle: {type: String, default: function(){ return 'Target is ' + this.$parent.id}},
+		color: {type: String, default: function(){return this.Class.color}},
+		childs: {type: Array, default: function(){return [{__ctor: 'in', id: 'target', datatype: this.$parent.id}]}},
+		test: {type: String, default: function(){return this.Package.fullpath + '.' + this.id}},
+		//derived: {type: Boolean, default: false},
 	},
-	data: function(){
-		return {
-			
-		}
-	},
-		
-	template: 	'<component :is="__ctor" v-bind="properties">{{value}} \
-					<in id="target" datatype="zozo" /> \
-					<slot /> \
-				</component>'
 }
 Vue.config.ignoredElements.push('method');
 
@@ -726,6 +701,95 @@ export const Member = {
 	},
 }
 Vue.config.ignoredElements.push('member');
+
+export const Structure = {
+	extends: Datatype,
+	components: {Member},
+	mixins: [],
+	
+	props: {
+		__ctor: {type: String, default: 'structure'},
+		color: {type: String, default: '#0057c8'},
+		ctor: {type: String, default: "PinStructure"},
+	},
+}
+Vue.config.ignoredElements.push('structure');
+
+export const Class = {
+	extends: Structure,
+	components: {Method},
+	mixins: [],
+	
+	provide: function(){
+		const me = this;
+		return {
+			Class: me,
+		}
+	},
+	
+	props: {
+		__ctor: {type: String, default: 'class'},
+		color: {type: String, default: '#00f'},
+		symbol: {type: String, default: function(){return this.Category ? this.Category.symbol : this.Package.symbol}},
+	},
+	
+	data: function(){
+		return {
+			_inherits: this.inherits ? this.Package.id + '.' + this.id + ' ' + this.inherits : undefined,
+		}
+	},
+	
+	methods: {		
+		_parseInherits: function(){
+			const me = this;
+			
+			me.$children.forEach(function(child){
+				console.log(child.id);
+			});
+			
+			if(!this.inherits)
+				return;
+			const inherits = this.inherits.split(' ');
+			var base = this.Library.getDatatype(inherits[0]);
+			console.assert(base);
+
+			const exp = base.toObject(null, true);
+			exp.childs.forEach(function(child){
+				//if(child.derived)
+				//	return;
+				if(child.__ctor == 'method'){
+					//child.derived = true;
+					child.subtitle = 'Target is ' + me.id;
+				}
+				me.childs.unshift(child);
+			});
+			console.log('base', exp);
+		},
+		
+		_isOverload: function(src){
+			
+		}
+	}
+
+}
+Vue.config.ignoredElements.push('class');
+
+export const Interface = {
+	extends: Class,
+	mixins: [],
+	provide: function(){
+		const me = this;
+		return {
+			Class: me,
+		}
+	},	
+	props: {
+		__ctor: {type: String, default: 'interface'},
+	},
+
+}
+Vue.config.ignoredElements.push('interface');
+
 
 
 
@@ -751,7 +815,6 @@ export const Device = {
 	},
 }
 Vue.config.ignoredElements.push('device');
-
 
 export const Provide = {
 	extends: Base,

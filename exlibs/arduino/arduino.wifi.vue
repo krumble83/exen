@@ -1,7 +1,7 @@
 <template>
-	<package id="arduino.wifi">
+	<package id="arduino.wifi" symbol="exlibs/arduino/arduino.png" >
 		<category id="Arduino/WiFi">
-			<enum id="status" color="#8000FF" inherits="core.type.enum" label="Arduino Wifi Status Enum">
+			<enum id="status" label="Arduino Wifi Status Enum">
 				<editor id="select">
 					<value id="WL_CONNECTED" />
 					<value id="WL_NO_SHIELD" />
@@ -13,37 +13,37 @@
 					<value id="WL_DISCONNECTED" />
 				</editor>
 			</enum>
-			<class id="Connection" label="Arduino WiFi Network Object" color="#55f" inherits="core.object">
-				<method id="begin" title="WiFi.begin()" color="#87663f" symbol="exlibs/img/arduino.png" keywords="wifi connect,connect wifi">
+			<class id="Connection" label="Arduino WiFi Network Object">
+				<method id="begin" title="WiFi.begin()" keywords="arduino wifi connect">
 					<entry /><exit />
 					<in id="ssid" datatype="core.type.string" />
 					<in id="password" datatype="core.type.string" />
 					<out id="status" datatype="status" />
 				</method>
-				<method id="localip" title="WiFi.localIP()" color="#87663f" symbol="exlibs/img/arduino.png" keywords="wifi ip,ip wifi,local ip">
+				<method id="localip" title="WiFi.localIP()" keywords="arduino wifi ip local">
 					<out id="localip" datatype="network.type.ip" label="WiFi local IP" />
 				</method>
 			</class>
-			<class id="WiFiClient" label="Arduino WiFi Client Object" color="#55f" inherits="core.object">
-				<method id="connect" title="WiFiClient.connect() (url)" color="#87663f" symbol="exlibs/img/arduino.png" keywords="wifi,connect">
+			<class id="WiFiClient" label="Arduino WiFi Client Object">
+				<method id="connect" title="WiFiClient.connect() (url)" keywords="arduino wifi">
 					<entry /><exit />
 					<in id="target" datatype="WiFiClient" :flags="4194304" />
 					<in id="host" datatype="core.type.string" />
 					<in id="port" datatype="core.type.int" />
 					<out id="success" datatype="core.type.bool" />
 				</method>
-				<method id="connectip" title="WiFiClient.connect() (ip)" color="#87663f" symbol="exlibs/img/arduino.png" keywords="wifi,connect">
+				<method id="connectip" title="WiFiClient.connect() (ip)" keywords="arduino wifi connect ip">
 					<entry /><exit />
 					<in id="target" datatype="WiFiClient" :flags="4194304" />
 					<in id="host" datatype="network.type.ip" />
 					<in id="port" datatype="core.type.int" />
 					<out id="success" datatype="core.type.bool" />
 				</method>
-				<method id="connected" title="WiFiClient.connected()" color="#aaeea0" symbol="exlibs/img/function.png" keywords="wifi,connected">
+				<method id="connected" title="WiFiClient.connected()" keywords="arduino wifi">
 					<in id="target" datatype="WiFiClient" :flags="4194304" />
 					<out id="connected" datatype="core.type.bool" />
 				</method>
-				<method id="stop" title="WiFiClient.stop()" color="#87663f" symbol="exlibs/img/arduino.png" keywords="wifi,stop">
+				<method id="stop" title="WiFiClient.stop()" keywords="arduino wifi">
 					<entry /><exit />
 					<out id="target" datatype="WiFiClient" :flags="4194304" />
 				</method>

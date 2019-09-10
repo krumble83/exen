@@ -1,6 +1,6 @@
 <template>
 	<package id="core.string">
-		<enum id="searchcase" color="#8000FF" inherits="core.type.enum" tooltip="Enum" label="SearchCase Enum">
+		<enum id="searchcase" label="SearchCase Enum">
 			<value id="ignorecase">IgnoreCase</value>
 			<value id="casesentitive">CaseSentitive</value>
 		</enum>
