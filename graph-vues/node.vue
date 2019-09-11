@@ -24,10 +24,10 @@
 			filter="url(#exBgFilter)" 
 		/>
 		<g class="header" ref="header">
-			<rect v-if="title" width="100%" height="100%" :fill="'url(#nodeHeader_' + color.replace('#', '') + ')'" :clip-path="'url(#exNodeClipPath_' + ((subtitle) ? '2' : '1') + ')'" />
-			<image v-if="title && symbol" :href="symbol" x="10" y="3" width="16" height="16" />
-			<text v-if="title" class="title" :x="symbol ? '31' : 10" y="16">{{cTitle}}</text>
-			<text v-if="title && subtitle" class="subtitle" :x="symbol ? '28' : 10" y="33">{{subtitle}}</text>
+			<rect width="100%" height="100%" :fill="'url(#nodeHeader_' + color.replace('#', '') + ')'" :clip-path="'url(#exNodeClipPath_' + ((subtitle) ? '2' : '1') + ')'" />
+			<image :href="symbol" x="10" y="3" width="16" height="16" />
+			<text class="title" :x="symbol ? '31' : 10" y="16">{{cTitle}}</text>
+			<text v-if="subtitle" class="subtitle" :x="symbol ? '28' : 10" y="33">{{subtitle}}</text>
 		</g>
 		<rect width="100%" height="100%" fill-opacity="0" stroke-width="0" />
 		

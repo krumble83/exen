@@ -12,7 +12,7 @@ export const Base = {
 	//components: {},
 	mixins: [],
 	props: {
-		id: {type: String, required: true},
+		id: {type: String, required: false},
 		__ctor: {type: String, default: 'base'},
 		childs: {type: Array, default: function(){return []}},
 		inherits: {type: Array, default: function(){return []}},
@@ -63,7 +63,7 @@ export const Base = {
 	data: function(){
 		return {
 			importedProperties: [],
-			_id: this.id,
+			//_id: this.id,
 			ignoreImports: ['id', 'childs', 'import'],
 		}
 	},
@@ -174,213 +174,7 @@ function test(){
 	return (new DOMParser()).parseFromString("<library/>", 'text/xml');
 }
 */
-export const Library = {
-	extends: Base,
-	mixins: [SplitPackageName],
-	props: {
-		__ctor: {type: String, default: 'library'},
-		id: {type: String, default: ''},
-	},
-	provide: function(){
-		const me = this;
-		return {
-			Library: me,
-		}
-	},
-	methods: {
 
-		createQuery: function(){
-			return {
-				id: false,
-				category: false,
-				searchString: false,
-				inputDatatype: false,
-				outputDatatype: false,
-				private: false,
-				context: false,
-			}
-		},
-		
-		getPackage: function(id){
-			var ret = false;
-			return this.$children.find(it => it.id == id && it.$el.tagName == 'PACKAGE');
-			return ret;
-		},
-		
-		getHardware: function(id){
-			var name = me.splitPackageName(id);
-			return me.$el.querySelector('package[id="' + name[0] + '"] hardware[id="' + name[1] + '"]').__vue__;			
-		},
-		
-		getNodesByQuery: function(query){
-			//console.log(query);
-			const me = this;
-			var qs = ['[isfunction="true"]']
-				, ret = [];
-			
-			if(query && query.id){
-				//console.log('queryyyyy', query);
-				var name = me.splitPackageName(query.id);
-				return me.$el.querySelector('package[id="' + name[0] + '"] [isfunction="true"][id="' + name[1] + '"]').__vue__;
-			}
-
-			if(query && query.searchString){
-				qs.push(qs[0] + '[id*="' + query.searchString + '"]');
-				qs.push(qs[0] + '[keywords*="' + query.searchString + '"]');
-				qs[0] += '[title*="' + query.searchString + '"]';
-			}
-			
-			if(query && !query.private){
-				qs.forEach(function(it, id){
-					qs[id] += ':not([private="true"])';
-				});
-			}
-			ret = Array.from(me.$el.querySelectorAll(qs.join(',')));
-			//console.log(ret);
-			
-			if(query.inputDatatype){
-				var dtype = me.getDatatype(query.inputDatatype)
-					, dtypeid = me.isArrayDatatype(query.inputDatatype) ? dtype.id + '[]' : dtype.id
-					, pack = dtype.Package;
-				ret = Array.from(ret).filter(function(it){
-					if(it.querySelector('out[datatype="' + pack.id + '.' + dtypeid + '"], out[datatype="' + me.getWildcardsDatatype(me.isArrayDatatype(query.inputDatatype)) + '"]'))
-						return true;
-					var res = false;
-					it.querySelectorAll('out[datatype="' + dtypeid + '"]').forEach(function (it){
-						if(it.__vue__.Package.id == pack.id)
-							res = true;
-					});
-					return res;
-				});
-			}
-
-			else if(query.outputDatatype){
-				var dtype = me.getDatatype(query.outputDatatype)
-					, dtypeid = me.isArrayDatatype(query.outputDatatype) ? dtype.id + '[]' : dtype.id
-					, pack = dtype.Package;
-					
-				ret = Array.from(ret).filter(function(it){
-					if(it.querySelector('in[datatype="' + pack.id + '.' + dtypeid + '"], in[datatype="' + me.getWildcardsDatatype(me.isArrayDatatype(query.outputDatatype)) + '"]'))
-						return true;
-					var res = false;
-					it.querySelectorAll('in[datatype="' + dtypeid + '"]').forEach(function (it){
-						if(it.__vue__.Package.id == pack.id)
-							res = true;
-					});
-					return res;
-				});
-			}
-			me.$emit('getNodesByQuery', ret, query);
-			return ret;
-		},
-		
-		getDatatype: function(id){
-			if(!id)
-				return this.$el.querySelectorAll('[isdatatype="true"]:not([private="true"])');
-			id = id.replace('[]', '');
-			var name = this.splitPackageName(id);
-			//console.log(id, name, 'package[id="' + name[0] + '"] [isdatatype="true"][id="' + name[1] + '"]');
-			return this.$el.querySelector('package[id="' + name[0] + '"] [isdatatype="true"][id="' + name[1] + '"]').__vue__;
-		},
-		
-		getNode: function(id){
-			if(!id)
-				return this.getNodesByQuery(this.createQuery());
-			else if(typeof id == 'object')
-				return this.getNodesByQuery(id);
-			else if(typeof id == 'string'){
-				var q = this.createQuery();
-				q.id = id;
-				return this.getNodesByQuery(q);
-			}
-			console.assert(false, 'unknown query');
-		},
-		
-		getNodeById: function(id){
-			var q = this.createQuery();
-			q.id = id;
-			return this.getNodesByQuery(q);
-		},
-		
-		getCategory: function(id){
-			return this.$el.querySelector('category[id="' + id + '"]');
-		},	
-
-		getWildcardsDatatype: function(asArray){
-			return asArray ? 'core.wildcards[]' : 'core.wildcards';
-		},
-
-		isArrayDatatype: function(datatype){
-			return datatype.endsWith('[]');
-		},
-			
-	},
-}
-Vue.config.ignoredElements.push('library');
-
-export const Package = {
-	extends: Base,
-	mixins: [],
-	props: {
-		__ctor: {type: String, default: 'package'},
-		//categories: {type: Array, default: function(){return []}},
-		label: String,
-		color:  {type: String, default: '#f00'},
-		symbol: String,
-	},
-	provide: function(){
-		const me = this;
-		return {
-			Package: me,
-		}
-	},
-	methods: {
-		getNode: function(id){
-			return this.$children.find(it => it.id == id);
-		}
-	}
-}
-Vue.config.ignoredElements.push('package');
-
-
-export const Category = {
-	extends: Base,
-	inject: {
-		Library: {default: false},
-		Package: {default: false},
-	},
-	mixins: [],
-	
-	provide: function(){
-		const me = this;
-		return {
-			Category: me,
-		}
-	},
-	
-	props: {
-		__ctor: {type: String, default: 'category'},
-		symbol: {type: String, default: function(){return this.Package.symbol}},
-		color: {type: String, default: function(){return this.Package.color}},
-	},
-	
-	computed: {
-		fullPath: function(){
-			var ret = this.id
-				, parent = this.$parent;
-				
-			while(parent && parent.$el.tagName != 'PACKAGE'){
-				if(parent.$el.tagName == 'CATEGORY'){
-					ret = parent.fullPath + '/' + ret;
-					break;
-				}
-				parent = parent.$parent;
-			}
-			return ret;
-		},
-	}
-}
-Vue.config.ignoredElements.push('category');
 
 
 export const Node = {
@@ -563,9 +357,18 @@ export const Function = {
 	mixins: [],
 	
 	props: {
+		name: {type: String, required: true},
 		__ctor: {type: String, default: 'function'},
 		isfunction: {type: Boolean, default: true},
 		private:  {type: Boolean, default: false},
+	},
+	
+	data: function(){
+		//console.log(this.name);
+		return {
+			_id: this.Package.fullpath + '.' + this.$props.name,
+			_name: this.$props.name,
+		}
 	},
 }
 Vue.config.ignoredElements.push('function');
@@ -589,6 +392,7 @@ export const Datatype = {
 	
 	props: {
 		__ctor: {type: String, default: 'datatype'},
+		name: {type: String, required: true},
 		label: String,
 		description: String,
 		private: {type: Boolean, default: false},
@@ -646,7 +450,7 @@ export const Enum = {
 	mounted: function(){
 		if(this.private)
 			return;
-		
+		return;
 		const cat = this.Package.Category('Utilities/Enum')
 			, make = cat.Function({id: 'makeLiteralEnum' + this.id, title: 'Make literal ' + this.label || this.id})
 			, eq = cat.Function({id: 'eqEnum' + this.id, title: 'Equal (' + (this.label || this.id) + ')'});
@@ -682,8 +486,6 @@ export const Method = {
 		subtitle: {type: String, default: function(){ return 'Target is ' + this.$parent.id}},
 		color: {type: String, default: function(){return this.Class.color}},
 		childs: {type: Array, default: function(){return [{__ctor: 'in', id: 'target', datatype: this.$parent.id}]}},
-		test: {type: String, default: function(){return this.Package.fullpath + '.' + this.id}},
-		//derived: {type: Boolean, default: false},
 	},
 }
 Vue.config.ignoredElements.push('method');
@@ -729,7 +531,7 @@ export const Class = {
 	
 	props: {
 		__ctor: {type: String, default: 'class'},
-		color: {type: String, default: '#00f'},
+		color: {type: String, default: '#078bc4'},
 		symbol: {type: String, default: function(){return this.Category ? this.Category.symbol : this.Package.symbol}},
 	},
 	
@@ -760,6 +562,7 @@ export const Class = {
 				if(child.__ctor == 'method'){
 					//child.derived = true;
 					child.subtitle = 'Target is ' + me.id;
+					child.childs.find(it => it.name == 'target').datatype = me.id;
 				}
 				me.childs.unshift(child);
 			});
@@ -842,5 +645,215 @@ export const Require = {
 	},
 }
 Vue.config.ignoredElements.push('require');
+
+
+
+export const Category = {
+	extends: Base,
+	components: {Function, Enum, Class},
+	inject: {
+		Library: {default: false},
+		Package: {default: false},
+	},
+	mixins: [],
+	
+	provide: function(){
+		const me = this;
+		return {
+			Category: me,
+		}
+	},
+	
+	props: {
+		__ctor: {type: String, default: 'category'},
+		symbol: {type: String, default: function(){return this.Package.symbol}},
+		color: {type: String, default: function(){return this.Package.color}},
+	},
+	
+	computed: {
+		fullPath: function(){
+			var ret = this.id
+				, parent = this.$parent;
+				
+			while(parent && parent.$el.tagName != 'PACKAGE'){
+				if(parent.$el.tagName == 'CATEGORY'){
+					ret = parent.fullPath + '/' + ret;
+					break;
+				}
+				parent = parent.$parent;
+			}
+			return ret;
+		},
+	}
+}
+Vue.config.ignoredElements.push('category');
+
+export const Package = {
+	extends: Base,
+	components: {Category, Enum},
+	mixins: [],
+	props: {
+		__ctor: {type: String, default: 'package'},
+		//categories: {type: Array, default: function(){return []}},
+		label: String,
+		color:  {type: String, default: '#f00'},
+		symbol: String,
+	},
+	provide: function(){
+		const me = this;
+		return {
+			Package: me,
+		}
+	},
+	methods: {
+		getNode: function(id){
+			return this.$children.find(it => it.id == id);
+		}
+	}
+}
+Vue.config.ignoredElements.push('package');
+
+export const Library = {
+	extends: Base,
+	components: {Package},
+	mixins: [SplitPackageName],
+	props: {
+		__ctor: {type: String, default: 'library'},
+		id: {type: String, default: ''},
+	},
+	provide: function(){
+		const me = this;
+		return {
+			Library: me,
+		}
+	},
+	methods: {
+
+		createQuery: function(){
+			return {
+				id: false,
+				category: false,
+				searchString: false,
+				inputDatatype: false,
+				outputDatatype: false,
+				private: false,
+				context: false,
+			}
+		},
+		
+		getPackage: function(id){
+			var ret = false;
+			return this.$children.find(it => it.id == id && it.$el.tagName == 'PACKAGE');
+			return ret;
+		},
+		
+		getHardware: function(id){
+			var name = me.splitPackageName(id);
+			return me.$el.querySelector('package[id="' + name[0] + '"] hardware[id="' + name[1] + '"]').__vue__;			
+		},
+		
+		getNodesByQuery: function(query){
+			//console.log(query);
+			const me = this;
+			var qs = ['[isfunction="true"]']
+				, ret = [];
+			
+			if(query && query.id){
+				return me.$el.querySelector('[isfunction="true"][id="' + query.id + '"]').__vue__;
+			}
+
+			if(query && query.searchString){
+				qs.push(qs[0] + '[name*="' + query.searchString + '"]');
+				qs.push(qs[0] + '[keywords*="' + query.searchString + '"]');
+				qs[0] += '[title*="' + query.searchString + '"]';
+			}
+			
+			if(query && !query.private){
+				qs.forEach(function(it, id){
+					qs[id] += ':not([private="true"])';
+				});
+			}
+			ret = Array.from(me.$el.querySelectorAll(qs.join(',')));
+			//console.log(ret);
+			
+			if(query.inputDatatype){
+				var dtype = me.getDatatype(query.inputDatatype)
+					, dtypeid = me.isArrayDatatype(query.inputDatatype) ? dtype.id + '[]' : dtype.id
+					, pack = dtype.Package;
+				ret = Array.from(ret).filter(function(it){
+					if(it.querySelector('out[datatype="' + pack.id + '.' + dtypeid + '"], out[datatype="' + me.getWildcardsDatatype(me.isArrayDatatype(query.inputDatatype)) + '"]'))
+						return true;
+					var res = false;
+					it.querySelectorAll('out[datatype="' + dtypeid + '"]').forEach(function (it){
+						if(it.__vue__.Package.id == pack.id)
+							res = true;
+					});
+					return res;
+				});
+			}
+
+			else if(query.outputDatatype){
+				var dtype = me.getDatatype(query.outputDatatype)
+					, dtypeid = me.isArrayDatatype(query.outputDatatype) ? dtype.id + '[]' : dtype.id
+					, pack = dtype.Package;
+					
+				ret = Array.from(ret).filter(function(it){
+					if(it.querySelector('in[datatype="' + pack.id + '.' + dtypeid + '"], in[datatype="' + me.getWildcardsDatatype(me.isArrayDatatype(query.outputDatatype)) + '"]'))
+						return true;
+					var res = false;
+					it.querySelectorAll('in[datatype="' + dtypeid + '"]').forEach(function (it){
+						if(it.__vue__.Package.id == pack.id)
+							res = true;
+					});
+					return res;
+				});
+			}
+			me.$emit('getNodesByQuery', ret, query);
+			return ret;
+		},
+		
+		getDatatype: function(id){
+			if(!id)
+				return this.$el.querySelectorAll('[isdatatype="true"]:not([private="true"])');
+			id = id.replace('[]', '');
+			var name = this.splitPackageName(id);
+			//console.log(id, name, 'package[id="' + name[0] + '"] [isdatatype="true"][id="' + name[1] + '"]');
+			return this.$el.querySelector('package[id="' + name[0] + '"] [isdatatype="true"][id="' + name[1] + '"]').__vue__;
+		},
+		
+		getNode: function(id){
+			if(!id)
+				return this.getNodesByQuery(this.createQuery());
+			else if(typeof id == 'object')
+				return this.getNodesByQuery(id);
+			else if(typeof id == 'string'){
+				var q = this.createQuery();
+				q.id = id;
+				return this.getNodesByQuery(q);
+			}
+			console.assert(false, 'unknown query');
+		},
+		
+		getNodeById: function(id){
+			var q = this.createQuery();
+			q.id = id;
+			return this.getNodesByQuery(q);
+		},
+		
+		getCategory: function(id){
+			return this.$el.querySelector('category[id="' + id + '"]');
+		},	
+
+		getWildcardsDatatype: function(asArray){
+			return asArray ? 'core.wildcards[]' : 'core.wildcards';
+		},
+
+		isArrayDatatype: function(datatype){
+			return datatype.endsWith('[]');
+		},
+			
+	},
+}
+Vue.config.ignoredElements.push('library');
 
 

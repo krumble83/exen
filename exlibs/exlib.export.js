@@ -6,9 +6,9 @@ Function.mixins.push({
 	methods: {
 		toObject: function(parent, full){
 			const me = this
-				, exp = ['title', 'subtitle', 'flags', 'color', 'symbol', 'x', 'y', 'ctor'];
+				, exp = ['title', 'subtitle', 'flags', 'color', 'symbol', 'x', 'y', 'ctor', 'name'];
 			parent = parent || {};
-			parent.name = this.fullpath;
+			//parent.name = this.fullpath;
 			
 			exp.forEach(function (id){
 				if(me[id] != undefined)
@@ -195,7 +195,7 @@ Member.mixins.push({
 	methods: {
 		toObject: function(parent){
 			const me = this
-				, exp = ['label', 'description', 'flags', 'datatype', 'isarray']
+				, exp = ['label', 'description', 'flags', 'datatype', 'isarray', 'name']
 				, ret = {name: me.id}
 
 			exp.forEach(function (id){

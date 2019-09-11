@@ -30,8 +30,10 @@ export default {
 
 			const createNode = function(item){
 				//console.log('cliiiiick', item);
-				const lnode = this.Library.getNode(item.getAttribute('data-id'))
+				const lnode = this.Library.getNodeById(item.getAttribute('data-id'))
 					, newNode = lnode ? lnode.toObject() : false;
+				
+				console.log(newNode);
 				if(!newNode){
 					console.warn('can\'t find node ' + item.getAttribute('data-id'));
 					link.$destroy();

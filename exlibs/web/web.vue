@@ -30,7 +30,7 @@
 
 
 			<interface id="EventTarget" inherits="HTMLObject" label="HTML EventTarget Interface">
-				<method id="addEventListener">
+				<method name="addEventListener">
 					<entry /><exit />
 					<in id="name" datatype="core.type.string" />
 					<in id="useCapture" datatype="core.type.bool" :optional="true" />
@@ -39,7 +39,7 @@
 					<out id="callback" datatype="core.exec" />
 				</method>
 
-				<method id="removeEventListener">
+				<method name="removeEventListener">
 					<entry /><exit />
 					<in id="name" datatype="core.type.string" />
 					<in id="useCapture" datatype="core.type.bool" :optional="true" />
@@ -47,7 +47,7 @@
 					<in id="passive" datatype="core.type.bool" :optional="true" />			
 				</method>
 
-				<method id="dispatchEvent">
+				<method name="dispatchEvent">
 					<entry /><exit />
 					<in id="event" datatype="event" />
 				</method>
@@ -93,85 +93,85 @@
 				<member id="previousSibling" datatype="Node" /> 
 				<member id="textContent" datatype="DOMstring" />
 					
-				<method id="appendChild">
+				<method name="appendChild">
 					<entry /><exit />
 					<in id="target" datatype="Node" />
 					<in id="child" datatype="Node" />
 				</method>
 				
-				<method id="cloneNode">
+				<method name="cloneNode">
 					<entry /><exit />
 					<in id="target" datatype="Node" />
 					<in id="deep" datatype="core.type.bool" :optional="true" :default="true" />
 					<out id="dupNode" datatype="Node" />
 				</method>
 				
-				<method id="compareDocumentPosition">
+				<method name="compareDocumentPosition">
 					<in id="target" datatype="Node" />
 					<out id="position" datatype="documentPosition" />
 				</method>			
 				
-				<method id="contains">
+				<method name="contains">
 					<in id="target" datatype="Node" />
 					<in id="otherNode" datatype="Node" />
 					<out id="result" datatype="core.type.bool" />
 				</method>
 				
-				<method id="getRootNode">
+				<method name="getRootNode">
 					<entry /><exit />
 					<in id="target" datatype="Node" />
 					<in id="composed" datatype="core.type.bool" :optional="true" />
 					<out id="rootNode" datatype="Node" />
 				</method>
 
-				<method id="hasChildNodes">
+				<method name="hasChildNodes">
 					<in id="target" datatype="Node" />
 					<out id="result" datatype="core.type.bool" />
 				</method>
 
-				<method id="insertBefore">
+				<method name="insertBefore">
 					<entry /><exit />
 					<in id="target" datatype="Node" />
 					<in id="newNode" datatype="Node" />
 					<in id="referenceNode" datatype="Node" />
 				</method>
 
-				<method id="isDefaultNamespace">
+				<method name="isDefaultNamespace">
 					<in id="target" datatype="Node" />
 					<in id="namespaceURI" datatype="core.type.string" />
 					<out id="result" datatype="core.type.bool" />
 				</method>
 
-				<method id="isEqualNode">
+				<method name="isEqualNode">
 					<in id="target" datatype="Node" />
 					<in id="otherNode" datatype="Node" />
 					<out id="result" datatype="core.type.bool" />
 				</method>
 
-				<method id="isSameNode">
+				<method name="isSameNode">
 					<in id="target" datatype="Node" />
 					<in id="otherNode" datatype="Node" />
 					<out id="result" datatype="core.type.bool" />
 				</method>
 
-				<method id="lookupPrefix">
+				<method name="lookupPrefix">
 					<in id="target" datatype="Node" />
 					<out id="result" datatype="DOMstring" />
 				</method>
 
-				<method id="normalize">
+				<method name="normalize">
 					<entry /><exit />
 					<in id="target" datatype="Node" />
 				</method>
 
-				<method id="removeChild">
+				<method name="removeChild">
 					<entry /><exit />
 					<in id="target" datatype="Node" />
 					<in id="child" datatype="Node" />
 					<out id="oldChild" datatype="Node" />
 				</method>
 
-				<method id="replaceChild">
+				<method name="replaceChild">
 					<entry /><exit />
 					<in id="target" datatype="Node" />
 					<in id="newChild" datatype="Node" />
@@ -235,18 +235,18 @@
 		
 		
 		
-			<function id="getDocument" title="document" color="#aaeea0" symbol="exlibs/img/function.png" keywords="get document,document">
+			<function name="getDocument" title="document" color="#aaeea0" symbol="exlibs/img/function.png" keywords="get document,document">
 				<out id="document" datatype="document" />
 			</function>
-			<function id="getBody" title="body" color="#aaeea0" symbol="exlibs/img/function.png" keywords="get body,body">
+			<function name="getBody" title="body" color="#aaeea0" symbol="exlibs/img/function.png" keywords="get body,body">
 				<in id="document" datatype="document" />
 				<out id="body" datatype="element" />
 			</function>
-			<function id="isvalid" title="IsValidElement" color="#aaeea0" symbol="exlibs/img/function.png" keywords="nodename" tooltip="Check if the element is a valid Dom Element">
+			<function name="isvalid" title="IsValidElement" color="#aaeea0" symbol="exlibs/img/function.png" keywords="nodename" tooltip="Check if the element is a valid Dom Element">
 				<in id="element" datatype="element" />
 				<out id="valid" datatype="core.type.bool" />
 			</function>
-			<function id="innerHtml" title="innerHTML" color="#aaeea0" symbol="exlibs/img/function.png">
+			<function name="innerHtml" title="innerHTML" color="#aaeea0" symbol="exlibs/img/function.png">
 				<in id="element" datatype="element" />
 				<out id="text" datatype="core.type.string" />
 			</function>
@@ -254,24 +254,24 @@
 		</category>
 		
 		<category id="Web/Dom/Selector">			
-			<function id="getelementbyid" title="getElementById()" color="#aaeea0" symbol="exlibs/img/function.png" keywords="get element by id">
+			<function name="getelementbyid" title="getElementById()" color="#aaeea0" symbol="exlibs/img/function.png" keywords="get element by id">
 				<in id="parent" datatype="element" />
 				<in id="id" datatype="core.type.string" />
 				<out id="element" datatype="element" />
 			</function>
-			<function id="getelementsbytagname" title="getElementsByTagName()" color="#aaeea0" symbol="exlibs/img/function.png" keywords="get elements by tag name,tagname">
+			<function name="getelementsbytagname" title="getElementsByTagName()" color="#aaeea0" symbol="exlibs/img/function.png" keywords="get elements by tag name,tagname">
 				<in id="parent" datatype="element" />
 				<in id="tagName" datatype="core.type.string" />
 				<out id="elements" datatype="element[]" />
 			</function>
-			<function id="querySelector" title="querySelector()" color="#78c8fe" symbol="exlibs/img/function.png" keywords="query selector,select element">
+			<function name="querySelector" title="querySelector()" color="#78c8fe" symbol="exlibs/img/function.png" keywords="query selector,select element">
 				<entry /><exit />
 				<in id="entry" datatype="core.exec" />
 				<in id="parent" datatype="element" />
 				<in id="selector" datatype="core.type.string" />
 				<out id="element" datatype="element" />
 			</function>
-			<function id="querySelectorall" title="querySelectorAll()" color="#78c8fe" symbol="exlibs/img/function.png" keywords="query selector,select element">
+			<function name="querySelectorall" title="querySelectorAll()" color="#78c8fe" symbol="exlibs/img/function.png" keywords="query selector,select element">
 				<entry /><exit />
 				<in id="parent" datatype="element" />
 				<in id="selector" datatype="core.type.string" />
@@ -280,92 +280,92 @@
 		</category>	
 		
 		<category id="Web/Dom/Attributes">		
-			<function id="nodeName" title="nodeName" color="#aaeea0" symbol="exlibs/img/function.png" keywords="nodename">
+			<function name="nodeName" title="nodeName" color="#aaeea0" symbol="exlibs/img/function.png" keywords="nodename">
 				<in id="element" datatype="element" />
 				<out id="nodeName" datatype="core.type.string" />
 			</function>
-			<function id="setattribute" title="setAttribute()" color="#78c8fe" symbol="exlibs/img/function.png" keywords="set attribute">
+			<function name="setattribute" title="setAttribute()" color="#78c8fe" symbol="exlibs/img/function.png" keywords="set attribute">
 				<entry /><exit />
 				<in id="parent" datatype="element" />
 				<in id="attribute" datatype="core.type.string" />
 				<in id="value" datatype="core.wildcards" />
 			</function>
-			<function id="getattribute" title="getAttribute()" color="#aaeea0" symbol="exlibs/img/function.png" keywords="get attribute">
+			<function name="getattribute" title="getAttribute()" color="#aaeea0" symbol="exlibs/img/function.png" keywords="get attribute">
 				<entry /><exit />
 				<in id="parent" datatype="element" />
 				<in id="attribute" datatype="core.type.string" />
 				<out id="value" datatype="core.wildcards" />
 			</function>
-			<function id="attributes" title="attributes" color="#aaeea0" symbol="exlibs/img/function.png" keywords="attributes">
+			<function name="attributes" title="attributes" color="#aaeea0" symbol="exlibs/img/function.png" keywords="attributes">
 				<in id="parent" datatype="element" />
 				<out id="attributes" datatype="core.type.pair[]" />
 			</function>
 		</category>
 		
 		<category id="Web/Dom/Elements">
-			<function id="createelement" title="createElement()" subtitle="Target is self" color="#aaeea0" symbol="exlibs/img/function.png" keywords="get attribute">
+			<function name="createelement" title="createElement()" subtitle="Target is self" color="#aaeea0" symbol="exlibs/img/function.png" keywords="get attribute">
 				<in id="target" datatype="document" />
 				<in id="tagname" datatype="core.type.string" />
 				<in id="is" datatype="core.type.string" :optional="true" />
 				<out id="element" datatype="element" />
 			</function>
-			<function id="appendchild" title="appendChild()" color="#78c8fe" symbol="exlibs/img/function.png" keywords="append child,child append">
+			<function name="appendchild" title="appendChild()" color="#78c8fe" symbol="exlibs/img/function.png" keywords="append child,child append">
 				<entry /><exit />
 				<in id="parent" datatype="element" />
 				<in id="child" datatype="element" label="Child" />
 				<out id="add" datatype="special.add" label="Add Child" target="child" tooltip="Add a new Children." />
 			</function>
-			<function id="appendchildsarray" title="appendChildsArray()" color="#78c8fe" symbol="exlibs/img/function.png" keywords="append childs,childs append">
+			<function name="appendchildsarray" title="appendChildsArray()" color="#78c8fe" symbol="exlibs/img/function.png" keywords="append childs,childs append">
 				<entry /><exit />
 				<in id="parent" datatype="element" />
 				<in id="childs" datatype="element[]" />
 			</function>
-			<function id="removechild" title="removeChild()" color="#78c8fe" symbol="exlibs/img/function.png" keywords="remove child">
+			<function name="removechild" title="removeChild()" color="#78c8fe" symbol="exlibs/img/function.png" keywords="remove child">
 				<entry /><exit />
 				<in id="parent" datatype="element" />
 				<in id="element" datatype="element" />
 			</function>
-			<function id="parentnode" title="parentNode" color="#aaeea0" symbol="exlibs/img/function.png" keywords="parent node">
+			<function name="parentnode" title="parentNode" color="#aaeea0" symbol="exlibs/img/function.png" keywords="parent node">
 				<in id="node" datatype="element" />
 				<out id="parent" datatype="element" />
 			</function>
-			<function id="children" title="Get Childrens" color="#aaeea0" symbol="exlibs/img/function.png" keywords="childs,childrens,children">
+			<function name="children" title="Get Childrens" color="#aaeea0" symbol="exlibs/img/function.png" keywords="childs,childrens,children">
 				<in id="parent" datatype="element" />
 				<out id="childs" datatype="element[]" />
 			</function>
-			<function id="firstChild" title="firstChild" color="#aaeea0" symbol="exlibs/img/function.png" keywords="child,children">
+			<function name="firstChild" title="firstChild" color="#aaeea0" symbol="exlibs/img/function.png" keywords="child,children">
 				<in id="parent" datatype="element" />
 				<out id="firstChild" datatype="element" />
 			</function>
-			<function id="lastChild" title="lastChild" color="#aaeea0" symbol="exlibs/img/function.png" keywords="child,children">
+			<function name="lastChild" title="lastChild" color="#aaeea0" symbol="exlibs/img/function.png" keywords="child,children">
 				<in id="parent" datatype="element" />
 				<out id="lastChild" datatype="element" />
 			</function>
 		</category>
 		
 		<category id="Web/Dom/Sibling">
-			<function id="nextSibling" title="nextSibling" color="#aaeea0" symbol="exlibs/img/function.png">
+			<function name="nextSibling" title="nextSibling" color="#aaeea0" symbol="exlibs/img/function.png">
 				<in id="node" datatype="element" />
 				<out id="nextSibling" datatype="element" />
 			</function>
-			<function id="prevSibling" title="prevSibling" color="#aaeea0" symbol="exlibs/img/function.png">
+			<function name="prevSibling" title="prevSibling" color="#aaeea0" symbol="exlibs/img/function.png">
 				<in id="node" datatype="element" />
 				<out id="prevSibling" datatype="element" />
 			</function>
 		</category>
 		
 		<category id="Web/Dom/Class">
-			<function id="addclass" title="Add Class" color="#78c8fe" symbol="exlibs/img/function.png" keywords="class add">
+			<function name="addclass" title="Add Class" color="#78c8fe" symbol="exlibs/img/function.png" keywords="class add">
 				<entry /><exit />
 				<in id="element" datatype="element" />
 				<in id="className" datatype="core.type.string" />
 			</function>
-			<function id="removeclass" title="Remove Class" color="#78c8fe" symbol="exlibs/img/function.png" keywords="class remove">
+			<function name="removeclass" title="Remove Class" color="#78c8fe" symbol="exlibs/img/function.png" keywords="class remove">
 				<entry /><exit />
 				<in id="element" datatype="element" />
 				<in id="className" datatype="core.type.string" />
 			</function>
-			<function id="hasclass" title="Has Class" color="#aaeea0" symbol="exlibs/img/function.png" keywords="class">
+			<function name="hasclass" title="Has Class" color="#aaeea0" symbol="exlibs/img/function.png" keywords="class">
 				<in id="element" datatype="element" />
 				<in id="className" datatype="core.type.string" />
 				<out id="hasClass" datatype="core.type.bool" />
@@ -397,14 +397,14 @@
 
 			<datatype id="touchevent" label="Dom Mouse Event Dom Event" color="#fff" inherits="event" />
 		
-			<function id="eventoof" title="Off Event" color="#78c8fe" symbol="exlibs/img/function.png" keywords="event">
+			<function name="eventoof" title="Off Event" color="#78c8fe" symbol="exlibs/img/function.png" keywords="event">
 				<entry /><exit />
 				<in id="element" datatype="element" />
 				<in id="capture" datatype="core.type.bool" :optional="true" tooltip="indicating that events of this type will be dispatched to the registered listener before being dispatched to any EventTarget beneath it in the DOM tree" />
 				<in id="once" datatype="core.type.bool" :optional="true" tooltip="indicating that the listener should be invoked at most once after being added. If true, the listener would be automatically removed when invoked." />
 				<in id="passive" datatype="core.type.bool" :optional="true" tooltip="if true, indicates that the function specified by listener will never call preventDefault(). If a passive listener does call preventDefault(), the user agent will do nothing other than generate a console warning" />
 			</function>
-			<function id="onmouseevent" title="On Mouse Event" color="#78c8fe" symbol="exlibs/img/function.png" keywords="event">
+			<function name="onmouseevent" title="On Mouse Event" color="#78c8fe" symbol="exlibs/img/function.png" keywords="event">
 				<entry /><exit />
 				<in id="element" datatype="element" />
 				<in id="eventName" datatype="mouseeventenum" />
@@ -414,7 +414,7 @@
 				<out id="Do" datatype="core.exec" tooltip="Action to do when event is triggered." />
 				<out id="event" datatype="mouseevent" label="Mouse Event" />
 			</function>
-			<function id="onkeyevent" title="On Mouse Event" color="#78c8fe" symbol="exlibs/img/function.png" keywords="event">
+			<function name="onkeyevent" title="On Mouse Event" color="#78c8fe" symbol="exlibs/img/function.png" keywords="event">
 				<entry /><exit />
 				<in id="element" datatype="element" />
 				<in id="eventName" datatype="keyeventenum" />

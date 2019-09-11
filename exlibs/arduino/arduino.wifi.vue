@@ -14,36 +14,36 @@
 				</editor>
 			</enum>
 			<class id="Connection" label="Arduino WiFi Network Object">
-				<method id="begin" title="WiFi.begin()" keywords="arduino wifi connect">
+				<method name="begin" title="WiFi.begin()" keywords="arduino wifi connect">
 					<entry /><exit />
 					<in id="ssid" datatype="core.type.string" />
 					<in id="password" datatype="core.type.string" />
 					<out id="status" datatype="status" />
 				</method>
-				<method id="localip" title="WiFi.localIP()" keywords="arduino wifi ip local">
+				<method name="localip" title="WiFi.localIP()" keywords="arduino wifi ip local">
 					<out id="localip" datatype="network.type.ip" label="WiFi local IP" />
 				</method>
 			</class>
 			<class id="WiFiClient" label="Arduino WiFi Client Object">
-				<method id="connect" title="WiFiClient.connect() (url)" keywords="arduino wifi">
+				<method name="connect" title="WiFiClient.connect() (url)" keywords="arduino wifi">
 					<entry /><exit />
 					<in id="target" datatype="WiFiClient" :flags="4194304" />
 					<in id="host" datatype="core.type.string" />
 					<in id="port" datatype="core.type.int" />
 					<out id="success" datatype="core.type.bool" />
 				</method>
-				<method id="connectip" title="WiFiClient.connect() (ip)" keywords="arduino wifi connect ip">
+				<method name="connectip" title="WiFiClient.connect() (ip)" keywords="arduino wifi connect ip">
 					<entry /><exit />
 					<in id="target" datatype="WiFiClient" :flags="4194304" />
 					<in id="host" datatype="network.type.ip" />
 					<in id="port" datatype="core.type.int" />
 					<out id="success" datatype="core.type.bool" />
 				</method>
-				<method id="connected" title="WiFiClient.connected()" keywords="arduino wifi">
+				<method name="connected" title="WiFiClient.connected()" keywords="arduino wifi">
 					<in id="target" datatype="WiFiClient" :flags="4194304" />
 					<out id="connected" datatype="core.type.bool" />
 				</method>
-				<method id="stop" title="WiFiClient.stop()" keywords="arduino wifi">
+				<method name="stop" title="WiFiClient.stop()" keywords="arduino wifi">
 					<entry /><exit />
 					<out id="target" datatype="WiFiClient" :flags="4194304" />
 				</method>

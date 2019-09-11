@@ -8,15 +8,15 @@
 		
 		<datatype id="scalar" label="Scalar Value" color="fff" />
 		
-		<function id="entryPoint" :private="true" ctor="NodeEntrypoint" symbol="exlibs/img/start.png"	color="#7f2197">
+		<function name="entryPoint" :private="true" ctor="NodeEntrypoint" symbol="exlibs/img/start.png"	color="#7f2197">
 			<exit />
 		</function>
 		
-		<function id="returnNode" :private="true" symbol="exlibs/img/start.png"	color="#7f2197">
+		<function name="returnNode" :private="true" symbol="exlibs/img/start.png"	color="#7f2197">
 			<entry />
 		</function>
 		
-		<function id="rerouteNode" title="Add reroute Node..." ctor="NodeReroute" />
+		<function name="rerouteNode" title="Add reroute Node..." ctor="NodeReroute" />
 		
 	</package>
 </template>

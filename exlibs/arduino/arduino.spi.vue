@@ -25,14 +25,14 @@
 		</structure>
 
 		<category id="Arduino/SPI">
-			<function id="begintransaction" title="SPI.Begin()" keywords="spi begin transaction">
+			<function name="begintransaction" title="SPI.Begin()" keywords="spi begin transaction">
 				<entry /><exit />
 				<in id="spisetting" datatype="setting" label="SPI Settings" />
 			</function>
-			<function id="end" title="SPI.end()" keywords="spi end">
+			<function name="end" title="SPI.end()" keywords="spi end">
 				<entry /><exit />
 			</function>
-			<function id="endtransaction" title="SPI.End()" keywords="spi end transaction">
+			<function name="endtransaction" title="SPI.End()" keywords="spi end transaction">
 				<entry /><exit />
 			</function>
 		</category>

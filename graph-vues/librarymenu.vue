@@ -100,9 +100,10 @@ export default {
 					, cat = me.items;
 				if(vu.Category)
 					cat = findUl(vu.Category.fullPath, me.items);
+				//console.log(vu);
 				cat.push({
-					name: vu.title || vu.id, 
-					id: vu.fullpath,
+					name: vu.title || vu.name, 
+					id: vu.properties.id,
 					symbol: vu.symbol,
 					tooltip: vu.tooltip,
 				});
@@ -114,8 +115,8 @@ export default {
 				if(vu.Category)
 					cat = findUl(vu.Category.fullPath, me.items);
 				cat.push({
-					name: vu.title || vu.id, 
-					id: vu.fullpath,
+					name: vu.title || vu.name, 
+					id: vu.id,
 					symbol: vu.symbol,
 					tooltip: vu.tooltip,
 				});

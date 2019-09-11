@@ -8,22 +8,22 @@
 		</enum>
 
 		<category id="Arduino/Digital IO Pin">
-			<function id="pinMode" title="pinMode" keywords="arduino pinmode pin mode">
+			<function name="pinMode" title="pinMode" keywords="arduino pinmode pin mode">
 				<entry /><exit />
 				<in id="pin" datatype="dpin" label="Digital Pin" />
 				<in id="mode" datatype="pinmode" />
 			</function>
-			<function id="digitalWrite" title="digitalWrite" keywords="arduino digitalwrite digital pin write">
+			<function name="digitalWrite" title="digitalWrite" keywords="arduino digitalwrite digital pin write">
 				<entry /><exit />
 				<in id="pin" datatype="dpin" label="Digital Pin" />
 				<in id="value" datatype="core.type.bool" label="LOW/HIGH" />
 			</function>
-			<function id="digitalRead" title="digitalRead" keywords="arduino digitalread digital pin read">
+			<function name="digitalRead" title="digitalRead" keywords="arduino digitalread digital pin read">
 				<entry /><exit />
 				<in id="pin" datatype="dpin" label="Digital Pin" />
 				<out id="value" datatype="core.type.bool" />
 			</function>
-			<function id="pulseIn" title="pulseIn" keywords="arduino pulse pulsein digital pin">
+			<function name="pulseIn" title="pulseIn" keywords="arduino pulse pulsein digital pin">
 				<entry /><exit />
 				<in id="pin" datatype="dpin" />
 				<in id="value" datatype="core.type.bool" label="LOW/HIGH" />

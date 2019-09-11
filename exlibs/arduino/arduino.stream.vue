@@ -8,66 +8,66 @@
 			</enum>
 		
 			<class id="stream" label="Arduino Stream Object">
-				<method id="available" title="available" keywords="available">					
+				<method name="available" keywords="available">					
 					<out id="bytes" datatype="core.type.int" />
 				</method>
-				<method id="read" title="read">
+				<method name="read">
 					<entry /><exit />
 					<out id="byte" datatype="core.type.int" />
 				</method>
-				<method id="flush" title="flush">
+				<method name="flush">
 					<entry /><exit />
 				</method>
-				<method id="find" title="find">
+				<method name="find">
 					<entry /><exit />
 					<in id="query" datatype="core.type.string" />
 					<out id="found" datatype="core.type.bool" />
 				</method>
-				<method id="findUntil" title="findUntil">
+				<method name="findUntil">
 					<entry /><exit />
 					<in id="query" datatype="core.type.string" />
 					<in id="terminator" datatype="core.type.string" />
 					<out id="found" datatype="core.type.bool" />
 				</method>
-				<method id="peek" title="peek">
+				<method name="peek">
 					<entry /><exit />
 					<out id="byte" datatype="core.type.int" />
 				</method>
-				<method id="readBytes" title="readBytes">
+				<method name="readBytes">
 					<entry /><exit />
 					<in id="buffer" datatype="core.type.byte[]" />
 					<in id="length" datatype="core.type.int" />
 					<out id="bytesRead" datatype="core.type.int" />
 				</method>
-				<method id="readBytesUntil" title="readBytesUntil">
+				<method name="readBytesUntil">
 					<entry /><exit />
 					<in id="terminator" datatype="core.type.string" />
 					<in id="buffer" datatype="core.type.byte[]" />
 					<in id="length" datatype="core.type.int" />
 					<out id="bytesRead" datatype="core.type.int" />
 				</method>
-				<method id="readString" title="readString">
+				<method name="readString">
 					<entry /><exit />
 					<out id="string" datatype="core.type.string" />
 				</method>
-				<method id="readStringUntil" title="readStringUntil">
+				<method name="readStringUntil">
 					<entry /><exit />
 					<in id="terminator" datatype="core.type.string" />
 					<out id="string" datatype="core.type.string" />
 				</method>
-				<method id="parseInt" title="parseInt">
+				<method name="parseInt">
 					<entry /><exit />
 					<in id="lookahead" datatype="lookAheadMode" :optional="true" />
 					<in id="ignore" datatype="core.type.string" :optional="true" />
 					<out id="int" datatype="core.type.int" />
 				</method>
-				<method id="parseFloat" title="parseFloat">
+				<method name="parseFloat">
 					<entry /><exit />
 					<in id="lookahead" datatype="lookAheadMode" :optional="true" />
 					<in id="ignore" datatype="core.type.string" :optional="true" />
 					<out id="float" datatype="core.type.float" />
 				</method>
-				<method id="setTimeout" title="setTimeout">
+				<method name="setTimeout">
 					<entry /><exit />
 					<in id="timeout" datatype="core.type.int" />
 				</method>

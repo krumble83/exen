@@ -14,30 +14,29 @@
 			</enum>
 		
 			<class id="serial" label="Arduino Serial Connection" inherits="arduino.stream.stream">
-				<method id="availableForWrite" title="availableForWrite (serial)">
-					<in id="serialConnection" datatype="connection" />
+				<method name="availableForWrite" title="availableForWrite (serial)">
 					<out id="out" datatype="core.type.int" />
 				</method>
-				<method id="begin" title="Serial.begin()" keywords="arduino serial available">
+				<method name="begin" title="Serial.begin()" keywords="arduino serial available">
 					<entry /><exit />
 					<in id="serialPort" datatype="port" />
 					<in id="bauds" datatype="core.type.int" />
 					<out id="serialConnection" datatype="connection" />
 				</method>
-				<method id="end" title="end (Serial)" >
+				<method name="end" title="end (Serial)" >
 					<entry /><exit />
 					<in id="serialConnection" datatype="connection" />
 				</method>
-				<method id="ifSerial" title="if (Serial)" >
+				<method name="ifSerial" title="if (Serial)" >
 					<in id="serialConnection" datatype="connection" />
 					<out id="out" datatype="core.type.bool" />			
 				</method>
-				<method id="writeByte" title="Serial Write Byte" keywords="arduino serial write byte">
+				<method name="writeByte" title="Serial Write Byte" keywords="arduino serial write byte">
 					<entry /><exit />
 					<in id="serialConnection" datatype="connection" />
 					<in id="byte" datatype="core.type.byte" />
 				</method>
-				<method id="writeBytes" title="Serial Write Bytes Array" keywords="arduino serial write byte">
+				<method name="writeBytes" title="Serial Write Bytes Array" keywords="arduino serial write byte">
 					<entry /><exit />
 					<in id="serialConnection" datatype="connection" />
 					<in id="byte" datatype="core.type.byte[]" />
