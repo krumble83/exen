@@ -1,11 +1,11 @@
 <template>
 	<package id="arduino.io.analog" color="#aaeea0" symbol="exlibs/arduino/arduino.png" >
-		<datatype id="apin" label="Arduino Analog Pin Component" color="#ff0" />
+		<datatype name="apin" label="Arduino Analog Pin Component" color="#ff0" />
 		<category id="Arduino/Analog IO Pin">
 			<function name="analogRead" title="analogRead()" keywords="read analog">
 				<entry /><exit />
-				<in id="pin" datatype="apin" label="Analog Pin" />
-				<out id="value" datatype="core.type.int" tooltip="int(0 to 1023)" />
+				<in name="pin" datatype="apin" label="Analog Pin" />
+				<out name="value" datatype="core.type.int" tooltip="int(0 to 1023)" />
 			</function>
 		</category>
 	</package>

@@ -1,75 +1,75 @@
 <template>
 	<package id="arduino.stream" symbol="exlibs/arduino/arduino.png">
 		<category id="Arduino/Stream">			
-			<enum id="lookAheadMode">
+			<enum name="lookAheadMode">
 				<value id="SKIP_ALL" />
 				<value id="SKIP_NONE" />
 				<value id="SKIP_WHITESPACE" />
 			</enum>
 		
-			<class id="stream" label="Arduino Stream Object">
+			<class name="stream" label="Arduino Stream Object">
 				<method name="available" keywords="available">					
-					<out id="bytes" datatype="core.type.int" />
+					<out name="bytes" datatype="core.type.int" />
 				</method>
 				<method name="read">
 					<entry /><exit />
-					<out id="byte" datatype="core.type.int" />
+					<out name="byte" datatype="core.type.int" />
 				</method>
 				<method name="flush">
 					<entry /><exit />
 				</method>
 				<method name="find">
 					<entry /><exit />
-					<in id="query" datatype="core.type.string" />
-					<out id="found" datatype="core.type.bool" />
+					<in name="query" datatype="core.type.string" />
+					<out name="found" datatype="core.type.bool" />
 				</method>
 				<method name="findUntil">
 					<entry /><exit />
-					<in id="query" datatype="core.type.string" />
-					<in id="terminator" datatype="core.type.string" />
-					<out id="found" datatype="core.type.bool" />
+					<in name="query" datatype="core.type.string" />
+					<in name="terminator" datatype="core.type.string" />
+					<out name="found" datatype="core.type.bool" />
 				</method>
 				<method name="peek">
 					<entry /><exit />
-					<out id="byte" datatype="core.type.int" />
+					<out name="byte" datatype="core.type.int" />
 				</method>
 				<method name="readBytes">
 					<entry /><exit />
-					<in id="buffer" datatype="core.type.byte[]" />
-					<in id="length" datatype="core.type.int" />
-					<out id="bytesRead" datatype="core.type.int" />
+					<in name="buffer" datatype="core.type.byte[]" />
+					<in name="length" datatype="core.type.int" />
+					<out name="bytesRead" datatype="core.type.int" />
 				</method>
 				<method name="readBytesUntil">
 					<entry /><exit />
-					<in id="terminator" datatype="core.type.string" />
-					<in id="buffer" datatype="core.type.byte[]" />
-					<in id="length" datatype="core.type.int" />
-					<out id="bytesRead" datatype="core.type.int" />
+					<in name="terminator" datatype="core.type.string" />
+					<in name="buffer" datatype="core.type.byte[]" />
+					<in name="length" datatype="core.type.int" />
+					<out name="bytesRead" datatype="core.type.int" />
 				</method>
 				<method name="readString">
 					<entry /><exit />
-					<out id="string" datatype="core.type.string" />
+					<out name="string" datatype="core.type.string" />
 				</method>
 				<method name="readStringUntil">
 					<entry /><exit />
-					<in id="terminator" datatype="core.type.string" />
-					<out id="string" datatype="core.type.string" />
+					<in name="terminator" datatype="core.type.string" />
+					<out name="string" datatype="core.type.string" />
 				</method>
 				<method name="parseInt">
 					<entry /><exit />
-					<in id="lookahead" datatype="lookAheadMode" :optional="true" />
-					<in id="ignore" datatype="core.type.string" :optional="true" />
-					<out id="int" datatype="core.type.int" />
+					<in name="lookahead" datatype="lookAheadMode" :optional="true" />
+					<in name="ignore" datatype="core.type.string" :optional="true" />
+					<out name="int" datatype="core.type.int" />
 				</method>
 				<method name="parseFloat">
 					<entry /><exit />
-					<in id="lookahead" datatype="lookAheadMode" :optional="true" />
-					<in id="ignore" datatype="core.type.string" :optional="true" />
-					<out id="float" datatype="core.type.float" />
+					<in name="lookahead" datatype="lookAheadMode" :optional="true" />
+					<in name="ignore" datatype="core.type.string" :optional="true" />
+					<out name="float" datatype="core.type.float" />
 				</method>
 				<method name="setTimeout">
 					<entry /><exit />
-					<in id="timeout" datatype="core.type.int" />
+					<in name="timeout" datatype="core.type.int" />
 				</method>
 			</class>
 		</category>

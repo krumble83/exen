@@ -1,12 +1,12 @@
 <template>
 	<package id="core">
-		<datatype id="object" label="Object" color="#55f" />
-		<datatype id="device" label="Device" color="#00f" />
-		<datatype id="component" label="Component" color="#ff0" />
-		<datatype id="exec" label="Exec" pinctor="PinExec" color="#fff" :private="true" />
-		<datatype id="wildcards" :private="true" label="Wildcards" ctor="PinWildcards" color="#666" />
+		<datatype name="object" label="Object" color="#55f" />
+		<datatype name="device" label="Device" color="#00f" />
+		<datatype name="component" label="Component" color="#ff0" />
+		<datatype name="exec" label="Exec" pinctor="PinExec" color="#fff" :private="true" />
+		<datatype name="wildcards" :private="true" label="Wildcards" ctor="PinWildcards" color="#666" />
 		
-		<datatype id="scalar" label="Scalar Value" color="fff" />
+		<datatype name="scalar" label="Scalar Value" color="fff" />
 		
 		<function name="entryPoint" :private="true" ctor="NodeEntrypoint" symbol="exlibs/img/start.png"	color="#7f2197">
 			<exit />

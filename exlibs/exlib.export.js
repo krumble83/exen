@@ -6,7 +6,7 @@ Function.mixins.push({
 	methods: {
 		toObject: function(parent, full){
 			const me = this
-				, exp = ['title', 'subtitle', 'flags', 'color', 'symbol', 'x', 'y', 'ctor', 'name'];
+				, exp = ['id', 'title', 'subtitle', 'flags', 'color', 'symbol', 'x', 'y', 'ctor', 'name'];
 			parent = parent || {};
 			//parent.name = this.fullpath;
 			
@@ -17,7 +17,7 @@ Function.mixins.push({
 			
 			if(full){
 				parent.__ctor = me.__ctor;
-				parent.id = me.id;
+				parent._name = me.$props.name;
 				parent.childs = parent.childs || [];
 			}
 			else {
@@ -40,22 +40,24 @@ In.mixins.push({
 		toObject: function(parent, full){
 			const me = this
 				, exp = ['label', 'description', 'flags', 'color', 'datatype', 'ctor', 'pinctor', 'optional', 'isarray', 'group', 'target', 'maxlink']
-				, ret = {name: me.id}
+				, ret = {name: me.$props.name || me.id}
 
 			exp.forEach(function (id){
 				if(id == 'datatype' && (me[id].indexOf('.') == -1)){
+					//console.log(me.Package.fullpath + '.' + me[id]);
 					ret[id] = me.Package.fullpath + '.' + me[id];
 					return;
 				}
-				if(me[id] != undefined)
-					ret[id] = me[id];
+				if(me.$props[id] != undefined)
+					ret[id] = me.$props[id];
 			});
 
 			if(full){
 				ret.__ctor = me.__ctor;
-				ret.id = me.id;
+				//ret.id = me.id;
+				//ret.name = me.$props.name;
 			}
-			
+			//console.log(ret);
 			if(parent && full){
 				parent.childs = parent.childs || [];
 				parent.childs.push(ret);				
@@ -74,8 +76,8 @@ Out.mixins.push({
 	methods: {
 		toObject: function(parent, full){
 			const me = this
-				, exp = ['label', 'description', 'flags', 'color', 'datatype', 'ctor', 'pinctor', 'optional', 'isarray', 'group', 'target', 'maxlink']
-				, ret = {name: me.id}
+				, exp = ['name', 'label', 'description', 'flags', 'color', 'datatype', 'ctor', 'pinctor', 'optional', 'isarray', 'group', 'target', 'maxlink']
+				, ret = {name: me.$props.name || me.id}
 
 			exp.forEach(function (id){
 				if(id == 'datatype' && (me[id].indexOf('.') == -1)){
@@ -146,8 +148,8 @@ Datatype.mixins.push({
 	methods: {
 		toObject: function(parent){
 			const me = this
-				, exp = ['label', 'description', 'flags', 'private', 'ctor', 'pinctor', 'color', 'inherits']
-				, ret = {name: me.id}
+				, exp = ['id', 'name', 'label', 'description', 'flags', 'private', 'ctor', 'pinctor', 'color', 'inherits']
+				, ret = {name: me.$props.name}
 
 			exp.forEach(function (id){
 				if(me[id] != undefined)

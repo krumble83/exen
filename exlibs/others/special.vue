@@ -1,6 +1,6 @@
 <template>
 	<package id="special">
-		<datatype id="add" ctor="PinAdd" pinctor="PinAdd" color="#fff" />
+		<datatype name="add" ctor="PinAdd" pinctor="PinAdd" color="#fff" />
 	</package>
 </template>
 

@@ -1,33 +1,33 @@
 <template>
 	<package id="core.type">
 
-		<datatype id="bool" label="Boolean" color="#940000" >
+		<datatype name="bool" label="Boolean" color="#940000" >
 			<editor id="bool" />
 		</datatype>
 		
-		<datatype id="int" label="Integer" color="#1edfab" tooltip="Any non floating number">
+		<datatype name="int" label="Integer" color="#1edfab" tooltip="Any non floating number">
 			<editor id="input" ctor="input">
 				<value id="pattern">/^[+-]?\d+(\.\d+)?$/</value>
 				<value id="default">0</value>
 			</editor>
 		</datatype>
 		
-		<datatype id="float" label="Float" color="#9FFF44" tooltip="Any floating number">
+		<datatype name="float" label="Float" color="#9FFF44" tooltip="Any floating number">
 			<editor id="input" ctor="input">
 				<value id="pattern">/^[+-]?\d+$/</value>
 				<value id="default">0</value>
 			</editor>
 		</datatype>
 		
-		<datatype id="byte" color="#016e64" label="Byte">
+		<datatype name="byte" color="#016e64" label="Byte">
 			<editor id="input" ctor="input" />
 		</datatype>
 		
-		<datatype id="string" label="String" color="#f0f" tooltip="Any sequence of characters">
+		<datatype name="string" label="String" color="#f0f" tooltip="Any sequence of characters">
 			<editor id="input" ctor="input" />
 		</datatype>
 			
-		<structure id="date" label="DateTime Structure">
+		<structure name="date" label="DateTime Structure">
 			<member id="year" datatype="core.type.int" label="Year" />
 			<member id="month" datatype="core.type.int" label="Month" />
 			<member id="day" datatype="core.type.int" label="Day" />

@@ -160,13 +160,7 @@ export const Base = {
 		}
 	},
 		
-	template: 	'<component :is="__ctor" v-bind="properties">{{value}} \
-					<component v-for="child in childs" v-bind:key="child.id" \
-						:is="child.__ctor" \
-						v-bind="child" \
-					/>\
-					<slot />\
-				</component>'
+	template: 	'<component :is="__ctor" v-bind="properties">{{value}}<component v-for="child in childs" v-bind:key="child.id" :is="child.__ctor" v-bind="child" /><slot /></component>',
 }
 
 /*
@@ -255,6 +249,7 @@ Vue.config.ignoredElements.push('value');
 
 export const Editor = {
 	extends: Base,
+	components: {Value},
 	mixins: [],
 	inject: ['Library', 'Package'],
 	
@@ -275,6 +270,7 @@ export const Pin = {
 	
 	props: {
 		__ctor: {type: String, default: 'pin'},
+		name: {type: String, required: true},
 		isio: {type: Boolean, default: true},
 		isarray: {type: Boolean, default: false},
 		optional: Boolean,
@@ -293,6 +289,7 @@ export const Pin = {
 	data: function(){
 		return {
 			_required: this.required,
+			_name: this.$props.name,
 		}
 	},
 	
@@ -332,7 +329,7 @@ export const Entry = {
 	mixins: [],
 	
 	props: {
-		id:{type: String, default: '@entry'},
+		name:{type: String, default: '@entry'},
 		datatype: {type: String, default: 'core.exec'},
 		maxlink: {type: Number, default: -1},
 	},
@@ -344,7 +341,7 @@ export const Exit = {
 	mixins: [],
 	
 	props: {
-		id:{type: String, default: '@exit'},
+		name:{type: String, default: '@exit'},
 		datatype: {type: String, default: 'core.exec'},
 		maxlink: {type: Number, default: 1},
 	},
@@ -357,8 +354,8 @@ export const Function = {
 	mixins: [],
 	
 	props: {
-		name: {type: String, required: true},
 		__ctor: {type: String, default: 'function'},
+		name: {type: String, required: true},
 		isfunction: {type: Boolean, default: true},
 		private:  {type: Boolean, default: false},
 	},
@@ -393,6 +390,7 @@ export const Datatype = {
 	props: {
 		__ctor: {type: String, default: 'datatype'},
 		name: {type: String, required: true},
+		//id: {type: String, default: function(){console.log(this._id); return 'zz'}},
 		label: String,
 		description: String,
 		private: {type: Boolean, default: false},
@@ -401,6 +399,14 @@ export const Datatype = {
 		color: {type: String, required: true},
 		inherits: String,
 		isdatatype: {type: Boolean, default: true},
+	},
+	
+	data: function(){
+		//console.log(this.name);
+		return {
+			_id: this.Package.fullpath + '.' + this.$props.name,
+			_name: this.$props.name,
+		}
 	},
 	
 	mounted: function(){
@@ -431,6 +437,26 @@ export const Datatype = {
 }
 Vue.config.ignoredElements.push('datatype');
 
+
+
+export const Convertor = {
+	extends: Base,
+	components: {In, Out},
+	mixins: [],
+	
+	props: {
+		__ctor: {type: String, default: 'datatype'},
+	},
+	
+	data: function(){
+		//console.log(this.name);
+		return {
+			
+		}
+	},
+	
+}
+Vue.config.ignoredElements.push('convertor');
 
 
 
@@ -485,7 +511,7 @@ export const Method = {
 		__ctor: {type: String, default: 'method'},
 		subtitle: {type: String, default: function(){ return 'Target is ' + this.$parent.id}},
 		color: {type: String, default: function(){return this.Class.color}},
-		childs: {type: Array, default: function(){return [{__ctor: 'in', id: 'target', datatype: this.$parent.id}]}},
+		childs: {type: Array, default: function(){return [{__ctor: 'in', name: 'target', datatype: this.$parent.$props.name}]}},
 	},
 }
 Vue.config.ignoredElements.push('method');
@@ -519,7 +545,7 @@ Vue.config.ignoredElements.push('structure');
 
 export const Class = {
 	extends: Structure,
-	components: {Method},
+	components: {Method, Member},
 	mixins: [],
 	
 	provide: function(){
@@ -544,11 +570,7 @@ export const Class = {
 	methods: {		
 		_parseInherits: function(){
 			const me = this;
-			
-			me.$children.forEach(function(child){
-				console.log(child.id);
-			});
-			
+
 			if(!this.inherits)
 				return;
 			const inherits = this.inherits.split(' ');
@@ -556,17 +578,19 @@ export const Class = {
 			console.assert(base);
 
 			const exp = base.toObject(null, true);
+			//console.log(exp);
+			console.log(me);
 			exp.childs.forEach(function(child){
 				//if(child.derived)
 				//	return;
 				if(child.__ctor == 'method'){
 					//child.derived = true;
-					child.subtitle = 'Target is ' + me.id;
-					child.childs.find(it => it.name == 'target').datatype = me.id;
+					child.subtitle = 'Target is ' + me.name;
+					child.childs.find(it => it.name == 'target').datatype = me._data._id;
 				}
 				me.childs.unshift(child);
 			});
-			console.log('base', exp);
+			//console.log('base', exp);
 		},
 		
 		_isOverload: function(src){
@@ -596,28 +620,7 @@ Vue.config.ignoredElements.push('interface');
 
 
 
-export const Hardware = {
-	extends: Base,
-	mixins: [],
-	inject: ['Library', 'Package'],
-	
-	props: {
-		__ctor: {type: String, default: 'hardware'},
-	},
-}
-Vue.config.ignoredElements.push('hardware');
 
-export const Device = {
-	extends: Base,
-	mixins: [],
-	inject: ['Library', 'Package'],
-	
-	props: {
-		__ctor: {type: String, default: 'device'},
-		label: String,
-	},
-}
-Vue.config.ignoredElements.push('device');
 
 export const Provide = {
 	extends: Base,
@@ -646,11 +649,34 @@ export const Require = {
 }
 Vue.config.ignoredElements.push('require');
 
+export const Hardware = {
+	extends: Base,
+	mixins: [],
+	inject: ['Library', 'Package'],
+	
+	props: {
+		__ctor: {type: String, default: 'hardware'},
+	},
+}
+Vue.config.ignoredElements.push('hardware');
+
+export const Device = {
+	extends: Base,
+	mixins: [],
+	inject: ['Library', 'Package'],
+	
+	props: {
+		__ctor: {type: String, default: 'device'},
+		label: String,
+	},
+}
+Vue.config.ignoredElements.push('device');
+
 
 
 export const Category = {
 	extends: Base,
-	components: {Function, Enum, Class},
+	components: {Datatype, Function, Class, Convertor, Structure, Enum, Device, Hardware, Interface},
 	inject: {
 		Library: {default: false},
 		Package: {default: false},
@@ -690,7 +716,7 @@ Vue.config.ignoredElements.push('category');
 
 export const Package = {
 	extends: Base,
-	components: {Category, Enum},
+	components: {Category, Datatype, Function, Class, Convertor, Structure, Enum, Device, Hardware, Interface, Value},
 	mixins: [],
 	props: {
 		__ctor: {type: String, default: 'package'},
@@ -749,7 +775,7 @@ export const Library = {
 		
 		getHardware: function(id){
 			var name = me.splitPackageName(id);
-			return me.$el.querySelector('package[id="' + name[0] + '"] hardware[id="' + name[1] + '"]').__vue__;			
+			return me.$el.querySelector('package[id="' + name[0] + '"] hardware[id="' + name[1] + '"]').__vue__;
 		},
 		
 		getNodesByQuery: function(query){
@@ -780,7 +806,8 @@ export const Library = {
 				var dtype = me.getDatatype(query.inputDatatype)
 					, dtypeid = me.isArrayDatatype(query.inputDatatype) ? dtype.id + '[]' : dtype.id
 					, pack = dtype.Package;
-				ret = Array.from(ret).filter(function(it){
+					
+				ret = ret.filter(function(it){
 					if(it.querySelector('out[datatype="' + pack.id + '.' + dtypeid + '"], out[datatype="' + me.getWildcardsDatatype(me.isArrayDatatype(query.inputDatatype)) + '"]'))
 						return true;
 					var res = false;
@@ -797,7 +824,7 @@ export const Library = {
 					, dtypeid = me.isArrayDatatype(query.outputDatatype) ? dtype.id + '[]' : dtype.id
 					, pack = dtype.Package;
 					
-				ret = Array.from(ret).filter(function(it){
+				ret = ret.filter(function(it){
 					if(it.querySelector('in[datatype="' + pack.id + '.' + dtypeid + '"], in[datatype="' + me.getWildcardsDatatype(me.isArrayDatatype(query.outputDatatype)) + '"]'))
 						return true;
 					var res = false;
@@ -818,7 +845,7 @@ export const Library = {
 			id = id.replace('[]', '');
 			var name = this.splitPackageName(id);
 			//console.log(id, name, 'package[id="' + name[0] + '"] [isdatatype="true"][id="' + name[1] + '"]');
-			return this.$el.querySelector('package[id="' + name[0] + '"] [isdatatype="true"][id="' + name[1] + '"]').__vue__;
+			return this.$el.querySelector('[isdatatype="true"][id="' + id + '"]').__vue__;
 		},
 		
 		getNode: function(id){

@@ -74,7 +74,7 @@
 	import defaultTab from './tabs.tab.vue';
 		
 	const App = {
-		components: {uitabs,defaultTab,ProjectPanel,      Library},
+		components: {uitabs,defaultTab,ProjectPanel,Library},
 		mixins: [],
 		el: '#app',
 		store,
