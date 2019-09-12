@@ -1,6 +1,6 @@
 <template>
 	<package id="core.bool">
-		<category id="Boolean">
+		<category name="Boolean">
 			<function name="makeliteral" title="Make literal (Boolean )" color="#aaeea0" symbol="exlibs/img/function.png" keywords="make Boolean ">
 				<in name="in" datatype="core.type.bool" />
 				<out name="value" datatype="core.type.bool" label="Boolean " />
@@ -21,7 +21,7 @@
 			</function>
 		</category>
 		
-		<category id="Boolean/Bitwise Operators">
+		<category name="Boolean/Bitwise Operators">
 			<function name="not" ctor="NodeOp" color="#555" symbol="exlibs/core/img/op.not.png" keywords="!" subtitle="NOT" title="NOT (Bool)">
 				<in name="a" datatype="core.type.bool" label=" " />
 				<out name="output" datatype="core.type.bool" />
@@ -58,7 +58,7 @@
 			</function>
 		</category>
 		
-		<category id="Boolean/Comparators">
+		<category name="Boolean/Comparators">
 			<function name="eq" ctor="NodeOp" color="#555" title="Boolean == Boolean (equal)" symbol="exlibs/core/img/op.eq.png" keywords="==,equal" subtitle="==">
 				<in name="a" datatype="core.type.bool" />
 				<in name="b" datatype="core.type.bool" />
@@ -71,7 +71,7 @@
 			</function>
 		</category>
 
-		<category id="Utilities/Flow Control">
+		<category name="Utilities/Flow Control">
 			<function name="selectBool" title="Select (Bool)" color="#C3C3C3" keywords="select bool" symbol="exlibs/core/img/select.png">
 				<in name="a" datatype="core.wildcards" group="1" />
 				<in name="b" datatype="core.wildcards" group="1" />

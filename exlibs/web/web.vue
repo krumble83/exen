@@ -11,7 +11,7 @@
 		
 
 		
-		<category id="Web/Dom">
+		<category name="Web/Dom">
 		
 		
 		
@@ -55,27 +55,27 @@
 			
 			
 			<enum name="nodeTypeEnum" label="HTML nodeType Enum">
-				<value id="ELEMENT_NODE">1</value>
-				<value id="ATTRIBUTE_NODE">2</value>
-				<value id="TEXT_NODE">3</value>
-				<value id="CDATA_SECTION_NODE">4</value>
-				<value id="ENTITY_REFERENCE_NODE">5</value>
-				<value id="ENTITY_NODE">6</value>
-				<value id="PROCESSING_INSTRUCTION_NODE">7</value>
-				<value id="COMMENT_NODE">8</value>
-				<value id="DOCUMENT_NODE">9</value>
-				<value id="DOCUMENT_TYPE_NODE">10</value>
-				<value id="DOCUMENT_FRAGMENT_NODE">11</value>
-				<value id="NOTATION_NODE">12</value>
+				<value name="ELEMENT_NODE">1</value>
+				<value name="ATTRIBUTE_NODE">2</value>
+				<value name="TEXT_NODE">3</value>
+				<value name="CDATA_SECTION_NODE">4</value>
+				<value name="ENTITY_REFERENCE_NODE">5</value>
+				<value name="ENTITY_NODE">6</value>
+				<value name="PROCESSING_INSTRUCTION_NODE">7</value>
+				<value name="COMMENT_NODE">8</value>
+				<value name="DOCUMENT_NODE">9</value>
+				<value name="DOCUMENT_TYPE_NODE">10</value>
+				<value name="DOCUMENT_FRAGMENT_NODE">11</value>
+				<value name="NOTATION_NODE">12</value>
 			</enum>
 			
 			<enum name="documentPosition" label="HTML Node position">
-				<value id="DOCUMENT_POSITION_DISCONNECTED">1</value>
-				<value id="DOCUMENT_POSITION_PRECEDING">2</value>
-				<value id="DOCUMENT_POSITION_FOLLOWING">4</value>
-				<value id="DOCUMENT_POSITION_CONTAINS">8</value>
-				<value id="DOCUMENT_POSITION_CONTAINED_BY">16</value>
-				<value id="DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC">32</value>
+				<value name="DOCUMENT_POSITION_DISCONNECTED">1</value>
+				<value name="DOCUMENT_POSITION_PRECEDING">2</value>
+				<value name="DOCUMENT_POSITION_FOLLOWING">4</value>
+				<value name="DOCUMENT_POSITION_CONTAINS">8</value>
+				<value name="DOCUMENT_POSITION_CONTAINED_BY">16</value>
+				<value name="DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC">32</value>
 			</enum>
 			
 			<interface id="Node" implements="EventTarget" label="HTML Node">
@@ -253,7 +253,7 @@
 
 		</category>
 		
-		<category id="Web/Dom/Selector">			
+		<category name="Web/Dom/Selector">			
 			<function name="getelementbyid" title="getElementById()" color="#aaeea0" symbol="exlibs/img/function.png" keywords="get element by id">
 				<in name="parent" datatype="element" />
 				<in name="id" datatype="core.type.string" />
@@ -279,7 +279,7 @@
 			</function>
 		</category>	
 		
-		<category id="Web/Dom/Attributes">		
+		<category name="Web/Dom/Attributes">		
 			<function name="nodeName" title="nodeName" color="#aaeea0" symbol="exlibs/img/function.png" keywords="nodename">
 				<in name="element" datatype="element" />
 				<out name="nodeName" datatype="core.type.string" />
@@ -302,7 +302,7 @@
 			</function>
 		</category>
 		
-		<category id="Web/Dom/Elements">
+		<category name="Web/Dom/Elements">
 			<function name="createelement" title="createElement()" subtitle="Target is self" color="#aaeea0" symbol="exlibs/img/function.png" keywords="get attribute">
 				<in name="target" datatype="document" />
 				<in name="tagname" datatype="core.type.string" />
@@ -343,7 +343,7 @@
 			</function>
 		</category>
 		
-		<category id="Web/Dom/Sibling">
+		<category name="Web/Dom/Sibling">
 			<function name="nextSibling" title="nextSibling" color="#aaeea0" symbol="exlibs/img/function.png">
 				<in name="node" datatype="element" />
 				<out name="nextSibling" datatype="element" />
@@ -354,7 +354,7 @@
 			</function>
 		</category>
 		
-		<category id="Web/Dom/Class">
+		<category name="Web/Dom/Class">
 			<function name="addclass" title="Add Class" color="#78c8fe" symbol="exlibs/img/function.png" keywords="class add">
 				<entry /><exit />
 				<in name="element" datatype="element" />
@@ -373,15 +373,15 @@
 		</category>	
 			
 		
-		<category id="Web/Dom/Events">
+		<category name="Web/Dom/Events">
 			<datatype name="event" label="Dom Event" color="#fff" />
 			<datatype name="mouseevent" label="Dom Mouse Event Dom Event" color="#fff" inherits="event" />
 			
 			<enum color="#8000FF" inherits="core.type.enum" tooltip="Enum" label="Enum Enum" id="mouseeventenum" values="[&quot;mouseover&quot;,&quot;mousemove&quot;,&quot;mouseleave&quot;,&quot;click&quot;,&quot;wheel&quot;]">
 				<editor id="select">
-					<value id="mouseenter" />
-					<value id="mousemouse" />
-					<value id="mouseover" />
+					<value name="mouseenter" />
+					<value name="mousemouse" />
+					<value name="mouseover" />
 				</editor>
 			</enum>
 			
@@ -389,9 +389,9 @@
 			
 			<enum name="keyeventenum" color="#8000FF" inherits="core.type.enum" tooltip="Enum" label="Enum Enum">
 				<editor id="select">
-					<value id="keyup" />
-					<value id="keydown" />
-					<value id="keypress" />
+					<value name="keyup" />
+					<value name="keydown" />
+					<value name="keypress" />
 				</editor>
 			</enum>
 

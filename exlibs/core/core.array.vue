@@ -1,6 +1,6 @@
 <template>
 	<package id="core.array">
-		<category id="Utilities/Array">
+		<category name="Utilities/Array">
 			<function name="make" title="Make Array" color="#C3C3C3" symbol="exlibs/img/array.png" keywords="array create,create array,makearray,arraymake">
 				<in name="item" datatype="core.wildcards" label="Item" group="1" />
 				<out name="array" datatype="core.wildcards[]" group="1" />

@@ -1,10 +1,10 @@
 <template>
 	<package id="arduino.sdcard" symbol="exlibs/arduino/arduino.png" >
-		<category id="Arduino/SD Card">
+		<category name="Arduino/SD Card">
 			<enum name="openmode" label="Arduino SDCard OpenMode">
 				<editor id="select">
-					<value id="FILE_READ" />
-					<value id="FILE_WRITE" />
+					<value name="FILE_READ" />
+					<value name="FILE_WRITE" />
 				</editor>
 			</enum>
 			<class name="sdcard" label="Arduino SDCard object" label="Arduino SDCard">

@@ -3,14 +3,14 @@
 		<datatype name="connection" label="Arduino Serial Connection object" color="#55f" />
 		<datatype name="port" label="Arduino Serial Port Component Component" color="#ff0" />
 
-		<category id="Arduino/Serial">
+		<category name="Arduino/Serial">
 			
 			<enum name="serialConfig" label="Arduino Serial Configuration Enum">
-				<value id="SERIAL_5N1" /><value id="SERIAL_6N1" /><value id="SERIAL_7N1" /><value id="SERIAL_8N1" :default="true" /><value id="SERIAL_5N2" />
-				<value id="SERIAL_6N2" /><value id="SERIAL_7N2" /><value id="SERIAL_8N2" /><value id="SERIAL_5E1" /><value id="SERIAL_6E1" /><value id="SERIAL_7E1" />
-				<value id="SERIAL_8E1" /><value id="SERIAL_5E2" /><value id="SERIAL_6E2" /><value id="SERIAL_7E2" /><value id="SERIAL_8E2" /><value id="SERIAL_5O1" />
-				<value id="SERIAL_6O1" /><value id="SERIAL_7O1" /><value id="SERIAL_8O1" /><value id="SERIAL_5O2" /><value id="SERIAL_6O2" /><value id="SERIAL_7O2" />
-				<value id="SERIAL_8O2" />
+				<value name="SERIAL_5N1" /><value name="SERIAL_6N1" /><value name="SERIAL_7N1" /><value name="SERIAL_8N1" :default="true" /><value name="SERIAL_5N2" />
+				<value name="SERIAL_6N2" /><value name="SERIAL_7N2" /><value name="SERIAL_8N2" /><value name="SERIAL_5E1" /><value name="SERIAL_6E1" /><value name="SERIAL_7E1" />
+				<value name="SERIAL_8E1" /><value name="SERIAL_5E2" /><value name="SERIAL_6E2" /><value name="SERIAL_7E2" /><value name="SERIAL_8E2" /><value name="SERIAL_5O1" />
+				<value name="SERIAL_6O1" /><value name="SERIAL_7O1" /><value name="SERIAL_8O1" /><value name="SERIAL_5O2" /><value name="SERIAL_6O2" /><value name="SERIAL_7O2" />
+				<value name="SERIAL_8O2" />
 			</enum>
 		
 			<class name="serial" label="Arduino Serial Connection" inherits="arduino.stream.stream">

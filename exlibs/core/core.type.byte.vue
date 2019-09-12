@@ -1,6 +1,6 @@
 <template>
 	<package id="core.byte">
-		<category id="Byte">
+		<category name="Byte">
 			<function name="makeliteral" title="Make literal (Byte)" color="#aaeea0" symbol="exlibs/img/function.png" keywords="make Byte">
 				<in name="in" datatype="core.type.byte" />
 				<out name="value" datatype="core.type.byte" label="Byte" />
@@ -56,7 +56,7 @@
 			</function>
 		</category>	
 			
-		<category id="Byte/Arithmetic">
+		<category name="Byte/Arithmetic">
 			<function name="add" ctor="NodeOp" color="#555" symbol="exlibs/core/img/op.add.png" keywords="add,+" subtitle="+" title="Byte + Byte">				
 				<in name="a" datatype="core.type.byte" label=" " />
 				<in name="a[1]" datatype="core.type.byte" label=" " />
@@ -107,7 +107,7 @@
 			</function>
 		</category>
 		
-		<category id="Utilities/Flow Control">
+		<category name="Utilities/Flow Control">
 			<function name="selectByte" title="Select (Byte)" keywords="select byte" symbol="exlibs/core/img/selectint.png" color="#C3C3C3">
 				<in name="in" datatype="core.wildcards" label="in" group="1" />
 				<in name="pick" datatype="core.type.byte" />

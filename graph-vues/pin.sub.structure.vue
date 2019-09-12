@@ -1,7 +1,6 @@
 <script>
 	import ExPin from './pin.vue';
 	
-	
 	const changeDatatype = function(){
 		console.log('change datatype');
 	}
@@ -66,7 +65,7 @@
 					var clone = child.toObject();
 					clone.flags = (clone.flags || 0) + (me.isInput() ? F_INPUT : F_OUTPUT);
 					clone.name = '' + '[' + me.name + ']' + clone.name;
-					clone.label = '[' + me.cLabel + '] ' + clone.label;
+					clone.label = '[' + me.cLabel + '] ' + (clone.label || clone.name);
 					//console.log(node.outputs.indexOf(me.name)+1);
 					me.Node.storeCommit('addPin', {pos: node.outputs.indexOf(me)+1, props: clone});
 				});

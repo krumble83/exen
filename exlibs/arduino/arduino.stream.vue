@@ -1,10 +1,10 @@
 <template>
 	<package id="arduino.stream" symbol="exlibs/arduino/arduino.png">
-		<category id="Arduino/Stream">			
+		<category name="Arduino/Stream">			
 			<enum name="lookAheadMode">
-				<value id="SKIP_ALL" />
-				<value id="SKIP_NONE" />
-				<value id="SKIP_WHITESPACE" />
+				<value name="SKIP_ALL" />
+				<value name="SKIP_NONE" />
+				<value name="SKIP_WHITESPACE" />
 			</enum>
 		
 			<class name="stream" label="Arduino Stream Object">

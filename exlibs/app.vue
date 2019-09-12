@@ -1,23 +1,20 @@
 <template>
 	<package id="App">
-		<value id="defaultBpName">NewBlueprint</value>
-		<value id="defaultFunctionName">NewFunction</value>
+		<value name="defaultBpName">NewBlueprint</value>
+		<value name="defaultFunctionName">NewFunction</value>
 	</package>
 </template>
 
 <script>
 
 	import * as comps from './default.export.js';
-	
-	const splitPackageName = function(string){
-		return string.split(/\.(?=[^\.]+$)/);
-	}
+	import {splitPackageName} from '../cmon-js/utils.js';
 
 	comps.Library.mixins.push({
 		methods: {
 			getVarById: function(id, deflt){
 				var name = splitPackageName(id)
-					, el = this.$el.querySelector('package[id="' + name[0] + '"] value[id="' + name[1] + '"]');
+					, el = this.$el.querySelector('package[id="' + name.package + '"] value[name="' + name.name + '"]');
 				return el.innerText || deflt;
 			}
 		}

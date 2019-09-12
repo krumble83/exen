@@ -1,5 +1,5 @@
 
-
+import {uid} from '../../cmon-js/utils.js';
 
 import {Observable} from '../../ui-js/utils.js';
 import stateMerge from '../../cmon-js/statemerge.js'
@@ -91,36 +91,7 @@ var BluePrintFunctionModule = {
 }
 
 
-const newNode = function (){
-	return {
-		uid: uid('node'),
-		name: '',
-		flags: 0,
-		x: 200,
-		y: 200,
-		inputs: [],
-		outputs: [],
-	}
-};
 
-
-const newPin = function(){
-	return {
-		name: 'default',
-		flags: 0,
-		datatype: 'core.type.bool', 
-		optional: false,
-	}
-}
-
-function uid(prefix){
-	prefix = prefix || 'uid';
-	return prefix + 'xxxxxxxxxxxxxxxx'.replace(/./g, function(c) {
-		var r = Math.random() * 16 | 0;
-		return r.toString(16);
-	});
-}
-		
 
 
 const NodeModuleStore = function(state){
@@ -186,11 +157,11 @@ const PinModule = {
 	
 }
 
-const LinkModule = {
+const LinkModuleStore = {
 	namespaced: true,
 	mutations: {
 		add: function(state, data){
-			data.uid = data.uid || uid();
+			data.uid = data.uid || uid('link');
 			this.commit('addLink', data);
 		},
 		
@@ -223,31 +194,15 @@ const LinkModule = {
 	}
 }
 
-import img from '../../ui-img/function.png';
+import {newNode, newPin, newFunctionStore} from './defaults.js';
 import {Category, Function, In, Out} from '../../exlibs/default.export.js';
 //import EventBus from '../../cmon-js/event-bus.js'
 
 const FunctionStore = {
-	state: function(){
-		return {
-			uid: uid(),
-			datas: {
-				type: F_FUNCTION,
-				flags: F_DRAGGABLE | F_CLOSABLE,
-				panelCtor: 'functionfile',
-				symbol: img,
-				inputs: [],
-				outputs: [],
-			},
-			watchers: [],
-			library: false,
-			nodes: [],
-			links: [],
-		};
-	},
+	state: newFunctionStore,
 	
 	modules: {
-		link: LinkModule,
+		link: LinkModuleStore,
 		//node: NodeModule,
 		pin: PinModule
 	},
@@ -260,9 +215,10 @@ const FunctionStore = {
 			state.datas = data;
 			
 			var n = state.library.Library.getNodeById('core.entryPoint').toObject();
+			console.log(n);
 			n.uid = state.uid + '_entryPoint'
 			n.title = state.datas.name;
-			n.flags = F_READ_ONLY;
+			//n.flags = F_READ_ONLY;
 			n.outputs.forEach(function(i){
 				me.commit('addOutput', i);
 			});			

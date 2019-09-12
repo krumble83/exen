@@ -46,6 +46,8 @@
 
 <script>
 
+	import {splitCamelCase} from '../cmon-js/utils.js';
+
 	import {SvgBase} from './mixins.js'
 	import {PinContextMenu} from './contextmenu.js';
 	import PinDrawLink from './pin.link.draw.vue';
@@ -57,7 +59,7 @@
 	import PinEditorInput from './pin.editor.input.vue';
 	
 	export default {
-		inject: ['Worksheet', 'Node', 'addSvgDef', 'camelCaseToLabel', 'Library'],
+		inject: ['Worksheet', 'Node', 'addSvgDef', 'Library'],
 		mixins: [SvgBase, PinContextMenu, PinDrawLink],
 		components: {PinBase, PinExec, PinAdd, PinEditorInput},
 		
@@ -98,7 +100,7 @@
 			cLabel: function(){
 				if(this.name.startsWith('@'))
 					return '';
-				return this.camelCaseToLabel(this.mLabel) || this.camelCaseToLabel(this.name)
+				return splitCamelCase(this.mLabel || this.name);
 			},
 			
 			cPinCtor: function(){

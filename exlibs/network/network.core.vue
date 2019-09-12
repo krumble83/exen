@@ -1,6 +1,6 @@
 <template>
 	<package id="network.core">
-		<category id="Network">
+		<category name="Network">
 			<function name="ipmake" title="Make IP Address Structure" keywords="make IP Address Structure" symbol="lib/core/img/make.png" color="#00f">
 				<in name="ip-a" datatype="core.type.int" label="A" />
 				<in name="ip-b" datatype="core.type.int" label="B" />

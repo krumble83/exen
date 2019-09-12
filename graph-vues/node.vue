@@ -33,7 +33,7 @@
 		
 		<g ref="inputsGroup" class="inputs" :transform="subtitle ? 'translate(0,45)' : title ? 'translate(0,29)' : ''">
 			<slot name="inputs">
-				<component v-for="(pin, idx) in cInputs" :key="pin.id" 
+				<component v-for="(pin, idx) in cInputs" :key="idx" 
 					class="input"
 					:is="pin.ctor ? pin.ctor : getCtor(pin.datatype) || 'ExPin'" 
 					:maxlink="pin.maxlink ? pin.maxlink : 1"
@@ -46,7 +46,7 @@
 		
 		<g ref="outputsGroup" class="outputs" :transform="'translate(' + outputsGroupPos.x + ',' + (subtitle ? 45 : 29) + ')'">
 			<slot name="outputs">	
-				<component v-for="(pin, idx) in cOutputs" :key="pin.id" 
+				<component v-for="(pin, idx) in cOutputs" :key="idx" 
 					class="output"
 					:is="pin.ctor ? pin.ctor : getCtor(pin.datatype) || 'ExPin'" 
 					:maxlink="pin.maxlink ? pin.maxlink : -1"
@@ -72,6 +72,7 @@
 
 <script>
 
+	import {splitCamelCase} from '../cmon-js/utils.js';
 
 	import Color from './color.js';
 	import {SvgBase} from './mixins.js'
@@ -88,7 +89,7 @@
 	const ctorCache = {};
 	
 	export default {
-		inject: ['Worksheet', 'addSvgDef', 'camelCaseToLabel', 'Store'],
+		inject: ['Worksheet', 'addSvgDef', 'Store'],
 		mixins: [SvgBase, NodeSelectable, NodeContextMenu, NodeDraggable, WorksheetHelpers],
 		//mixins: [SvgBase, NodeSelectable, NodeDraggable, NodeGrid, ContextMenu],
 		components: {ExPin, PinAdd, PinStructure, PinWildcards},
@@ -112,7 +113,7 @@
 		},
 		
 		computed: {
-			cTitle: function(){return this.camelCaseToLabel(this.title || this.name)},
+			cTitle: function(){return splitCamelCase(this.title || this.name)},
 			cInputs: function(){
 				if(this.mExpanded)
 					return this.inputs;

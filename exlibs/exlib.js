@@ -1,9 +1,24 @@
 Vue.config.ignoredElements = [];
 
-const SplitPackageName = {
-	methods : {
-		splitPackageName: function(string){
-			return string.split(/\.(?=[^\.]+$)/);
+import {splitPackageName,splitCamelCase} from '../cmon-js/utils.js';
+
+
+const PropName = {
+	inject: ['Package'],
+	
+	props: {
+		name: {type: String, required: true},
+	},
+
+	data: function(){
+		return {
+			_name: this.$props.name,
+		}
+	},
+	
+	computed: {
+		fullPath: function(){
+			return this.Package.id + '.' + this.$props.name;
 		}
 	}
 }
@@ -12,7 +27,7 @@ export const Base = {
 	//components: {},
 	mixins: [],
 	props: {
-		id: {type: String, required: false},
+		//id: {type: String, required: false},
 		__ctor: {type: String, default: 'base'},
 		childs: {type: Array, default: function(){return []}},
 		inherits: {type: Array, default: function(){return []}},
@@ -39,18 +54,25 @@ export const Base = {
 					ret[key] = this.$props[key];
 			}
 			
+			
 			for (var key in this.$data) {
 				if (!this.$data.hasOwnProperty(key))
 					continue;
 
 				if(key.startsWith('__')) 
 					continue;
-				if(key.startsWith('_'))
+				if(key.startsWith('_')){
 					ret[key.slice(1)] = this.$data[key];
-				else
-					ret[key] = this.$props[key];
+				}
 			}
+			
 			return ret;
+		},
+		
+		fullPath: function(){
+			if(this.Package)
+				return this.Package.fullPath + '.' + this.id;
+			return this.id;
 		},
 		
 		fullpath: function(){
@@ -163,17 +185,11 @@ export const Base = {
 	template: 	'<component :is="__ctor" v-bind="properties">{{value}}<component v-for="child in childs" v-bind:key="child.id" :is="child.__ctor" v-bind="child" /><slot /></component>',
 }
 
-/*
-function test(){
-	return (new DOMParser()).parseFromString("<library/>", 'text/xml');
-}
-*/
-
 
 
 export const Node = {
 	extends: Base,
-	mixins: [],
+	mixins: [PropName],
 	inject: {
 		Library: {default: false},
 		Package: {default: false},
@@ -187,7 +203,7 @@ export const Node = {
 		subtitle: String,
 		keywords: String,
 		description: String,
-		flags: Number,
+		flags: {type: [String, Number], default: 0},
 		color: {type: String, default: function(){return this.Category ? this.Category.color : this.Package.symbol || '#f00'}},
 		symbol: {type: String, default: function(){return this.Category ? this.Category.symbol : this.Package.symbol || 'exlibs/img/function.png'}},
 		x: Number,
@@ -198,6 +214,8 @@ export const Node = {
 		return {
 			_symbol: this.symbol,
 			_title: this.title,
+			_flags: (typeof this.flags == 'string') ? eval(this.flags) : this.flags,
+			_id: this.Package.fullpath + '.' + this.$props.name,
 		}
 	},
 	
@@ -220,7 +238,7 @@ Vue.config.ignoredElements.push('node');
 //Extend(Node, 'Category');
 
 
-
+/*
 export const Pattern = {
 	extends: Base,
 	mixins: [],
@@ -232,16 +250,17 @@ export const Pattern = {
 	}
 }
 Vue.config.ignoredElements.push('pattern');
-
+*/
 export const Value = {
 	extends: Base,
-	mixins: [],
+	mixins: [PropName],
 	
 	props: {
 		__ctor: {type: String, default: 'value'},
 		default: {type: Boolean, default: false},
 		value: Number,
 	},
+	
 }
 Vue.config.ignoredElements.push('value');
 
@@ -265,16 +284,16 @@ Vue.config.ignoredElements.push('editor');
 export const Pin = {
 	extends: Base,
 	components: {Editor},
-	mixins: [],
+	mixins: [PropName],
 	inject: ['Library', 'Package'],
 	
 	props: {
 		__ctor: {type: String, default: 'pin'},
-		name: {type: String, required: true},
 		isio: {type: Boolean, default: true},
 		isarray: {type: Boolean, default: false},
 		optional: Boolean,
 		label: String,
+		flags: {type: [String, Number], default: 0},
 		ctor: String,
 		pinctor: String,
 		datatype: {type: String, required: true},
@@ -289,7 +308,8 @@ export const Pin = {
 	data: function(){
 		return {
 			_required: this.required,
-			_name: this.$props.name,
+			_flags: (typeof this.flags == 'string') ? eval(this.flags) : this.flags,
+			_id: this.Package.id + '.' + this.$props.name,
 		}
 	},
 	
@@ -307,9 +327,15 @@ export const In = {
 	
 	props: {
 		__ctor: {type: String, default: 'in'},
-		flags: {type: Number, default: F_INPUT},
+		flags: {type: [String, Number], default: F_INPUT},
 		maxlink: {type: Number, default: 1},
-	}
+	},
+	
+	data: function(){
+		return  {
+			_flags: ((typeof this.flags == 'string') ? eval(this.flags) : this.flags) | F_INPUT,
+		}
+	},
 }
 Vue.config.ignoredElements.push('in');
 
@@ -319,7 +345,13 @@ export const Out = {
 	
 	props: {
 		__ctor: {type: String, default: 'out'},
-		flags: {type: Number, default: F_OUTPUT},
+		flags: {type: [String, Number], default: F_OUTPUT},
+	},
+	
+	data: function(){
+		return  {
+			_flags: ((typeof this.flags == 'string') ? eval(this.flags) : this.flags) | F_OUTPUT,
+		}
 	},
 }
 Vue.config.ignoredElements.push('out');
@@ -355,17 +387,8 @@ export const Function = {
 	
 	props: {
 		__ctor: {type: String, default: 'function'},
-		name: {type: String, required: true},
 		isfunction: {type: Boolean, default: true},
 		private:  {type: Boolean, default: false},
-	},
-	
-	data: function(){
-		//console.log(this.name);
-		return {
-			_id: this.Package.fullpath + '.' + this.$props.name,
-			_name: this.$props.name,
-		}
 	},
 }
 Vue.config.ignoredElements.push('function');
@@ -376,7 +399,7 @@ Vue.config.ignoredElements.push('function');
 export const Datatype = {
 	extends: Base,
 	components: {Editor},
-	mixins: [],
+	mixins: [PropName],
 	inject: {
 		Library: 'Library',
 		Package: 'Package',
@@ -389,8 +412,6 @@ export const Datatype = {
 	
 	props: {
 		__ctor: {type: String, default: 'datatype'},
-		name: {type: String, required: true},
-		//id: {type: String, default: function(){console.log(this._id); return 'zz'}},
 		label: String,
 		description: String,
 		private: {type: Boolean, default: false},
@@ -401,11 +422,21 @@ export const Datatype = {
 		isdatatype: {type: Boolean, default: true},
 	},
 	
+	computed: {
+		fullPath: function(){
+			return this.Package.fullPath + '.' + this.$props.name;
+		}
+	},
+	
 	data: function(){
-		//console.log(this.name);
 		return {
-			_id: this.Package.fullpath + '.' + this.$props.name,
-			_name: this.$props.name,
+			_id: this.Package.id + '.' + this.$props.name,
+			_inherits: this.inherits ? this.Package.id + '.' + this.$props.name + ' ' + this.inherits : undefined,
+			_color: this.color,
+			_ctor: this.ctor,
+			_pinctor: this.pinctor,
+			_label: this.label,
+			_description: this.description,
 		}
 	},
 	
@@ -417,7 +448,22 @@ export const Datatype = {
 		
 		_parseInherits: function(){
 			const me = this;
-	
+			
+			if(!me.inherits)
+				return;
+
+
+			const inherits = me.inherits.split(' ');
+			var base = me.Library.getDatatype(inherits[0]);
+			console.assert(base);
+			const exp = base.toObject(null, true);
+			
+			for (var key in exp) {
+				if (!exp.hasOwnProperty(key) || ['isdatatype', 'inherits', '__ctor'].indexOf(key) > -1)
+					continue;
+				if(typeof me[key] == 'undefined')
+					me['_' + key] = exp[key];
+			}
 		},
 		
 		Color: function(){
@@ -509,9 +555,23 @@ export const Method = {
 	
 	props: {
 		__ctor: {type: String, default: 'method'},
-		subtitle: {type: String, default: function(){ return 'Target is ' + this.$parent.id}},
+		subtitle: {type: String, default: function(){ return 'Target is ' + splitCamelCase(this.$parent.$props.name)}},
 		color: {type: String, default: function(){return this.Class.color}},
 		childs: {type: Array, default: function(){return [{__ctor: 'in', name: 'target', datatype: this.$parent.$props.name}]}},
+		overide: String,
+		overload: String,
+	},
+	
+	computed: {
+		fullPath: function(){
+			return this.Class.fullPath + '.' + this.$props.name;
+		}
+	},
+	
+	data: function(){
+		return {
+			_id: this.Package.fullpath + '.' + this.$props.name + '@' + this.Class.$props.name,
+		}
 	},
 }
 Vue.config.ignoredElements.push('method');
@@ -563,7 +623,7 @@ export const Class = {
 	
 	data: function(){
 		return {
-			_inherits: this.inherits ? this.Package.id + '.' + this.id + ' ' + this.inherits : undefined,
+			//_inherits: this.inherits ? this.Package.id + '.' + this.$props.name + ' ' + this.inherits : undefined,
 		}
 	},
 	
@@ -578,19 +638,16 @@ export const Class = {
 			console.assert(base);
 
 			const exp = base.toObject(null, true);
-			//console.log(exp);
 			console.log(me);
 			exp.childs.forEach(function(child){
-				//if(child.derived)
-				//	return;
 				if(child.__ctor == 'method'){
 					//child.derived = true;
-					child.subtitle = 'Target is ' + me.name;
-					child.childs.find(it => it.name == 'target').datatype = me._data._id;
+					child.id = me.Package.fullPath + '.' + child.name + '@' + me.$props.name;
+					//child.subtitle = 'Target is ' + splitCamelCase(me.name);
+					//child.childs.find(it => it.name == 'target').datatype = me._data._id;
 				}
 				me.childs.unshift(child);
 			});
-			//console.log('base', exp);
 		},
 		
 		_isOverload: function(src){
@@ -681,7 +738,7 @@ export const Category = {
 		Library: {default: false},
 		Package: {default: false},
 	},
-	mixins: [],
+	mixins: [PropName],
 	
 	provide: function(){
 		const me = this;
@@ -698,7 +755,7 @@ export const Category = {
 	
 	computed: {
 		fullPath: function(){
-			var ret = this.id
+			var ret = this.$props.name
 				, parent = this.$parent;
 				
 			while(parent && parent.$el.tagName != 'PACKAGE'){
@@ -720,6 +777,7 @@ export const Package = {
 	mixins: [],
 	props: {
 		__ctor: {type: String, default: 'package'},
+		id: {type: String, required: true},
 		//categories: {type: Array, default: function(){return []}},
 		label: String,
 		color:  {type: String, default: '#f00'},
@@ -742,17 +800,25 @@ Vue.config.ignoredElements.push('package');
 export const Library = {
 	extends: Base,
 	components: {Package},
-	mixins: [SplitPackageName],
+	mixins: [],
 	props: {
 		__ctor: {type: String, default: 'library'},
 		id: {type: String, default: ''},
 	},
+	
+	computed: {
+		fullPath: function(){
+			return this.id;
+		}
+	},
+	
 	provide: function(){
 		const me = this;
 		return {
 			Library: me,
 		}
 	},
+	
 	methods: {
 
 		createQuery: function(){
@@ -774,8 +840,8 @@ export const Library = {
 		},
 		
 		getHardware: function(id){
-			var name = me.splitPackageName(id);
-			return me.$el.querySelector('package[id="' + name[0] + '"] hardware[id="' + name[1] + '"]').__vue__;
+			var name = splitPackageName(id);
+			return me.$el.querySelector('package[id="' + name.package + '"] hardware[id="' + name.name + '"]').__vue__;
 		},
 		
 		getNodesByQuery: function(query){
@@ -806,6 +872,8 @@ export const Library = {
 				var dtype = me.getDatatype(query.inputDatatype)
 					, dtypeid = me.isArrayDatatype(query.inputDatatype) ? dtype.id + '[]' : dtype.id
 					, pack = dtype.Package;
+					
+				console.log(dtype, dtypeid, pack);
 					
 				ret = ret.filter(function(it){
 					if(it.querySelector('out[datatype="' + pack.id + '.' + dtypeid + '"], out[datatype="' + me.getWildcardsDatatype(me.isArrayDatatype(query.inputDatatype)) + '"]'))
@@ -843,7 +911,7 @@ export const Library = {
 			if(!id)
 				return this.$el.querySelectorAll('[isdatatype="true"]:not([private="true"])');
 			id = id.replace('[]', '');
-			var name = this.splitPackageName(id);
+			//var name = splitPackageName(id);
 			//console.log(id, name, 'package[id="' + name[0] + '"] [isdatatype="true"][id="' + name[1] + '"]');
 			return this.$el.querySelector('[isdatatype="true"][id="' + id + '"]').__vue__;
 		},

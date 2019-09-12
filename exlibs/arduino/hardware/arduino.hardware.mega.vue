@@ -17,7 +17,7 @@
 			<provide device="arduino.io.twi" />
 			<provide device="arduino.io.i2c" />
 			
-			<category id="Serial Ports">
+			<category name="Serial Ports">
 				<device id="serial" label="Serial Port">
 					<require device="di0" />
 					<require device="di1" />
@@ -43,7 +43,7 @@
 					<require device="do15" />
 				</device>
 			</category>
-			<category id="Digital Inputs">
+			<category name="Digital Inputs">
 				<device id="di0" label="Digital Input D0">
 					<require device="do0" />
 				</device>
@@ -207,7 +207,7 @@
 					<require device="do53" />
 				</device>
 			</category>
-			<category id="Digital Outputs">
+			<category name="Digital Outputs">
 				<device id="do0" label="Digital Output D0">
 					<require device="di0" />
 				</device>
@@ -371,7 +371,7 @@
 					<require device="di53" />
 				</device>
 			</category>
-			<category id="Analog Inputs">
+			<category name="Analog Inputs">
 				<device id="a0" label="Analog Input A0" />
 				<device id="a1" label="Analog Input A1" />
 				<device id="a2" label="Analog Input A2" />
@@ -389,7 +389,7 @@
 				<device id="a14" label="Analog Input A14" />
 				<device id="a15" label="Analog Input A15" />
 			</category>
-			<category id="Pulse Width Modulation (PWM)">
+			<category name="Pulse Width Modulation (PWM)">
 				<device id="pwm2" label="PWM Output on D2">
 					<require device="di2" />
 					<require device="do2" />
@@ -451,7 +451,7 @@
 					<require device="do46" />
 				</device>
 			</category>
-			<category id="Other Ports">
+			<category name="Other Ports">
 				<device id="spi0" label="SPI Port">
 					<require device="di50" />
 					<require device="do50" />

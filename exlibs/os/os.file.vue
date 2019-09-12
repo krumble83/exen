@@ -1,6 +1,6 @@
 <template>
 	<package id="os.file">
-		<category id="Operating System/Files">
+		<category name="Operating System/Files">
 			<class name="fileObject" label="File Object" >
 				<method name="name" title="File.name()">
 					<in name="target" datatype="fileObject" :flags="4194304" />

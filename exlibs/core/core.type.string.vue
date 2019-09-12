@@ -1,6 +1,6 @@
 <template>
 	<package id="core.string">
-		<category id="String">
+		<category name="String">
 			<function name="makeliteral" title="Make literal (String )" color="#aaeea0" symbol="exlibs/img/function.png" keywords="make String ">
 				<in name="in" datatype="core.type.string" />
 				<out name="value" datatype="core.type.string" label="String " />

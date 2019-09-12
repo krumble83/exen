@@ -1,6 +1,6 @@
 <template>
 	<package id="arduino.eeprom" color="#9c39da" symbol="exlibs/arduino/arduino.png">
-		<category id="Arduino/EEPROM">
+		<category name="Arduino/EEPROM">
 			<function name="read" title="EEPROM.read()" keywords="eeprom read" tooltip="Reads a byte from the EEPROM. Locations that have never been written to have the value of 255.">
 				<in name="address" datatype="core.type.int" tooltip="the location to read from, starting from 0 (int)" />
 				<out name="value" datatype="core.type.byte" tooltip="the value stored in that location (byte)" />

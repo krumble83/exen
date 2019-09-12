@@ -2,12 +2,12 @@
 	<package id="arduino.io.digital" color="#87663f" symbol="exlibs/arduino/arduino.png">
 		<datatype name="dpin" label="Arduino Digital Pin Component" color="#ff0" />
 		<enum name="pinmode" label="Arduino Digital Pin Mode Enum">
-			<value id="INPUT" />
-			<value id="OUTPUT" />
-			<value id="INPUT_PULLUP" />
+			<value name="INPUT" />
+			<value name="OUTPUT" />
+			<value name="INPUT_PULLUP" />
 		</enum>
 
-		<category id="Arduino/Digital IO Pin">
+		<category name="Arduino/Digital IO Pin">
 			<function name="pinMode" title="pinMode" keywords="arduino pinmode pin mode">
 				<entry /><exit />
 				<in name="pin" datatype="dpin" label="Digital Pin" />

@@ -1,6 +1,6 @@
 <template>
    <package id="core.float">
-		<category id="Float">
+		<category name="Float">
 			<function name="makeliteral" title="Make literal (Float )" color="#aaeea0" symbol="exlibs/img/function.png" keywords="make Float ">
 				<in name="in" datatype="core.type.float" />
 				<out name="value" datatype="core.type.float" label="Float " />
@@ -34,7 +34,7 @@
 			</function>
 		</category>
 		
-		<category id="Float/Arithmetic">	  
+		<category name="Float/Arithmetic">	  
 			<function name="add" ctor="NodeOp" color="#555" symbol="exlibs/core/img/op.add.png" keywords="add,+" subtitle="+" title="Float + Float">
 				<in name="a" datatype="core.type.float" label=" " />
 				<in name="b" datatype="core.type.float" label=" " />
@@ -60,7 +60,7 @@
 			</function>
 		</category>
 		
-		<category id="Float/Comparators">  
+		<category name="Float/Comparators">  
 			<function name="eq" ctor="NodeOp" color="#555" symbol="exlibs/core/img/op.eq.png" keywords="==,equal" subtitle="==" title="Float == Float (equal)">
 				<in name="a" datatype="core.type.float" />
 				<in name="b" datatype="core.type.float" />

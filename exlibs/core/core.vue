@@ -8,7 +8,7 @@
 		
 		<datatype name="scalar" label="Scalar Value" color="fff" />
 		
-		<function name="entryPoint" :private="true" ctor="NodeEntrypoint" symbol="exlibs/img/start.png"	color="#7f2197">
+		<function name="entryPoint" :private="true" ctor="NodeEntrypoint" symbol="exlibs/img/start.png"	color="#7f2197" flags="F_READ_ONLY|F_NO_CLIPBOARD">
 			<exit />
 		</function>
 		

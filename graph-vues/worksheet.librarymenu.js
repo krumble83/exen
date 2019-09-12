@@ -29,7 +29,7 @@ export default {
 
 
 			const createNode = function(item){
-				//console.log('cliiiiick', item);
+				console.log('cliiiiick', item);
 				const lnode = this.Library.getNodeById(item.getAttribute('data-id'))
 					, newNode = lnode ? lnode.toObject() : false;
 				

@@ -27,7 +27,7 @@ export const NodeContextMenu = {
 			instance.addItem({id: 'delete', title: 'Delete', desc: 'Delete this Node', callback: function(){
 				me.remove();
 			}});
-			instance.addItem({id: 'duplicate', title: 'Duplicate', desc: 'Duplicate this Node'});
+			instance.addItem({id: 'duplicate', title: 'Duplicate', desc: 'Duplicate this Node', disabled: me.$hasFlag(F_NO_CLIPBOARD)});
 			instance.addSeparator();
 			instance.addItem({id: 'cut', title: 'Cut'});
 			instance.addItem({id: 'copy', title: 'Copy'});

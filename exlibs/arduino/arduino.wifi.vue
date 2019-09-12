@@ -1,16 +1,16 @@
 <template>
 	<package id="arduino.wifi" symbol="exlibs/arduino/arduino.png" >
-		<category id="Arduino/WiFi">
+		<category name="Arduino/WiFi">
 			<enum name="status" label="Arduino Wifi Status Enum">
 				<editor id="select">
-					<value id="WL_CONNECTED" />
-					<value id="WL_NO_SHIELD" />
-					<value id="WL_IDLE_STATUS" />
-					<value id="WL_NO_SSID_AVAIL" />
-					<value id="WL_SCAN_COMPLETED" />
-					<value id="WL_CONNECT_FAILED" />
-					<value id="WL_CONNECTION_LOST" />
-					<value id="WL_DISCONNECTED" />
+					<value name="WL_CONNECTED" />
+					<value name="WL_NO_SHIELD" />
+					<value name="WL_IDLE_STATUS" />
+					<value name="WL_NO_SSID_AVAIL" />
+					<value name="WL_SCAN_COMPLETED" />
+					<value name="WL_CONNECT_FAILED" />
+					<value name="WL_CONNECTION_LOST" />
+					<value name="WL_DISCONNECTED" />
 				</editor>
 			</enum>
 			<class name="Connection" label="Arduino WiFi Network Object">

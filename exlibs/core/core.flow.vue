@@ -1,6 +1,6 @@
 <template>
     <package id="core.flow">
-		<category id="Utilities/Flow Control">
+		<category name="Utilities/Flow Control">
 			<function name="if" title="If (Condition)" color="#C3C3C3" keywords="if,branch,condition" symbol="exlibs/core/img/if.png">
 				<entry />
 				<in name="condition" datatype="core.type.bool" />

@@ -12,7 +12,7 @@ var module = {
 			store.commit('setData', data);
 			var d = store.getters.Data;
 
-			var cat = this.getters.Library.Category(d.name);
+			var cat = this.getters.Library.Category({name: d.name});
 			store.commit('setLibrary', cat);
 
 			d.store = store;			

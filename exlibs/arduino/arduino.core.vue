@@ -1,6 +1,6 @@
 <template>
 	<package id="arduino.core" symbol="exlibs/arduino/arduino.png" color="#87663f" >
-		<category id="Arduino">
+		<category name="Arduino">
 			<function name="freememory" title="freeMemory()" keywords="free memory" tooltip="Get Arduino Free RAM">
 				<out name="freemem" datatype="core.type.int" label="Free Memory" />
 			</function>

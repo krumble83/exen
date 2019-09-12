@@ -1,6 +1,6 @@
 <template>
 	<package id="core.int">
-		<category id="Integer">
+		<category name="Integer">
 			<function name="makeliteral" title="Make literal (Integer )" color="#aaeea0" symbol="exlibs/img/function.png" keywords="make Integer">
 				<in name="in" datatype="core.type.int" />
 				<out name="value" datatype="core.type.int" label="Integer" />
@@ -35,7 +35,7 @@
 		</category>
 		
 
-		<category id="Integer/Bitwise Operators">
+		<category name="Integer/Bitwise Operators">
 			<function name="not" ctor="NodeOp" color="#555" symbol="exlibs/core/img/op.not.png" keywords="not,!" subtitle="NOT" title="Int NOT Int">	
 				<in name="a" datatype="core.type.int" label=" " />
 				<out name="output" datatype="core.type.int" />
@@ -73,7 +73,7 @@
 		</category>
 		
 
-		<category id="Integer/Arithmetic">
+		<category name="Integer/Arithmetic">
 			<function name="add" ctor="NodeOp" color="#555" symbol="exlibs/core/img/op.add.png" keywords="add,+" subtitle="+" title="Int + Int" pos="900,450">	
 				<in name="a" datatype="core.type.int" label=" " />
 				<in name="b" datatype="core.type.int" label=" " />
@@ -100,7 +100,7 @@
 		</category>
 		
 
-		<category id="Integer/Comparators">
+		<category name="Integer/Comparators">
 			<function name="eq" ctor="NodeOp" color="#555" symbol="exlibs/core/img/op.eq.png" keywords="==,equal" subtitle="==" title="Int == Int (equal)">	
 				<in name="a" datatype="core.type.int" />
 				<in name="b" datatype="core.type.int" />
@@ -133,7 +133,7 @@
 			</function>
 		</category>
 		
-		<category id="Utilities/Flow Control">
+		<category name="Utilities/Flow Control">
 			<function name="selectInt" title="Select (Int)" keywords="select int" symbol="exlibs/core/img/selectint.png" color="#C3C3C3">
 				<in name="in" datatype="core.wildcards" label="in" group="1" />
 				<in name="pick" datatype="core.type.int" />

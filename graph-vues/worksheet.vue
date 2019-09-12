@@ -41,7 +41,7 @@
 			</g>
 
 			<g class="exNodes" ref="nodesEl">
-				<component v-for="node in nodes" :key="node.id" 
+				<component v-for="(node, idx) in nodes" :key="idx" 
 					:is="node.ctor ? node.ctor : 'ExNode'"
 					ref="nodes"
 					class="exNode"
@@ -94,17 +94,6 @@
 				addSvgDef: function(data){me.addDef(data)},
 				Worksheet: me,
 				Store: me.store,
-				camelCaseToLabel: function(str){
-					if(!str)
-						return '';
-					return str
-						// insert a space between lower & upper
-						.replace(/([a-z])([A-Z])/g, '$1 $2')
-						// space before last upper in a sequence followed by lower
-						.replace(/\b([A-Z]+)([A-Z])([a-z])/, '$1 $2$3')
-						// uppercase the first character
-						.replace(/^./, function(str){ return str.toUpperCase(); })
-				},
 			}
 		},
 		

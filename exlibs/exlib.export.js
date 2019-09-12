@@ -1,28 +1,28 @@
 
-import {Datatype, Class, Function, In, Out, Entry, Exit, Member} from './default.export.js';
+import {Datatype, Class, Function, In, Out, Entry, Exit, Member, Editor} from './default.export.js';
 
 
 Function.mixins.push({
 	methods: {
 		toObject: function(parent, full){
-			const me = this
-				, exp = ['id', 'title', 'subtitle', 'flags', 'color', 'symbol', 'x', 'y', 'ctor', 'name'];
+			const me = this;
+				//, exp = ['id', 'title', 'subtitle', 'flags', 'color', 'symbol', 'x', 'y', 'ctor', 'name']
+			
 			parent = parent || {};
-			//parent.name = this.fullpath;
-			
-			exp.forEach(function (id){
-				if(me[id] != undefined)
-					parent[id] = me[id];
-			});
-			
+			parent.name = me.$props.name;
+
+			for (var key in me.properties) {
+				if (!me.properties.hasOwnProperty(key) || key == 'name')
+					continue;
+				parent[key] = me.properties[key];
+			}
 			if(full){
 				parent.__ctor = me.__ctor;
-				parent._name = me.$props.name;
 				parent.childs = parent.childs || [];
 			}
 			else {
 				parent.outputs = [];
-				parent.outputs = [];				
+				parent.inputs = [];				
 			}
 			
 			this.$children.forEach(function(it){
@@ -39,25 +39,26 @@ In.mixins.push({
 	methods: {
 		toObject: function(parent, full){
 			const me = this
-				, exp = ['label', 'description', 'flags', 'color', 'datatype', 'ctor', 'pinctor', 'optional', 'isarray', 'group', 'target', 'maxlink']
-				, ret = {name: me.$props.name || me.id}
+				, ret = {name: me.$props.name};
 
-			exp.forEach(function (id){
-				if(id == 'datatype' && (me[id].indexOf('.') == -1)){
-					//console.log(me.Package.fullpath + '.' + me[id]);
-					ret[id] = me.Package.fullpath + '.' + me[id];
-					return;
+			for (var key in me.properties) {
+				if (!me.properties.hasOwnProperty(key) || key == 'name')
+					continue;
+				if(key == 'datatype' && (me.properties[key].indexOf('.') == -1)){
+					//console.log(me.$parent.fullPath, me.properties[key]);
+					if(me.Class)
+						ret[key] = me.Class.fullPath + '.' + me.properties[key];
+					else
+						ret[key] = me.Package.fullPath + '.' + me.properties[key];
 				}
-				if(me.$props[id] != undefined)
-					ret[id] = me.$props[id];
-			});
+				else
+					ret[key] = me.properties[key];
+			}
 
 			if(full){
 				ret.__ctor = me.__ctor;
-				//ret.id = me.id;
-				//ret.name = me.$props.name;
 			}
-			//console.log(ret);
+
 			if(parent && full){
 				parent.childs = parent.childs || [];
 				parent.childs.push(ret);				
@@ -76,21 +77,24 @@ Out.mixins.push({
 	methods: {
 		toObject: function(parent, full){
 			const me = this
-				, exp = ['name', 'label', 'description', 'flags', 'color', 'datatype', 'ctor', 'pinctor', 'optional', 'isarray', 'group', 'target', 'maxlink']
-				, ret = {name: me.$props.name || me.id}
+				, ret = {name: me.$props.name};
 
-			exp.forEach(function (id){
-				if(id == 'datatype' && (me[id].indexOf('.') == -1)){
-					ret[id] = me.Package.fullpath + '.' + me[id];
-					return;
+
+			for (var key in me.properties) {
+				if (!me.properties.hasOwnProperty(key) || key == 'name')
+					continue;
+				if(key == 'datatype' && (me.properties[key].indexOf('.') == -1)){
+					if(me.Class)
+						ret[key] = me.Class.fullPath + '.' + me.properties[key];
+					else
+						ret[key] = me.Package.fullPath + '.' + me.properties[key];
 				}
-				if(me[id] != undefined)
-					ret[id] = me[id];
-			});
-			
+				else
+					ret[key] = me.properties[key];
+			}
+
 			if(full){
 				ret.__ctor = me.__ctor;
-				ret.id = me.id;
 			}
 			
 			if(parent && full){
@@ -146,20 +150,53 @@ Exit.mixins.push({
 
 Datatype.mixins.push({
 	methods: {
-		toObject: function(parent){
+		toObject: function(parent, full){
 			const me = this
-				, exp = ['id', 'name', 'label', 'description', 'flags', 'private', 'ctor', 'pinctor', 'color', 'inherits']
-				, ret = {name: me.$props.name}
+				, ret = {name: me.$props.name};
 
-			exp.forEach(function (id){
-				if(me[id] != undefined)
-					ret[id] = me[id];
+			console.log('zzzzz', me.$props.name);
+
+			for (var key in me.properties) {
+				if (!me.properties.hasOwnProperty(key) || key == 'name')
+					continue;
+				ret[key] = me.properties[key];
+			}
+
+			if(full){
+				ret.__ctor = me.__ctor;
+				ret.childs = ret.childs || [];
+			}
+
+			if(parent && full){
+				parent.childs = parent.childs || [];
+				parent.childs.push(ret);				
+			}
+
+			me.$children.forEach(function(it){
+				if(!it.toObject)
+					return;
+				
+				if(full)
+					ret.childs.push(it.toObject(null, full));
 			});
-			
+
 			return ret;
 		}
 	}
 });
+
+
+Editor.mixins.push({
+	methods: {
+		toObject: function(parent, full){			
+			const me = this
+				, ret = {name: me.$props.name};
+				
+			return ret;
+		}
+	}
+});
+
 
 Class.mixins.push({
 	methods: {
@@ -168,6 +205,9 @@ Class.mixins.push({
 				, exp = ['symbol']
 				, ret = Datatype.mixins.find(it => it.methods && it.methods.toObject).methods.toObject.call(this, null, full);
 			
+			console.log('zzzzz2', me.$props.name);
+			
+			/*
 			ret.name = me.name;
 			ret.childs = ret.childs || [];
 			exp.forEach(function (id){
@@ -187,7 +227,7 @@ Class.mixins.push({
 				if(full)
 					ret.childs.push(it.toObject(null, full));
 			});
-
+			*/
 			return ret;
 		}
 	}

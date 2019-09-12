@@ -7,15 +7,15 @@
 		
 		<datatype name="int" label="Integer" color="#1edfab" tooltip="Any non floating number">
 			<editor id="input" ctor="input">
-				<value id="pattern">/^[+-]?\d+(\.\d+)?$/</value>
-				<value id="default">0</value>
+				<value name="pattern">/^[+-]?\d+(\.\d+)?$/</value>
+				<value name="default">0</value>
 			</editor>
 		</datatype>
 		
 		<datatype name="float" label="Float" color="#9FFF44" tooltip="Any floating number">
 			<editor id="input" ctor="input">
-				<value id="pattern">/^[+-]?\d+$/</value>
-				<value id="default">0</value>
+				<value name="pattern">/^[+-]?\d+$/</value>
+				<value name="default">0</value>
 			</editor>
 		</datatype>
 		

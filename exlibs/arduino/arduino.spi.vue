@@ -1,21 +1,21 @@
 <template>
 	<package id="arduino.spi" color="#87663f" symbol="exlibs/arduino/arduino.png" >
 		<enum name="dataorder" label="Arduino SPI Data Order Enum">
-			<value id="MSBFIRST" />
-			<value id="LSBFIRST" />
+			<value name="MSBFIRST" />
+			<value name="LSBFIRST" />
 		</enum>
 		<enum name="datamode" color="#8000FF" label="Arduino SPI Data Mode Enum">
-			<value id="SPI_MODE0" />
-			<value id="SPI_MODE1" />
-			<value id="SPI_MODE2" />
-			<value id="SPI_MODE3" />
+			<value name="SPI_MODE0" />
+			<value name="SPI_MODE1" />
+			<value name="SPI_MODE2" />
+			<value name="SPI_MODE3" />
 		</enum>
 		<enum name="interruptmode" color="#8000FF" label="Arduino SPI Interrupt Mode Enum">
-			<value id="LOW" />
-			<value id="CHANGE" />
-			<value id="RISING" />
-			<value id="FALLING" />
-			<value id="HIGH" />
+			<value name="LOW" />
+			<value name="CHANGE" />
+			<value name="RISING" />
+			<value name="FALLING" />
+			<value name="HIGH" />
 		</enum>
 
 		<structure name="setting" label="Arduino SPI Setting Structure">
@@ -24,7 +24,7 @@
 			<member id="dataMode" datatype="arduino.spi.datamode" label="SPI DataMode" />
 		</structure>
 
-		<category id="Arduino/SPI">
+		<category name="Arduino/SPI">
 			<function name="begintransaction" title="SPI.Begin()" keywords="spi begin transaction">
 				<entry /><exit />
 				<in name="spisetting" datatype="setting" label="SPI Settings" />

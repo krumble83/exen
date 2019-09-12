@@ -57,7 +57,7 @@ export default {
 		},
 		
 		setLibrary: function(state, data){
-			state.library = data.Category('[' + state.name + ']');
+			state.library = data.Category({name: '[' + state.name + ']'});
 		},
 	},
 	

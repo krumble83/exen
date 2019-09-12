@@ -70,10 +70,10 @@ export default {
 			if(query)
 				me.mQuery = query;
 
-			function findUl(id, parent){
+			function findUl(name, parent){
 				//console.log('findUl()', id, parent)
 				var el
-					, path = id.split('/')
+					, path = name.split('/')
 					, tid = path.shift()
 					, ul = parent.find(it => it.name == tid)
 					, li;
@@ -93,8 +93,7 @@ export default {
 			}
 			
 			me.items.splice(0, me.items.length);
-			
-			
+						
 			nodes.forEach(function(it){
 				var vu = it.__vue__
 					, cat = me.items;

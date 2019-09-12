@@ -1,6 +1,6 @@
 <template>
 	<package id="json">
-		<category id="Json">
+		<category name="Json">
 			<datatype name="json.jsonobject" label="JSON Object object" datatype="scalar" ctor="Pin" color="#55f" />
 			
 			<function name="fromstring" title="JSON Parse String" color="#78c8fe" symbol="lib/img/function.png">

@@ -1,6 +1,6 @@
 <template>
 	<package id="core.date">
-		<category id="Date Time">
+		<category name="Date Time">
 			<function name="make" title="Make DateTime Structure" symbol="exlibs/core/img/make.png" keywords="make date time datetime" color="#00f">
 				<in name="date-year" datatype="core.type.int" label="Year" />
 				<in name="date-month" datatype="core.type.int" label="Month" />
@@ -52,7 +52,7 @@
 			</function>
 		</category>
 		
-		<category id="Date Time/Arithmetic">
+		<category name="Date Time/Arithmetic">
 			<function name="add" title="DateTime + DateTime" ctor="NodeOp" symbol="exlibs/core/img/op.add.png" keywords="date add +" subtitle="+" color="#555">
 				<in name="in1" datatype="core.type.date" />
 				<in name="in2" datatype="core.type.date" />
@@ -95,7 +95,7 @@
 			</function>
 		</category>
 		
-		<category id="Date Time/Comparators">
+		<category name="Date Time/Comparators">
 			<function name="eq" ctor="NodeOp" symbol="exlibs/core/img/op.eq.png" color="#555" keywords="date == equal" subtitle="==" title="DateTime == DateTime (equal)">			
 				<in name="a" datatype="core.type.date" />
 				<in name="b" datatype="core.type.date" />

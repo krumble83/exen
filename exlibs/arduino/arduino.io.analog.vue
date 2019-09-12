@@ -1,7 +1,7 @@
 <template>
 	<package id="arduino.io.analog" color="#aaeea0" symbol="exlibs/arduino/arduino.png" >
 		<datatype name="apin" label="Arduino Analog Pin Component" color="#ff0" />
-		<category id="Arduino/Analog IO Pin">
+		<category name="Arduino/Analog IO Pin">
 			<function name="analogRead" title="analogRead()" keywords="read analog">
 				<entry /><exit />
 				<in name="pin" datatype="apin" label="Analog Pin" />

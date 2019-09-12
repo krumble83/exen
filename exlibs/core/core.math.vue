@@ -1,6 +1,6 @@
 <template>
 	<package id="core.math" symbol="exlibs/img/function.png" color="#aaeea0">	
-		<category id="Math">
+		<category name="Math">
 			<function name="pi">
 				<out name="pi" datatype="core.type.float" />
 			</function>
