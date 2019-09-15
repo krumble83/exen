@@ -4,121 +4,34 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="viewport" content="width=device-width">
 		<link rel="stylesheet" type="text/css" href="css/ui.css" media="all">
-		<link rel="stylesheet" href="elibs/fontawesome.css">
-		<base href="http://127.0.0.1/exen/">
-		<title>eXen</title>
-
-		<script src="cmon-js/constants.js"></script>
+		<title>PE</title>
 
 		<script src="elibs/lodash.js"></script>
 		<script src="elibs/vue.js"></script>
 		<script src="elibs/vuex.js"></script>
 		<script src="elibs/browser-vue-loader.js"></script>
-		<script src="elibs/svg-pan-zoom.js"></script>
-
-		<script src="ui-js/extends.js"></script>
-				
-		<style>
-
-		</style>	
 	</head>
 	<body>
 		<div id="app" />
-		<!--<div style="position:absolute;top:0;left:0;background-color:#000;opacity:0.5;width:100%;height:100%"></div>-->
-		
-		
-		
 		<script type="boom!">
 
-			import './cmon-js/extends.js';
-
-const raw = {
-  item1: { key: 'sdfd', value:'sdfd' },
-  item2: { key: 'sdfd', value:'sdfd' },
-  item3: { key: 'sdfd', value:'sdfd' }
-};
-
-const allowedz = ['item1', 'item3'];
-
-
-function filterObject(object, allowed){
-	return Object.keys(object)
-		.filter(key => allowed.includes(key))
-		.reduce((obj, key) => {
-			obj[key] = object[key];
-			return obj;
-		}, {});
-}
-
-
-const filtered = filterObject(raw, allowedz);
-
-filtered.item1.value = 'zzzz'
-//console.log(filtered, raw);
-
-function test(){
-	const zz = Math.random();
-	console.log(zz);
-}
-		
+			//import './cmon-js/extends.js';
+			import {getQueryParam, loadCss} from './cmon-js/utils.js';
+			
+			const theme = getQueryParam('theme');
+			if(theme){
+				loadCss('themes/' + theme + '/' + theme + '.css');
+			}
+			else
+				loadCss('themes/dark/dark.css');
+				
 			Vue.config.performance = true;
 			
-			import App from './ui-vues/project.vue';
-			//console.log(App);
-
-			import './exlibs/exlib.export.js';
-			import './exlibs/exlib.construct.js';
-
-			import './exlibs/app.vue';
+			//import Tabs from './apps/pe/vues/tabsz.vue';
+			//import Tab from './apps/pe/vues/tabs.tab.vue';
 			
-			import './exlibs/core/core.vue';
-			import './exlibs/core/core.flow.vue';
-			import './exlibs/core/core.array.vue';
-			import './exlibs/core/core.date.vue';
-			import './exlibs/core/core.math.vue';
-			import './exlibs/others/special.vue';
-									
-			import './exlibs/core/core.type.vue';
-			import './exlibs/core/core.type.int.vue';
-			import './exlibs/core/core.type.float.vue';
-			import './exlibs/core/core.type.bool.vue';
-			import './exlibs/core/core.type.string.vue';
-			import './exlibs/core/core.type.byte.vue';
-			
-			import './exlibs/arduino';
-/*
-			import './exlibs/arduino/arduino.core.vue';
-			import './exlibs/arduino/arduino.eeprom.vue';
-			import './exlibs/arduino/arduino.serial.vue';
-			import './exlibs/arduino/arduino.spi.vue';
-			import './exlibs/arduino/arduino.spi.vue';
-			import './exlibs/arduino/arduino.sdcard.vue';
-			import './exlibs/arduino/arduino.io.analog.vue';
-			import './exlibs/arduino/arduino.io.digital.vue';
-			import './exlibs/arduino/arduino.wifi.vue';
-*/
-			import './exlibs/arduino/hardware/arduino.hardware.mega.vue';
-
-			import './exlibs/os';
-			//import './exlibs/os/os.file.vue';
-			//import './exlibs/web/web.vue';
-
-			import './ui-vues/blueprint.graph.vue';
-			import './ui-vues/blueprint.function.vue';
-			import './ui-vues/blueprint.variable.vue';
-
-			
+			import App from './apps/pe/vues/app.vue';
 			var test = new Vue(App);
-			test.createProject();
-			test.doTest();
-			test.packages.push('libCore', 'libCoreDatatype', 'App', 
-				'libCoreTypeInt', 'libCoreFlow', 'libCoreTypeFloat', 'libCoreArray', 'libCoreTypeBool', 'libCoreTypeString', 'libCoreTypeByte', 'libCoreDate'
-				, 'arduino.core', 'arduino.stream', 'arduino.eeprom', 'arduino.serial', 'arduino.spi', 'arduino.io.digital', 'arduino.io.analog', 'arduino.sdcard', 'arduino.wifi', 'arduino.hardware.mega'
-				//, 'libWeb'
-				, 'core.math'
-				, 'os_file'
-				, 'libSpecial'
-				);
 
 		</script>
 	</body>

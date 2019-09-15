@@ -1,48 +1,9 @@
-
 export const uid = function(prefix){
 	prefix = prefix || 'uid';
 	return prefix + 'xxxxxxxxxxxxxxxx'.replace(/./g, function(c) {
 		var r = Math.random() * 16 | 0;
 		return r.toString(16);
 	});
-}
-
-export const flag = function(flag){
-	return (typeof flag == 'string') ? eval(flag) : flag;
-}
-
-export const hasFlag = function(flag, target){
-	flag = (typeof flag == 'string') ? eval(flag) : flag;
-	return target ? ((target & flag) == flag) : ((this.flags & flag) == flag);
-}
-
-export const capitalize = function(str){
-	if(!str)
-		return;
-	return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-export const splitPackageName = function(string){
-	// TODO: optimize this function
-	const split = string.split(/\.(?=[^\.]+$)/);
-	if(split[1].indexOf('@') > -1){
-		var s = split[1].split('@');
-		split[1] = s[0];
-		split[2] = s[1];
-	}
-	return {package: split[0], name: split[1], class: split[2]};
-}
-
-export const splitCamelCase = function(str){
-	if(!str)
-		return '';
-	return str
-		// insert a space between lower & upper
-		.replace(/([a-z])([A-Z])/g, '$1 $2')
-		// space before last upper in a sequence followed by lower
-		.replace(/\b([A-Z]+)([A-Z])([a-z])/, '$1 $2$3')
-		// uppercase the first character
-		.replace(/^./, function(str){ return str.toUpperCase(); })
 }
 
 export const loadScript = function(){
@@ -87,3 +48,56 @@ export const loadScript = function(){
 		Vue.options.methods.$loadScript.apply(this, args);
 	}
 }		
+
+export const loadCss = function(){
+	var args = Array.prototype.slice.call(arguments);
+
+	function loaded(src){
+		var links = document.getElementsByTagName("link");
+		for(var i = 0; i < links.length; i++) 
+		   if(links[i].getAttribute('href') == src) 
+			   return true;
+		return false;
+	}
+
+	if(args.length === 0)
+		return;
+
+	var tok = args.shift();
+	if(typeof tok === 'string'){
+		if(loaded(tok)){
+			loadCss.apply(this, args);
+			return;
+		}
+		var link  = document.createElement('link');
+		link.rel  = 'stylesheet';
+		link.type = 'text/css';
+		link.href = tok;
+		link.media = 'all';
+		link.onload = function () {
+			loadCss.apply(this, args);
+		};
+		(document.head || document.getElementsByTagName('head')[0]).appendChild(link);	
+	}
+	else if(typeof tok === 'function'){
+		if(tok.apply(this, args) === false)
+			return;
+		loadCss.apply(this, args);
+	}
+	else{
+		console.log('loadCss: Argument ignored (not string)');
+		loadCss.apply(this, args);
+	}
+}
+
+export const getQueryParam = function (variable) {
+	var query = window.location.search.substring(1)
+		, vars = query.split("&");
+	
+	for (var i=0;i<vars.length;i++) {
+		var pair = vars[i].split("=");
+		if (pair[0] == variable)
+			return pair[1];
+	} 
+	return false;
+}

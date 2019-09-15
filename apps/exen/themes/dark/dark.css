@@ -1,0 +1,17 @@
+
+.exWorksheet {
+	--grid-bg-color: #262626;
+	--grid-line-color-small: #606060;
+	--grid-line-opacity-smal: 0.5;
+	--grid-line-color-big: #161616;	
+}
+
+.exWorksheet .exNode{
+	--border-radius: 9;
+}
+
+
+
+
+
+

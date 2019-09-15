@@ -1,0 +1,49 @@
+
+:root {
+	--main-bg-color: #070;
+	--text-color: #f0f;
+	--text-size: 12px;
+	--text-font-family: Arial, Helvetica, sans-serif;
+
+	--bg-dark-color: #f00;
+	--bg-middle-color: #0f0;
+	--bg-light-color: #00f;
+
+	--selected-bg-color: #ff0;
+	--selected-text-color: #ff0;
+	
+	--focused-bg-color: #0ff;
+	--focused-text-color: #0ff;
+	
+	--disabled-bg-color: #555;
+	
+	--invalid-bg-color: #f00;
+	--invalid-text-color: #f00;
+	
+	--border: 1px solid #652514;
+	--border-radius: 0;
+	
+	--filter: none;
+}
+
+.exWorksheet {
+	--grid-bg-color: #262626;
+	--grid-line-color-small: #606060;
+	--grid-line-opacity-smal: 0.5;
+	--grid-line-color-big: #161616;	
+}
+
+.uiTree li.child input.editor {
+	--main-bg-color: #0f4512;
+	--text-color: #123245;
+	--border-radius: 0;
+	--text-size: 12px;
+}
+
+ul.uiTree li.main .add img{
+	--border-radius: 0;
+}
+
+ul.uiTree li.main .add.disabled img{
+	--filter: invert(100%);
+}	

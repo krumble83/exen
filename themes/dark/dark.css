@@ -1,0 +1,82 @@
+
+:root {
+	--main-bg-color: #161616;
+	--text-color: #eee;
+	--text-size: 12px;
+	--text-font-family: Arial, Helvetica, sans-serif;
+
+	--bg-dark-color: #262626;
+	--bg-middle-color: #3e3e3e;
+	--bg-light-color: #606060;
+
+	--selected-bg-color: #898989;
+	--selected-text-color: #fff;
+	
+	--focused-bg-color: #dea309;
+	--focused-text-color: #fff;
+	
+	--disabled-bg-color: #555;
+	
+	--invalid-bg-color: #f00;
+	--invalid-text-color: #f00;
+	
+	--border: 1px solid #652514;
+	--border-radius: 0;
+	
+	--filter: none;
+	--opacity: 1;
+}
+
+.uiTree li.child input.editor {
+	--main-bg-color: #e7e7e7;
+	--text-color: #000;
+	--border-radius: 5px;
+	--text-size: 12px;
+}
+
+ul.uiTree li .button img{
+	--border-radius: 3px;
+}
+
+ul.uiTree li .button.disabled img{
+	--filter: invert(100%);
+}
+
+
+
+
+.panel.toolbar{
+	--border-radius: 7px;
+}
+
+.uiTbButton:first-child { 
+	--border-radius: 7px 0 0 7px;
+}
+
+
+
+
+.exMenu ul {
+	--font-size: 12px;
+	--border: 1px solid #000; 
+	--border-radius: 2px;
+}
+
+.exMenu li[data-shortcut]:before {
+	--disabled-bg-color: #777;
+}
+
+.exMenu li.title > a {
+	--text-size: 12px;
+}
+
+.exMenu li[data-shortcut]:before {
+	--text-size: 11px;	
+}
+
+
+
+
+
+
+
